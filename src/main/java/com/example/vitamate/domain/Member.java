@@ -10,6 +10,7 @@ import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDate;
 
+//test 주석
 @Entity
 @Getter
 @Builder
