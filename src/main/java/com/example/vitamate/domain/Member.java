@@ -21,7 +21,8 @@ public class Member extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 50)
+    // 소셜로그인 구현 후 주석 해제
+//    @Column(nullable = false, length = 50)
     private String email;
 
     @Column(nullable = false, length = 20)
