@@ -23,10 +23,12 @@ public class Challenge extends BaseEntity {
     private String title;
 
     @Column(nullable = false)
-    private Integer maxUsers = 10;
+    @ColumnDefault("10")
+    private Integer maxUsers;
 
     @Column(nullable = false)
-    private Integer currentUsers = 1;
+    @ColumnDefault("1")
+    private Integer currentUsers;
 
     @Column(nullable = false)
     private LocalDate expiryDate = LocalDate.now().plusWeeks(1);

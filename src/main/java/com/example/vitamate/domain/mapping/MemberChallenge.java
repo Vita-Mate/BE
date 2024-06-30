@@ -20,9 +20,9 @@ public class MemberChallenge extends BaseEntity {
     @Column(nullable = false)
     private String pledge;
 
-    @Column(nullable = false, columnDefinition = "VARCHAR(30)")
+    @Column(nullable = false, columnDefinition = "VARCHAR(30) DEFAULT 'PENDING'")
     @Enumerated(EnumType.STRING)
-    private ChallengeStatus challengeStatus = ChallengeStatus.PENDING;
+    private ChallengeStatus challengeStatus;
 
     @ManyToOne
     @JoinColumn(name = "member_id")
