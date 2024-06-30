@@ -43,10 +43,13 @@ public class MemberConverter {
         }
 
         return Member.builder()
-                .gender(gender)
+                .email(request.getEmail())
                 .nickname(request.getNickname())
-                .bmr(bmr)
                 .age(request.getAge())
+                .height(request.getHeight())
+                .weight(request.getWeight())
+                .gender(gender)
+                .bmr(bmr)
                 .build();
     }
 }
