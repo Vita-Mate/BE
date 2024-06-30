@@ -7,12 +7,16 @@ import com.example.vitamate.domain.enums.MemberStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDate;
 
 //test 주석
 @Entity
 @Getter
+@DynamicInsert
+@DynamicUpdate
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -37,19 +41,20 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private Double weight;
 
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private Integer bmr;
 
     @Column(nullable = false)
-    private Integer coin = 0;
+    @ColumnDefault("0")
+    private Integer coin;
 
     @Column(columnDefinition = "VARCHAR(10)")
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @Column(columnDefinition = "VARCHAR(20)")
+    @Column(columnDefinition = "VARCHAR(20) DEFAULT 'ACTIVE'")
     @Enumerated(EnumType.STRING)
-    private MemberStatus status = MemberStatus.ACTIVE;
+    private MemberStatus status;
 
     private LocalDate inactiveDate;
 
