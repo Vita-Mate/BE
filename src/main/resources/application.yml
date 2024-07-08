@@ -28,7 +28,7 @@ spring:
       on-profile: develop
   datasource:
     url: jdbc:mysql://${AWS_DB_URL}:3306/vitamate
-    driver-class-name: org.mariadb.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
     username: ${AWS_DB_USERNAME}
     password: ${AWS_DB_PASSWORD}
   sql:
