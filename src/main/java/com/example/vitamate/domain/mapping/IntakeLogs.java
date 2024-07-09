@@ -19,10 +19,10 @@ public class IntakeLogs extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
-    private LocalDate date = LocalDate.now();
+    private LocalDate date;
 
     @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
-    private Boolean isTaken = false;
+    private Boolean isTaken;
 
     @ManyToOne
     @JoinColumn(name = "member_supplement_id")

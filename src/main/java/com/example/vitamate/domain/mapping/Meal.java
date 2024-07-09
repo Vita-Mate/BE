@@ -19,7 +19,7 @@ public class Meal extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
-    private LocalDate date = LocalDate.now();
+    private LocalDate date;
 
     @Column(nullable = false, columnDefinition = "VARCHAR(20)")
     @Enumerated(EnumType.STRING)
