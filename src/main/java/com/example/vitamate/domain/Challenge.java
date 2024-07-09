@@ -31,7 +31,7 @@ public class Challenge extends BaseEntity {
     private Integer currentUsers;
 
     @Column(nullable = false)
-    private LocalDate expiryDate = LocalDate.now().plusWeeks(1);
+    private LocalDate expiryDate;
 
     @Column(nullable = false, columnDefinition = "VARCHAR(20)")
     @Enumerated(EnumType.STRING)

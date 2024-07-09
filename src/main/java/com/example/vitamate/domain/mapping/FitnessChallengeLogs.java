@@ -18,7 +18,7 @@ public class FitnessChallengeLogs extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
-    private LocalDate uploadTime = LocalDate.now();
+    private LocalDate uploadTime;
 
     @Column(nullable = false)
     private String imageUrl;

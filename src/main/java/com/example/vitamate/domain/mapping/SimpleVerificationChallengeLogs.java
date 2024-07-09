@@ -18,7 +18,7 @@ public class SimpleVerificationChallengeLogs extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
-    private LocalDate date = LocalDate.now();
+    private LocalDate date;
 
     private Boolean isSuccess;
 
