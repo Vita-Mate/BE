@@ -20,7 +20,6 @@ spring:
         hbm2ddl:
           auto: create
         default_batch_fetch_size: 1000
-
 ---
 spring:
   config:
