@@ -19,7 +19,6 @@ public class MemberCommandServiceImpl implements MemberCommandService{
     @Override
     @Transactional
     public Member joinMember(MemberRequestDTO.JoinDTO request){
-
         // 잘못된 값 입력 에러
         // 닉네임 중복 체크 할건지?
         if(request.getAge()<0)
@@ -33,5 +32,10 @@ public class MemberCommandServiceImpl implements MemberCommandService{
 
         Member newMember = MemberConverter.toMember(request);
         return memberRepository.save(newMember);
+    }
+
+    @Transactional
+    public Member findMemberByEmail(String email){
+        return memberRepository.findByEmail(email);
     }
 }

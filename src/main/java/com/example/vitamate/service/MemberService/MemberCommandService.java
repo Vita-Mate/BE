@@ -6,5 +6,6 @@ import com.example.vitamate.web.dto.MemberRequestDTO;
 public interface MemberCommandService {
 
     Member joinMember(MemberRequestDTO.JoinDTO request);
+    Member findMemberByEmail(String email);
 
 }
