@@ -1,14 +1,12 @@
 package com.example.vitamate.converter;
 
-import com.example.vitamate.domain.Supplement;
 import com.example.vitamate.domain.mapping.MemberSupplement;
 import com.example.vitamate.web.dto.SupplementResponseDTO;
 import org.springframework.data.domain.Page;
 
-import static java.time.temporal.ChronoUnit.DAYS
+import static java.time.temporal.ChronoUnit.DAYS;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
