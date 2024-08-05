@@ -59,20 +59,4 @@ public class MemberCommandServiceImpl implements MemberCommandService{
         return memberRepository.save(newMember);
     }
 
-    @Override
-    @Transactional
-    public Member saveOrUpdateMember(Member member){
-        return memberRepository.save(member);
-    }
-
-    @Override
-    @Transactional
-    public void deleteMember(String email){
-        memberRepository.findByEmail(email).ifPresent(memberRepository::delete);
-    }
-
-//    @Transactional
-//    public Member findMemberByEmail(String email){
-//        return memberRepository.findByEmail(email);
-//    }
 }

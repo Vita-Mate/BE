@@ -9,8 +9,4 @@ public interface MemberCommandService {
     JwtTokenDTO signIn(String email);
 
     Member joinMember(MemberRequestDTO.JoinDTO request);
-//    Member findMemberByEmail(String email);
-
-    Member saveOrUpdateMember(Member member);
-    void deleteMember(String email);
 }
