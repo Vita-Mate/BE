@@ -18,7 +18,7 @@ spring:
         format_sql: true
         use_sql_comments: true
         hbm2ddl:
-          auto: create
+          auto: update
         default_batch_fetch_size: 1000
   security:
     oauth2:
@@ -42,6 +42,8 @@ spring:
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-info-authentication-method: header
             user-name-attribute: id # Kakao 응답 값 id, connected_at, properties, kakao_account 중 id 지정
+jwt:
+  secret: e37a28fb039d7e7a347abe71b996a08224d07bf43b9316024b244fc319e1d273
 #---
 #spring:
 #  config:

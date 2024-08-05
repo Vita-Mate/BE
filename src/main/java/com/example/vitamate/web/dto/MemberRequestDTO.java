@@ -9,6 +9,11 @@ import java.util.List;
 public class MemberRequestDTO {
 
     @Getter
+    public static class SignInDTO{
+        private String email;
+    }
+
+    @Getter
     public static class JoinDTO{
 
         //소셜로그인
