@@ -2,8 +2,11 @@ package com.example.vitamate.web.dto;
 
 import com.example.vitamate.domain.enums.Gender;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MemberRequestDTO {
@@ -14,23 +17,20 @@ public class MemberRequestDTO {
     }
 
     @Getter
-    public static class JoinDTO{
+    public static class SignUpDTO{
+        @NotNull
+        private String email;
+        @NotNull
+        private String nickname;
+        @NotNull
+        private Integer age;
+        @NotNull
+        private Double height;
+        @NotNull
+        private Double weight;
+        @NotNull
+        private Integer gender;
 
-        //소셜로그인
-        String email;
-
-        @NotNull
-        String nickname;
-        @NotNull
-        Integer age;
-        @NotNull
-        Double height;
-        @NotNull
-        Double weight;
-        @NotNull
-        Integer gender;
-
-        Integer bmr;
-//        List<Long> preferCategory;
+        private Integer bmr;
     }
 }

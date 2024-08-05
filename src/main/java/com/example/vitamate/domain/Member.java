@@ -51,14 +51,14 @@ public class Member extends BaseEntity implements UserDetails {
     private Integer bmr;
 
     @Column(nullable = false)
-    @ColumnDefault("0")
+//    @ColumnDefault("0")
     private Integer coin;
 
     @Column(columnDefinition = "VARCHAR(10)")
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @Column(columnDefinition = "VARCHAR(20) DEFAULT 'ACTIVE'")
+//    @Column(columnDefinition = "VARCHAR(20) DEFAULT 'ACTIVE'")
     @Enumerated(EnumType.STRING)
     private MemberStatus status;
 
