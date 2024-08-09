@@ -17,4 +17,15 @@ public class MemberResponseDTO {
         Long memberId;
         LocalDateTime createdAt;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SignUpResultDTO {
+        private Long id;
+        private String email;
+        private String nickname;
+        private LocalDateTime createdAt;
+    }
 }

@@ -13,16 +13,18 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class MemberSupplementServiceImpl implements MemberSupplementService {
+public class MemberSupplementQueryServiceImpl implements MemberSupplementQueryService {
 
     private final MemberRepository memberRepository;
     private final MemberSupplementRepository memberSupplementRepository;
 
-    @Override
-    public Page<MemberSupplement> getTakingSuppplementList(String email, Integer page){
-        Member member = memberRepository.findByEmail(email);
+    @Transactional
+    public Page<MemberSupplement> getTakingSupplementPage(String email, Integer page){
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
 
         Page<MemberSupplement> memberSupplementPage = memberSupplementRepository.findAllByMember(member, PageRequest.of(page, 10));
+
         return memberSupplementPage;
     }
 

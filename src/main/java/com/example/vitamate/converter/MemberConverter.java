@@ -5,19 +5,14 @@ import com.example.vitamate.domain.enums.Gender;
 import com.example.vitamate.domain.enums.MemberStatus;
 import com.example.vitamate.web.dto.MemberRequestDTO;
 import com.example.vitamate.web.dto.MemberResponseDTO;
+import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
+@Component
 public class MemberConverter {
 
-    public static MemberResponseDTO.JoinResultDTO toJoinResultDTO(Member member) {
-        return MemberResponseDTO.JoinResultDTO.builder()
-                .memberId(member.getId())
-                .createdAt(member.getCreatedAt())
-                .build();
-    }
-
-    public static Member toMember(MemberRequestDTO.JoinDTO request) {
+    public Member toMember(MemberRequestDTO.SignUpDTO request, List<String> roles){
         Gender gender = null;
 
         switch (request.getGender()){
@@ -44,12 +39,24 @@ public class MemberConverter {
 
         return Member.builder()
                 .email(request.getEmail())
+                .coin(0)
                 .nickname(request.getNickname())
-                .age(request.getAge())
+                .status(MemberStatus.ACTIVE)
                 .height(request.getHeight())
                 .weight(request.getWeight())
-                .gender(gender)
+                .roles(roles)
+                .age(request.getAge())
                 .bmr(bmr)
+                .gender(gender)
+                .build();
+    }
+
+    public MemberResponseDTO.SignUpResultDTO toSignUpResultDTO(Member member){
+        return MemberResponseDTO.SignUpResultDTO.builder()
+                .id(member.getId())
+                .email(member.getEmail())
+                .nickname(member.getNickname())
+                .createdAt(member.getCreatedAt())
                 .build();
     }
 }
