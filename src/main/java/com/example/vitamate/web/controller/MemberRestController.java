@@ -6,6 +6,7 @@ import com.example.vitamate.jwt.SecurityUtil;
 import com.example.vitamate.service.MemberService.MemberCommandService;
 import com.example.vitamate.web.dto.MemberRequestDTO;
 import com.example.vitamate.web.dto.MemberResponseDTO;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,15 +22,9 @@ public class MemberRestController {
 
     private final MemberCommandService memberCommandService;
 
-//    @PostMapping("/")
-//    public ApiResponse<MemberResponseDTO.JoinResultDTO> join(@RequestBody @Valid MemberRequestDTO.JoinDTO request){
-//
-//        Member member = memberCommandService.joinMember(request);
-//
-//        return ApiResponse.onSuccess(MemberConverter.toJoinResultDTO(member));
-//    }
 
     @PostMapping("/sign-in")
+    @Operation(summary = "로그인 API", description = "사용자의 카카오 계정 이메일을 입력해주세요")
     public ApiResponse<JwtTokenDTO> signIn(@RequestBody MemberRequestDTO.SignInDTO signInDTO) {
         String email = signInDTO.getEmail();
         JwtTokenDTO jwtTokenDTO = memberCommandService.signIn(email);

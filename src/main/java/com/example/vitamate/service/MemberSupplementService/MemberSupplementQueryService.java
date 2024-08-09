@@ -3,7 +3,7 @@ package com.example.vitamate.service.MemberSupplementService;
 import com.example.vitamate.domain.mapping.MemberSupplement;
 import org.springframework.data.domain.Page;
 
-public interface MemberSupplementService {
+public interface MemberSupplementQueryService {
 
-    Page<MemberSupplement> getTakingSuppplementList(String email, Integer page);
+    Page<MemberSupplement> getTakingSupplementPage(String email, Integer page);
 }

@@ -10,18 +10,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class MemberSupplementServiceImpl implements MemberSupplementService {
+public class MemberSupplementQueryServiceImpl implements MemberSupplementQueryService {
 
     private final MemberRepository memberRepository;
     private final MemberSupplementRepository memberSupplementRepository;
 
-    @Override
-    public Page<MemberSupplement> getTakingSuppplementList(String email, Integer page){
+    @Transactional
+    public Page<MemberSupplement> getTakingSupplementPage(String email, Integer page){
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
 

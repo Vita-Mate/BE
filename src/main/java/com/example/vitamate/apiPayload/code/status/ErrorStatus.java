@@ -2,6 +2,9 @@ package com.example.vitamate.apiPayload.code.status;
 
 import com.example.vitamate.apiPayload.code.BaseErrorCode;
 import com.example.vitamate.apiPayload.code.ErrorReasonDTO;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -25,12 +28,15 @@ public enum ErrorStatus implements BaseErrorCode {
     INVALID_HEIGHT_VALUE(HttpStatus.BAD_REQUEST, "MEMBER4005", "키 값이 유효하지 않습니다."),
     INVALID_WEIGHT_VALUE(HttpStatus.BAD_REQUEST, "MEMBER4006", "체중 값이 유효하지 않습니다."),
 
-    // ~~ 관련 응답
+    // 토큰 관련 응답
+    TOKEN_MISSING(HttpStatus.UNAUTHORIZED, "AUTH003", "access 토큰을 주세요!"),
+    TOKEN_EXPIRED(HttpStatus.FORBIDDEN, "AUTH004", "access 토큰 만료"),
+    TOKEN_INVALID(HttpStatus.BAD_REQUEST, "AUTH006", "access 토큰 모양이 이상함"),
 
+    // ~~ 관련 응답
 
     // For test
     TEMP_EXCEPTION(HttpStatus.BAD_REQUEST, "TEMP4001", "이거는 테스트");
-    ;
 
     private final HttpStatus httpStatus;
     private final String code;
