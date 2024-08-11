@@ -21,6 +21,9 @@ public class MemberSupplement extends BaseEntity {
     @Column(nullable = false)
     private Boolean isScrapped;
 
+    @Column(nullable = false)
+    private Boolean isTaking;
+
     private LocalDate startDate;
 
     @ManyToOne
