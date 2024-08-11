@@ -1,7 +1,12 @@
+# default
 spring:
-#  config:
-#    activate:
-#      on-profile: local
+  profiles:
+    active: dev
+---
+spring:
+  config:
+    activate:
+      on-profile: local
   datasource:
     url: jdbc:mysql://localhost:3306/vitamate
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -23,30 +28,29 @@ spring:
   jwt:
     secret: ${JWT_SECRET}
 
-
-#---
-#spring:
-#  config:
-#    activate:
-#      on-profile: develop
-#  datasource:
-#    url: ${AWS_DB_URL}
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    username: ${AWS_DB_USERNAME}
-#    password: ${AWS_DB_PASSWORD}
-#  sql:
-#    init:
-#      mode: never
-#  jpa:
-#    properties:
-#      hibernate:
-#        dialect: org.hibernate.dialect.MySQL8Dialect
-#        show_sql: true
-#        format_sql: true
-#        use_sql_comments: true
-#        hbm2ddl:
-#          auto: create
-#        default_batch_fetch_size: 1000
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: ${RDS_DB_URL}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${RDS_DB_USERNAME}
+    password: ${RDS_DB_PASSWORD}
+  sql:
+    init:
+      mode: never
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+        hbm2ddl:
+          auto: update
+        default_batch_fetch_size: 1000
 
 #  servlet:
 #    multipart:
