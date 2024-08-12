@@ -13,24 +13,25 @@ public class MemberRequestDTO {
 
     @Getter
     public static class SignInDTO{
-        private String email;
+        String email;
     }
 
     @Getter
     public static class SignUpDTO{
-        @NotNull
-        private String email;
-        @NotNull
-        private String nickname;
-        @NotNull
-        private Integer age;
-        @NotNull
-        private Double height;
-        @NotNull
-        private Double weight;
-        @NotNull
-        private Integer gender;
 
-        private Integer bmr;
+        @NotNull
+        String email;
+        @NotNull
+        String nickname;
+        @NotNull
+        Integer age;
+        @NotNull
+        Double height;
+        @NotNull
+        Double weight;
+        @NotNull
+        Integer gender;
+
+        Integer bmr;
     }
 }

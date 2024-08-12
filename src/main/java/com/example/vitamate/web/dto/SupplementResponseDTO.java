@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class SupplementResponseDTO {
@@ -13,8 +14,8 @@ public class SupplementResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class TakingSupplementListDTO{
-        List<TakingSupplementDTO> supplementList;
+    public static class IntakeSupplementListDTO {
+        List<IntakeSupplementDTO> supplementList;
         Integer listSize;
         Integer totalPage;
         Long totalElements;
@@ -26,9 +27,20 @@ public class SupplementResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class TakingSupplementDTO{
+    public static class IntakeSupplementDTO {
         String name;
         String brand;
+        Integer duration;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AddIntakeSupplementResultDTO{
+        Long supplementID;
+        String supplementName;
+        String supplementBrand;
         Integer duration;
     }
 }
