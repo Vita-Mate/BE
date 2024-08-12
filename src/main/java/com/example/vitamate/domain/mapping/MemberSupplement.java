@@ -10,6 +10,7 @@ import java.time.LocalDate;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -20,6 +21,9 @@ public class MemberSupplement extends BaseEntity {
 
     @Column(nullable = false)
     private Boolean isScrapped;
+
+    @Column(nullable = false)
+    private Boolean isTaking;
 
     private LocalDate startDate;
 
