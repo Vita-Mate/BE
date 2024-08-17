@@ -15,6 +15,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,19 +54,19 @@ public class MemberCommandServiceImpl implements MemberCommandService{
         }
 
         // 잘못된 값 입력 에러핸들링
-        if(request.getAge()<0)
-            throw new MemberHandler(ErrorStatus.NICKNAME_NOT_FOUND);
+        if(request.getBirthDay().isAfter(LocalDate.now()) || request.getBirthDay().isBefore(LocalDate.now().minusYears(120)))
+            throw new MemberHandler(ErrorStatus.INVALID_AGE_VALUE);
         if(request.getHeight()<0)
             throw new MemberHandler(ErrorStatus.INVALID_HEIGHT_VALUE);
         if(request.getWeight()<0)
             throw new MemberHandler(ErrorStatus.INVALID_WEIGHT_VALUE);
         if(request.getGender()!=1 && request.getGender()!=2)
             throw new MemberHandler(ErrorStatus.INVALID_GENDER_VALUE);
-
         // 닉네임 중복 체크 할건지?
 
         List<String> roles = new ArrayList<>();
         roles.add("USER"); // USER 권한 부여
+
         return memberConverter.toSignUpResultDTO(memberRepository.save(memberConverter.toMember(request, roles)));
 
     }

@@ -1,13 +1,9 @@
 package com.example.vitamate.web.dto;
 
-import com.example.vitamate.domain.enums.Gender;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
 
 public class MemberRequestDTO {
 
@@ -24,7 +20,7 @@ public class MemberRequestDTO {
         @NotNull
         String nickname;
         @NotNull
-        Integer age;
+        LocalDate birthDay;
         @NotNull
         Double height;
         @NotNull

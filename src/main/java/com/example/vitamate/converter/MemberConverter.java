@@ -7,7 +7,10 @@ import com.example.vitamate.web.dto.MemberRequestDTO;
 import com.example.vitamate.web.dto.MemberResponseDTO;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.List;
+
+import static java.time.temporal.ChronoUnit.YEARS;
 
 @Component
 public class MemberConverter {
@@ -37,6 +40,7 @@ public class MemberConverter {
             bmr = (int) (370 + 21.6 * LBM);
         }
 
+
         return Member.builder()
                 .email(request.getEmail())
                 .coin(0)
@@ -45,7 +49,7 @@ public class MemberConverter {
                 .height(request.getHeight())
                 .weight(request.getWeight())
                 .roles(roles)
-                .age(request.getAge())
+                .birthDay(request.getBirthDay())
                 .bmr(bmr)
                 .gender(gender)
                 .build();
@@ -56,7 +60,20 @@ public class MemberConverter {
                 .id(member.getId())
                 .email(member.getEmail())
                 .nickname(member.getNickname())
+                .age(calculateAge(member.getBirthDay())) // 나이 계산 메서드 활용
                 .createdAt(member.getCreatedAt())
                 .build();
     }
+
+    private Integer calculateAge(LocalDate birthDay){
+        LocalDate now = LocalDate.now();
+        Integer age = now.getYear() - birthDay.getYear();
+        if(birthDay.plusYears(age).isAfter(now)){ // 생일이 안 지났으면
+            age--;
+        }
+        return age;
+    }
+
+
+
 }
