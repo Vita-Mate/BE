@@ -34,7 +34,9 @@ public class MemberRestController {
     }
 
     @PostMapping("/sign-up")
-    @Operation(summary = "회원가입 API", description = "사용자의 카카오 계정 이메일과 기타 정보를 입력해주세요. bmr(기초대사량)필드는 입력하지 않을 경우 자동 계산됩니다.")
+    @Operation(summary = "회원가입 API", description = "사용자의 카카오 계정 이메일과 기타 정보를 입력해주세요. " +
+            "bmr(기초대사량)필드는 입력하지 않을 경우 자동 계산됩니다. " +
+            "성별은 1(MALE), 2(FEMALE) 입니다. ")
     public ApiResponse<MemberResponseDTO.SignUpResultDTO> signUp(@RequestBody MemberRequestDTO.SignUpDTO signUpDTO){
         MemberResponseDTO.SignUpResultDTO signUpResultDTO = memberCommandService.signUp(signUpDTO);
         return ApiResponse.onSuccess(signUpResultDTO);
