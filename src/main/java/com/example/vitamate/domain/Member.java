@@ -6,7 +6,6 @@ import com.example.vitamate.domain.enums.Gender;
 import com.example.vitamate.domain.enums.MemberStatus;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.security.core.GrantedAuthority;
@@ -39,7 +38,8 @@ public class Member extends BaseEntity implements UserDetails {
     private String nickname;
 
     @Column(nullable = false)
-    private Integer age;
+//    private Integer age;
+    private LocalDate birthDay;
 
     @Column(nullable = false)
     private Double height;

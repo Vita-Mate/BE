@@ -17,6 +17,7 @@ public class MemberResponseDTO {
         Long id;
         String email;
         String nickname;
+        Integer age;
         LocalDateTime createdAt;
     }
 }
