@@ -1,7 +1,7 @@
 # default
 spring:
   profiles:
-    active: dev
+    active: local
 ---
 spring:
   config:
