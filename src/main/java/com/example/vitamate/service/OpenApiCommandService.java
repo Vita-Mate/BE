@@ -32,7 +32,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class OpenApiCommandService {
 
-//    private final SupplementInfoRepository supplementInfoRepository;
     private final SupplementRepository supplementRepository;
 
     @Transactional
