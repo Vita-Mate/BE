@@ -10,11 +10,13 @@ import com.example.vitamate.repository.SupplementRepository;
 import com.example.vitamate.web.dto.SupplementRequestDTO;
 import com.example.vitamate.web.dto.SupplementResponseDTO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SupplementCommandServiceImpl implements SupplementCommandService{
@@ -26,7 +28,7 @@ public class SupplementCommandServiceImpl implements SupplementCommandService{
 
     @Override
     @Transactional
-    public SupplementResponseDTO.AddIntakeSupplementResultDTO addIntakeSupplement(String email, SupplementRequestDTO.AddIntakeSupplementDTO requestDTO){
+    public SupplementResponseDTO.AddIntakeSupplementResultDTO addIntakeSupplement(String email, SupplementRequestDTO.AddIntakeSupplementDTO requestDTO) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
 
@@ -50,4 +52,5 @@ public class SupplementCommandServiceImpl implements SupplementCommandService{
         return memberSupplementConverter.toAddIntakeSupplementResultDTO(memberSupplement);
 
     }
+
 }
