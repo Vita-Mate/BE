@@ -1,5 +1,5 @@
 package com.example.vitamate.domain.mapping;
-import com.example.vitamate.domain.SupplementInfo;
+import com.example.vitamate.domain.Supplement;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,7 +10,6 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class NutrientInfo {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,6 +21,6 @@ public class NutrientInfo {
 //    private String range;
 
     @ManyToOne
-    @JoinColumn(name = "supplement_info_id")
-    private SupplementInfo supplementInfo;
+    @JoinColumn(name = "supplement_id")
+    private Supplement supplement;
 }

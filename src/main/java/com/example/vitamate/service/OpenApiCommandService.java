@@ -1,9 +1,9 @@
 package com.example.vitamate.service;
 
+import com.example.vitamate.domain.Supplement;
 import com.example.vitamate.domain.SupplementDataSave;
-import com.example.vitamate.domain.SupplementInfo;
 import com.example.vitamate.domain.mapping.NutrientInfo;
-import com.example.vitamate.repository.SupplementInfoRepository;
+import com.example.vitamate.repository.SupplementRepository;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
@@ -32,16 +32,16 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class OpenApiCommandService {
 
-    private final SupplementInfoRepository supplementInfoRepository;
+//    private final SupplementInfoRepository supplementInfoRepository;
+    private final SupplementRepository supplementRepository;
 
     @Transactional
     public void callApiAndSaveData(String apiKey, String startIdx, String endIdx) throws IOException {
+        log.info("API Key = "+apiKey);
         String BASE_URL = "https://openapi.foodsafetykorea.go.kr/api";
-        String keyId =  apiKey; // e72b7472ca414bfc9ce9
+        String keyId =  apiKey;
         String serviceId = "C003";
         String dataType = "xml";
-//        String startIdx = "1";
-//        String endIdx = "10"; //3797
 
         StringBuilder urlBuilder = new StringBuilder(BASE_URL);
         urlBuilder.append("/" + URLEncoder.encode(keyId, "UTF-8"));
@@ -55,6 +55,7 @@ public class OpenApiCommandService {
 
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Content-Type", "application/json");
+        log.info("Request URL: " + urlBuilder.toString()); // URL 확인 로그 추가
         log.info("Response code:  " + conn.getResponseCode());
 
         BufferedReader rd;
@@ -84,12 +85,12 @@ public class OpenApiCommandService {
 
             if(apiResponse.getRow() != null){
                 List<SupplementDataSave.Row> rowList = apiResponse.getRow();
-                List<SupplementInfo> supplementInfoList = rowList.stream()
+                List<Supplement> supplementList = rowList.stream()
                         .map(this::convertToEntity)
                         .collect(Collectors.toList());
 
-                log.info("Saving " + supplementInfoList.size() + " supplements to the database.");
-                supplementInfoRepository.saveAll(supplementInfoList);
+                log.info("Saving " + supplementList.size() + " supplements to the database.");
+                supplementRepository.saveAll(supplementList);
                 log.info("Data saved successfully.");
             } else {
                 log.warn("No rows received in the API response.");
@@ -102,24 +103,21 @@ public class OpenApiCommandService {
 
     }
 
-    public SupplementInfo convertToEntity(SupplementDataSave.Row response){
+    public Supplement convertToEntity(SupplementDataSave.Row response){
         log.info("Converting response to entity" + response);
 
-        SupplementInfo supplementInfo = SupplementInfo.builder()
-                .BSSH_NM(response.getBSSH_NM())
-                .STDR_STND(response.getSTDR_STND())
-                .PRDLST_NM(response.getPRDLST_NM())
-                .PRIMARY_FNCLTY(response.getPRIMARY_FNCLTY())
-                .NTK_MTHD(response.getNTK_MTHD())
+        Supplement supplement = Supplement.builder()
+                .brand(response.getBSSH_NM())
+                .name(response.getPRDLST_NM())
                 .build();
 
-        List<NutrientInfo> nutrientInfoList = parseNutrients(response.getSTDR_STND(), supplementInfo);
-        supplementInfo.setNutrients(nutrientInfoList);
+        List<NutrientInfo> nutrientInfoList = parseNutrients(response.getSTDR_STND(), supplement);
+        supplement.setNutrients(nutrientInfoList);
 
-        return supplementInfo;
+        return supplement;
     }
 
-    public List<NutrientInfo> parseNutrients(String stdrStnd, SupplementInfo supplementInfo){
+    public List<NutrientInfo> parseNutrients(String stdrStnd, Supplement supplement){
         List<NutrientInfo> nutrientInfoList = new ArrayList<>();
 
         // 정규 표현식을 이용해 영양성분과 함량을 추출
@@ -152,7 +150,7 @@ public class OpenApiCommandService {
                     .unit(unit)
                     .totalAmount(totalAmount)
                     .totalUnit(totalUnit)
-                    .supplementInfo(supplementInfo)
+                    .supplement(supplement)
                     .build();
 
             nutrientInfoList.add(nutrientInfo);

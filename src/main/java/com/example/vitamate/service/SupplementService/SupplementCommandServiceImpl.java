@@ -1,36 +1,20 @@
 package com.example.vitamate.service.SupplementService;
 
 import com.example.vitamate.converter.MemberSupplementConverter;
-import com.example.vitamate.domain.SupplementInfo;
 import com.example.vitamate.domain.Member;
 import com.example.vitamate.domain.Supplement;
 import com.example.vitamate.domain.mapping.MemberSupplement;
 import com.example.vitamate.repository.MemberRepository;
 import com.example.vitamate.repository.MemberSupplementRepository;
-import com.example.vitamate.repository.SupplementInfoRepository;
 import com.example.vitamate.repository.SupplementRepository;
-import com.example.vitamate.domain.SupplementDataSave;
 import com.example.vitamate.web.dto.SupplementRequestDTO;
 import com.example.vitamate.web.dto.SupplementResponseDTO;
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Unmarshaller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
