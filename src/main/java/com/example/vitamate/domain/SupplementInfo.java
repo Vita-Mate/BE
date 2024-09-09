@@ -1,14 +1,11 @@
 package com.example.vitamate.domain;
 
-import com.example.vitamate.domain.common.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.xml.bind.annotation.XmlRootElement;
+import com.example.vitamate.domain.mapping.NutrientInfo;
+import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.aot.generate.GeneratedTypeReference;
 
+import java.util.List;
+import java.util.Map;
 
 
 @Entity
@@ -39,5 +36,8 @@ public class SupplementInfo{
 //    private String CRET_DTM; // 최초생성일시
 //    private String LAST_UPDT_DTM; // 최종수정일시
 //    private String PRDT_SHAP_CD_NM; // 제품형태
+
+    @OneToMany(mappedBy = "supplementInfo", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<NutrientInfo> nutrients;
 
 }

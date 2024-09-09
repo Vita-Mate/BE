@@ -2,6 +2,7 @@ package com.example.vitamate.service;
 
 import com.example.vitamate.domain.SupplementDataSave;
 import com.example.vitamate.domain.SupplementInfo;
+import com.example.vitamate.domain.mapping.NutrientInfo;
 import com.example.vitamate.repository.SupplementInfoRepository;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -18,9 +19,12 @@ import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -100,6 +104,7 @@ public class OpenApiCommandService {
 
     public SupplementInfo convertToEntity(SupplementDataSave.Row response){
         log.info("Converting response to entity" + response);
+
         SupplementInfo supplementInfo = SupplementInfo.builder()
                 .BSSH_NM(response.getBSSH_NM())
                 .STDR_STND(response.getSTDR_STND())
@@ -107,8 +112,53 @@ public class OpenApiCommandService {
                 .PRIMARY_FNCLTY(response.getPRIMARY_FNCLTY())
                 .NTK_MTHD(response.getNTK_MTHD())
                 .build();
+
+        List<NutrientInfo> nutrientInfoList = parseNutrients(response.getSTDR_STND(), supplementInfo);
+        supplementInfo.setNutrients(nutrientInfoList);
+
         return supplementInfo;
     }
 
+    public List<NutrientInfo> parseNutrients(String stdrStnd, SupplementInfo supplementInfo){
+        List<NutrientInfo> nutrientInfoList = new ArrayList<>();
+
+        // 정규 표현식을 이용해 영양성분과 함량을 추출
+        Pattern pattern = Pattern.compile(
+                "([가-힣A-Za-z0-9\\s,]+?)\\s*:\\s*표시량\\s*\\(?(\\d+(?:,\\d{3})*(?:\\.\\d+)?)\\s?(mg|g|µg|ug|ugRE|㎍|mcg|㎍RE|mgNE|R.E|mgα-TE|ml)?\\/(?:(\\d+(?:,\\d{3})*(?:\\.\\d+)?)\\s?(mg|g|µg|ug|ugRE|㎍|mcg|㎍RE|mgNE|R.E|mgα-TE|ml)?)");
+        Matcher matcher = pattern.matcher(stdrStnd);
+
+        while (matcher.find()) {
+            String nutrientName = matcher.group(1).trim();
+
+            // 숫자와 공백 제거
+            nutrientName = nutrientName.replaceAll("^\\d+\\s+", "").trim();
+            // 특정 접두사 제거
+            nutrientName = nutrientName.replaceAll("^총\\s+", "").trim();
+
+            String amount = matcher.group(2) != null ? matcher.group(2).trim() : "";
+            String unit = matcher.group(3) != null ? matcher.group(3).trim() : "";
+            String totalAmount = matcher.group(4) != null ? matcher.group(4).trim() : "";
+            String totalUnit = matcher.group(5) != null ? matcher.group(5).trim() : "";
+
+            System.out.println("Nutrient Name: " + nutrientName);
+            System.out.println("Amount: " + amount);
+            System.out.println("Unit: " + unit);
+            System.out.println("Total Amount: " + totalAmount);
+            System.out.println("Total Unit: " + totalUnit);
+
+            NutrientInfo nutrientInfo = NutrientInfo.builder()
+                    .nutrientName(nutrientName)
+                    .amount(amount)
+                    .unit(unit)
+                    .totalAmount(totalAmount)
+                    .totalUnit(totalUnit)
+                    .supplementInfo(supplementInfo)
+                    .build();
+
+            nutrientInfoList.add(nutrientInfo);
+        }
+        return nutrientInfoList;
+
+    }
 
 }

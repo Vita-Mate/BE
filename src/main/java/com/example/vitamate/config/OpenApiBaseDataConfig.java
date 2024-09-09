@@ -19,10 +19,10 @@ public class OpenApiBaseDataConfig {
         return args -> {
             log.info("CommandLineRunner is running");
                 try {
-                    openApiCommandService.callApiAndSaveData("e72b7472ca414bfc9ce9", "1", "2");
+                    openApiCommandService.callApiAndSaveData("e72b7472ca414bfc9ce9", "50", "55");
                     log.info("OPEN_API_BASE_DATA SUCCESS!");
                 } catch (Exception e){
-                    log.error("OPEN_API_BASE_DATA FAIL!");
+                    log.error("OPEN_API_BASE_DATA FAIL!", e);
                 }
         };
     }
