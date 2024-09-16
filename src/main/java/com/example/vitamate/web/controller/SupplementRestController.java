@@ -2,6 +2,8 @@ package com.example.vitamate.web.controller;
 
 import com.example.vitamate.apiPayload.ApiResponse;
 import com.example.vitamate.converter.MemberSupplementConverter;
+import com.example.vitamate.converter.SupplementConverter;
+import com.example.vitamate.domain.Supplement;
 import com.example.vitamate.domain.mapping.MemberSupplement;
 import com.example.vitamate.jwt.SecurityUtil;
 import com.example.vitamate.service.SupplementService.SupplementCommandService;
@@ -39,9 +41,9 @@ public class SupplementRestController {
     })
     public ApiResponse<SupplementResponseDTO.IntakeSupplementListDTO> getTakingSupplementList(@RequestParam(name = "page") Integer page){
 
-        Page<MemberSupplement> supplementPageDTO = supplementQueryService.getTakingSupplementPage(SecurityUtil.getCurrentUsername(), page);
+        Page<MemberSupplement> memberSupplementPage = supplementQueryService.getTakingSupplementPage(SecurityUtil.getCurrentUsername(), page);
 
-        return ApiResponse.onSuccess(MemberSupplementConverter.toTakingSupplementListDTO(supplementPageDTO));
+        return ApiResponse.onSuccess(MemberSupplementConverter.toTakingSupplementListDTO(memberSupplementPage));
     }
 
     @PostMapping("/taking")
@@ -49,5 +51,32 @@ public class SupplementRestController {
     public ApiResponse<SupplementResponseDTO.AddIntakeSupplementResultDTO> addIntakeSupplement(@RequestBody SupplementRequestDTO.AddIntakeSupplementDTO requestDTO){
         SupplementResponseDTO.AddIntakeSupplementResultDTO resultDTO = supplementCommandService.addIntakeSupplement(SecurityUtil.getCurrentUsername(), requestDTO);
         return ApiResponse.onSuccess(resultDTO);
+    }
+
+    @GetMapping("/search")
+    @Operation(summary = "영양제 검색 API", description = "영양제 이름을 검색하는 API 이며, 페이징을 포함합니다. query string으로 page 번호, 검색 방식, 검색어를 주세요")
+    @Parameters({
+            @Parameter(name = "searchType", description = "검색 타입 (name: 이름 검색, nutrient: 성분 검색)"),
+            @Parameter(name = "keyword", description = "검색할 이름 또는 성분 (일부 검색도 가능합니다.)"),
+            @Parameter(name = "page", description = "페이지 번호, 0번이 첫 페이지 입니다."),
+            @Parameter(name = "pageSize", description = "한 페이지당 항목 개수입니다.")
+    })
+    public ApiResponse<SupplementResponseDTO.SearchSupplementListDTO> getSupplementList(@RequestParam(name = "searchType") String searchType,
+                                                                                        @RequestParam(name = "keyword") String keyword,
+                                                                                        @RequestParam(name = "page") Integer page,
+                                                                                        @RequestParam(name = "pageSize") Integer pageSize){
+        Page<Supplement> supplementPage;
+
+        if("name".equals(searchType)){
+            //키워드, 페이지 번호로 조회한 페이지
+            supplementPage = supplementQueryService.getSupplementsByName(keyword, page, pageSize);
+        }else if("nutrient".equals(searchType)){
+            //키워드, 페이지 번호로 조회한 페이지
+            supplementPage = supplementQueryService.getSupplementsByNutrient(keyword, page, pageSize);
+        } else{
+            throw new IllegalArgumentException("Invalid search Type");
+        }
+
+        return ApiResponse.onSuccess(SupplementConverter.toSearchSupplementListDTO(supplementPage));
     }
 }
