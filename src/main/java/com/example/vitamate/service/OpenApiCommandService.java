@@ -111,7 +111,7 @@ public class OpenApiCommandService {
                 .build();
 
         List<NutrientInfo> nutrientInfoList = parseNutrients(response.getSTDR_STND(), supplement);
-//        supplement.setNutrients(nutrientInfoList);
+        supplement.setNutrients(nutrientInfoList);
 
         return supplement;
     }
