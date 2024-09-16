@@ -3,6 +3,7 @@ package com.example.vitamate.service.MemberService;
 import com.example.vitamate.apiPayload.code.status.ErrorStatus;
 import com.example.vitamate.apiPayload.exception.handler.MemberHandler;
 import com.example.vitamate.converter.MemberConverter;
+import com.example.vitamate.domain.enums.Gender;
 import com.example.vitamate.jwt.JwtTokenDTO;
 import com.example.vitamate.jwt.JwtTokenProvider;
 import com.example.vitamate.repository.MemberRepository;
@@ -18,6 +19,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.vitamate.domain.enums.Gender.FEMALE;
+import static com.example.vitamate.domain.enums.Gender.MALE;
 
 @Service
 @RequiredArgsConstructor
@@ -60,7 +64,7 @@ public class MemberCommandServiceImpl implements MemberCommandService{
             throw new MemberHandler(ErrorStatus.INVALID_HEIGHT_VALUE);
         if(request.getWeight()<0)
             throw new MemberHandler(ErrorStatus.INVALID_WEIGHT_VALUE);
-        if(request.getGender()!=1 && request.getGender()!=2)
+        if(request.getGender()!= MALE && request.getGender()!=FEMALE)
             throw new MemberHandler(ErrorStatus.INVALID_GENDER_VALUE);
         // 닉네임 중복 체크 할건지?
 
