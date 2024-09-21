@@ -79,4 +79,11 @@ public class SupplementRestController {
 
         return ApiResponse.onSuccess(SupplementConverter.toSearchSupplementListDTO(supplementPage));
     }
+
+    @GetMapping("/{supplementId}")
+    @Operation(summary = "특정 영양제 상세 정보 조회 API", description = "영양제 id로 상세 정보를 조회하는 API 입니다. 스크랩 여부도 반환합니다.")
+    public ApiResponse<SupplementResponseDTO.SupplementDetailDTO> getSupplementDetail(@PathVariable(name="supplementId") Long supplementId){
+
+        return ApiResponse.onSuccess(supplementQueryService.getSupplementDetail(SecurityUtil.getCurrentUsername(), supplementId));
+    }
 }

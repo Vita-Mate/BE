@@ -26,6 +26,6 @@ public class Supplement extends BaseEntity {
 
     private String nutrientsImageUrl;
 
-//    @OneToMany(mappedBy = "supplement", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<NutrientInfo> nutrients;
+    @OneToMany(mappedBy = "supplement", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<NutrientInfo> nutrients;
 }

@@ -1,9 +1,11 @@
 package com.example.vitamate.web.dto;
 
+import com.example.vitamate.domain.enums.Gender;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 public class MemberRequestDTO {
 
@@ -26,8 +28,9 @@ public class MemberRequestDTO {
         @NotNull
         Double weight;
         @NotNull
-        Integer gender;
+        Gender gender;
 
-        Integer bmr;
+
+        Optional<Integer> bmr = Optional.empty();
     }
 }

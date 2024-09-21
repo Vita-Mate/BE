@@ -1,5 +1,6 @@
 package com.example.vitamate.service.SupplementService;
 
+import com.example.vitamate.converter.SupplementConverter;
 import com.example.vitamate.domain.Member;
 import com.example.vitamate.domain.Supplement;
 import com.example.vitamate.domain.mapping.MemberSupplement;
@@ -8,6 +9,7 @@ import com.example.vitamate.repository.MemberRepository;
 import com.example.vitamate.repository.MemberSupplementRepository;
 import com.example.vitamate.repository.NutrientInfoRepository;
 import com.example.vitamate.repository.SupplementRepository;
+import com.example.vitamate.web.dto.SupplementResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -65,4 +68,25 @@ public class SupplementQueryServiceImpl implements SupplementQueryService {
         return supplementPage;
     }
 
+    @Override
+    @Transactional
+    public SupplementResponseDTO.SupplementDetailDTO getSupplementDetail(String email, Long supplementId){
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
+
+        Supplement supplement = supplementRepository.findById(supplementId)
+                .orElseThrow(() -> new IllegalArgumentException("영양제 정보를 찾을 수 없습니다."));
+
+        //MemberSupplement에 있는애는 스크랩 or 복용중 or 둘 다
+        // MemberSupplement에 있고, isScrapped가 true이면 스크랩인거임
+        Optional<MemberSupplement> memberSupplement = memberSupplementRepository.findByMemberAndSupplement(member, supplement);
+
+        Boolean isScrapped = false;
+
+        if(memberSupplement.isPresent()){
+            isScrapped = memberSupplement.get().getIsScrapped();
+        }
+
+        return SupplementConverter.toSupplementDetailDTO(supplement, isScrapped);
+    }
 }

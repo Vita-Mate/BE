@@ -19,27 +19,16 @@ public class MemberConverter {
         Gender gender = null;
 
         switch (request.getGender()){
-            case 1:
+            case MALE:
                 gender = Gender.MALE;
                 break;
-            case 2:
+            case FEMALE:
                 gender = Gender.FEMALE;
                 break;
         }
 
-        Integer bmr = null;
-        if(request.getBmr() != null){
-            bmr = request.getBmr();
-        }else{
-            Double LBM;
-            if(gender == Gender.MALE){
-                LBM = 0.407 * request.getWeight() + 0.267 * request.getHeight() - 19.2;
-            }else{
-                LBM = 0.252 * request.getWeight() + 0.473 * request.getHeight() - 48.3;
-            }
-            bmr = (int) (370 + 21.6 * LBM);
-        }
 
+        Integer bmr = request.getBmr().orElse(calculateBMR(request.getGender(), request.getHeight(), request.getWeight()));
 
         return Member.builder()
                 .email(request.getEmail())
@@ -53,6 +42,18 @@ public class MemberConverter {
                 .bmr(bmr)
                 .gender(gender)
                 .build();
+    }
+
+    private Integer calculateBMR(Gender gender, Double height, Double weight){
+        Double LBM;
+        if(gender == Gender.MALE){
+            LBM = 0.407 * weight + 0.267 * height - 19.2;
+        }else{
+            LBM = 0.252 * weight + 0.473 * height - 48.3;
+        }
+        Integer bmr = (int) (370 + 21.6 * LBM);
+
+        return bmr;
     }
 
     public MemberResponseDTO.SignUpResultDTO toSignUpResultDTO(Member member){
