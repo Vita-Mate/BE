@@ -1,6 +1,10 @@
 package com.example.vitamate.service.SupplementService;
 
+import com.example.vitamate.apiPayload.code.status.ErrorStatus;
+import com.example.vitamate.apiPayload.exception.handler.MemberHandler;
+import com.example.vitamate.apiPayload.exception.handler.SupplementHandler;
 import com.example.vitamate.converter.MemberSupplementConverter;
+import com.example.vitamate.converter.SupplementConverter;
 import com.example.vitamate.domain.Member;
 import com.example.vitamate.domain.Supplement;
 import com.example.vitamate.domain.mapping.MemberSupplement;
@@ -25,6 +29,7 @@ public class SupplementCommandServiceImpl implements SupplementCommandService{
     private final SupplementRepository supplementRepository;
     private final MemberSupplementRepository memberSupplementRepository;
     private final MemberSupplementConverter memberSupplementConverter;
+    private final SupplementConverter supplementConverter;
 
     @Override
     @Transactional
@@ -50,6 +55,33 @@ public class SupplementCommandServiceImpl implements SupplementCommandService{
         memberSupplement = memberSupplementRepository.save(memberSupplement);
         System.out.println("Update at: " + memberSupplement.getUpdatedAt());
         return memberSupplementConverter.toAddIntakeSupplementResultDTO(memberSupplement);
+
+    }
+
+    @Override
+    @Transactional
+    public SupplementResponseDTO.AddScrapResultDTO addScrap(String email, Long supplementId){
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+
+        Supplement supplement = supplementRepository.findById(supplementId)
+                .orElseThrow(() -> new SupplementHandler(ErrorStatus.SUPPLEMENT_NOT_FOUND));
+
+        // 복용 중 or 스크랩 중인 영양제 재활용
+        MemberSupplement memberSupplement = memberSupplementRepository.findByMemberAndSupplement(member, supplement)
+                .orElse(MemberSupplement.builder()
+                        .member(member)
+                        .supplement(supplement)
+                        .build());
+
+        // 이미 스크랩 된 경우 에러 핸들링
+        if(memberSupplement.getIsScrapped()){
+            throw new SupplementHandler(ErrorStatus.ALREADY_SCRAPPED_ERROR);
+        }
+
+        memberSupplement.setIsScrapped(true);
+
+        return SupplementConverter.toAddScrapResultDTO(memberSupplementRepository.save(memberSupplement));
 
     }
 

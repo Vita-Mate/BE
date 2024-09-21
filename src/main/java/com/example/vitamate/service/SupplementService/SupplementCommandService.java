@@ -8,4 +8,6 @@ import java.time.LocalDate;
 public interface SupplementCommandService {
     SupplementResponseDTO.AddIntakeSupplementResultDTO addIntakeSupplement(String email, Long supplementId, SupplementRequestDTO.AddIntakeSupplementDTO requestDTO);
 
+    SupplementResponseDTO.AddScrapResultDTO addScrap(String email, Long supplementId);
+
 }

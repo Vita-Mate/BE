@@ -1,10 +1,12 @@
 package com.example.vitamate.converter;
 
 import com.example.vitamate.domain.Supplement;
+import com.example.vitamate.domain.mapping.MemberSupplement;
 import com.example.vitamate.web.dto.SupplementResponseDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,6 +46,15 @@ public class SupplementConverter {
                 //리뷰 기능 구현 후 마저 구현
 //                .reviewList()
 //                .recommendList()
+                .build();
+    }
+
+    public static SupplementResponseDTO.AddScrapResultDTO toAddScrapResultDTO(MemberSupplement memberSupplement){
+        return SupplementResponseDTO.AddScrapResultDTO.builder()
+                .supplementId(memberSupplement.getSupplement().getId())
+                .supplementName(memberSupplement.getSupplement().getName())
+                .supplementBrand(memberSupplement.getSupplement().getBrand())
+                .scrappedDate(LocalDate.from(memberSupplement.getCreatedAt()))
                 .build();
     }
 }

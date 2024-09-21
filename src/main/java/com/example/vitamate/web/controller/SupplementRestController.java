@@ -87,4 +87,10 @@ public class SupplementRestController {
 
         return ApiResponse.onSuccess(supplementQueryService.getSupplementDetail(SecurityUtil.getCurrentUsername(), supplementId));
     }
+
+    @PostMapping("/{supplementId}/scrap")
+    @Operation(summary = "영양제 스크랩 API", description = "영양제 id로 특정 영양제를 스크랩 추가하는 API 입니다.")
+    public ApiResponse<SupplementResponseDTO.AddScrapResultDTO> addScrap(@PathVariable(name = "supplementId") Long supplementId){
+        return ApiResponse.onSuccess(supplementCommandService.addScrap(SecurityUtil.getCurrentUsername(), supplementId));
+    }
 }
