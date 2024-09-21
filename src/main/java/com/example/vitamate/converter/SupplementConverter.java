@@ -57,4 +57,13 @@ public class SupplementConverter {
                 .scrappedDate(LocalDate.from(memberSupplement.getCreatedAt()))
                 .build();
     }
+
+    public static SupplementResponseDTO.DeleteScrapResultDTO toDeleteScrapResultDTO(MemberSupplement memberSupplement){
+        return SupplementResponseDTO.DeleteScrapResultDTO.builder()
+                .supplementId(memberSupplement.getSupplement().getId())
+                .supplementName(memberSupplement.getSupplement().getName())
+                .supplementBrand(memberSupplement.getSupplement().getBrand())
+                .deletedDate(LocalDate.now())
+                .build();
+    }
 }

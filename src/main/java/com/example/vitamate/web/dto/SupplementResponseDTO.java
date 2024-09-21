@@ -118,4 +118,16 @@ public class SupplementResponseDTO {
         String supplementName;
         LocalDate scrappedDate;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DeleteScrapResultDTO{
+        Long supplementId;
+        String supplementBrand;
+        String supplementName;
+        LocalDate deletedDate;
+    }
+
 }

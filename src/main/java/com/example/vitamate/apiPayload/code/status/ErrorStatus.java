@@ -35,7 +35,9 @@ public enum ErrorStatus implements BaseErrorCode {
 
     // 영양제 관련 응답
     ALREADY_SCRAPPED_ERROR(HttpStatus.BAD_REQUEST, "SUPPLEMENT001", "이미 스크랩한 영양제입니다."),
-    SUPPLEMENT_NOT_FOUND(HttpStatus.BAD_REQUEST, "SUPPLEMENT001", "영양제 젖보를 찾을 수 없습니다."),
+    SUPPLEMENT_NOT_FOUND(HttpStatus.BAD_REQUEST, "SUPPLEMENT002", "영양제 젖보를 찾을 수 없습니다."),
+    NOT_SCRAPPED(HttpStatus.BAD_REQUEST, "SUPPLEMENT003", "해당 영양제는 스크랩 상태가 아닙니다"),
+
     // ~~ 관련 응답
 
     // For test

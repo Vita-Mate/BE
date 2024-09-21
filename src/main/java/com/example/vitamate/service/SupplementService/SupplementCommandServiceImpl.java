@@ -85,4 +85,31 @@ public class SupplementCommandServiceImpl implements SupplementCommandService{
 
     }
 
+    @Override
+    @Transactional
+    public SupplementResponseDTO.DeleteScrapResultDTO deleteScrap(String email, Long supplementId){
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+
+        Supplement supplement = supplementRepository.findById(supplementId)
+                .orElseThrow(() -> new SupplementHandler(ErrorStatus.SUPPLEMENT_NOT_FOUND));
+
+        MemberSupplement memberSupplement = memberSupplementRepository.findByMemberAndSupplement(member, supplement)
+                .orElseThrow(() -> new SupplementHandler(ErrorStatus.NOT_SCRAPPED));
+
+        // 스크랩 되어있지 않은 경우
+        if(memberSupplement.getIsScrapped() != true) {
+            throw new SupplementHandler(ErrorStatus.NOT_SCRAPPED);
+        } else if (memberSupplement.getIsTaking() != true) {
+            // 복용 중은 아니고 스크랩만 되어있는 경우
+            memberSupplementRepository.delete(memberSupplement);
+        } else {
+            // 복용중이고 스크랩중인 경우
+            memberSupplement.setIsScrapped(false);
+            memberSupplement = memberSupplementRepository.save(memberSupplement);
+        }
+
+        return SupplementConverter.toDeleteScrapResultDTO(memberSupplement);
+    }
+
 }
