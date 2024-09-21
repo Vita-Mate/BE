@@ -40,6 +40,8 @@ public enum ErrorStatus implements BaseErrorCode {
     ALREADY_TAKEN_ERROR(HttpStatus.BAD_REQUEST, "SUPPLEMENT004", "이미 복용중인 영양제입니다."),
     INVALID_DATE(HttpStatus.BAD_REQUEST, "SUPPLEMENT005", "복용 날짜가 미래일 수 없습니다."),
 
+    // 리뷰 관련 응답
+    INVALID_GRADE_VALUE(HttpStatus.BAD_REQUEST, "REVIEW001", "별점 값이 유효하지 않습니다."),
     // ~~ 관련 응답
 
     // For test

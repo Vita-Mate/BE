@@ -10,5 +10,5 @@ public interface SupplementCommandService {
 
     SupplementResponseDTO.AddScrapResultDTO addScrap(String email, Long supplementId);
     SupplementResponseDTO.DeleteScrapResultDTO deleteScrap(String email, Long supplementId);
-
+    SupplementResponseDTO.ReviewResultDTO addReview(String email, Long supplementId, SupplementRequestDTO.AddReviewDTO requestDTO);
 }

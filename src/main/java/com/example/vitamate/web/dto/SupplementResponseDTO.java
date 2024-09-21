@@ -3,6 +3,7 @@ package com.example.vitamate.web.dto;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class SupplementResponseDTO {
@@ -105,7 +106,7 @@ public class SupplementResponseDTO {
         String nickname;
         String content;
         Integer grade;
-        LocalDate createdDate;
+        LocalDateTime createdDate;
     }
 
     @Builder
@@ -129,5 +130,4 @@ public class SupplementResponseDTO {
         String supplementName;
         LocalDate deletedDate;
     }
-
 }
