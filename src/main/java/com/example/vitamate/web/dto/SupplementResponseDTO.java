@@ -26,6 +26,7 @@ public class SupplementResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class IntakeSupplementDTO {
+        Long supplementId;
         String name;
         String brand;
         Integer duration;
