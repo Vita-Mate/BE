@@ -30,6 +30,7 @@ public class SupplementConverter {
                 .supplementId(supplement.getId())
                 .brand(supplement.getBrand())
                 .name(supplement.getName())
+                .imageURL(supplement.getNutrientsImageUrl())
                 .build();
     }
 
