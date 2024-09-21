@@ -26,6 +26,7 @@ public class SupplementResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class IntakeSupplementDTO {
+        Long supplementId;
         String name;
         String brand;
         Integer duration;
@@ -99,11 +100,34 @@ public class SupplementResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    private static class ReviewResultDTO{
+    public static class ReviewResultDTO{
         Long reviewId;
         String nickname;
         String content;
         Integer grade;
         LocalDate createdDate;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AddScrapResultDTO{
+        Long supplementId;
+        String supplementBrand;
+        String supplementName;
+        LocalDate scrappedDate;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DeleteScrapResultDTO{
+        Long supplementId;
+        String supplementBrand;
+        String supplementName;
+        LocalDate deletedDate;
+    }
+
 }

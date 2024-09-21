@@ -19,6 +19,7 @@ public class MemberSupplementConverter {
     // MemberSupplement를 TakingSupplementDTO 로 변환
     public static SupplementResponseDTO.IntakeSupplementDTO toTakingSupplementDTO(MemberSupplement memberSupplement) {
         return SupplementResponseDTO.IntakeSupplementDTO.builder()
+                .supplementId(memberSupplement.getSupplement().getId())
                 .brand(memberSupplement.getSupplement().getBrand())
                 .name(memberSupplement.getSupplement().getName())
                 .duration((int)DAYS.between(memberSupplement.getStartDate(), LocalDate.now()))

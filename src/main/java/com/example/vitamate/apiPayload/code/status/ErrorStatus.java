@@ -21,7 +21,7 @@ public enum ErrorStatus implements BaseErrorCode {
 
 
     // 멤버 관련 응답
-    MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "MEMBER4001", "사용자가 없습니다."),
+    MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "MEMBER4001", "사용자 정보를 찾을 수 없습니다."),
     NICKNAME_NOT_FOUND(HttpStatus.BAD_REQUEST, "MEMBER4002", "닉네임은 필수입니다."),
     INVALID_GENDER_VALUE(HttpStatus.BAD_REQUEST, "MEMBER4003", "성별 값이 유효하지 않습니다."),
     INVALID_AGE_VALUE(HttpStatus.BAD_REQUEST, "MEMBER4004", "나이 값이 유효하지 않습니다."),
@@ -32,6 +32,11 @@ public enum ErrorStatus implements BaseErrorCode {
     TOKEN_MISSING(HttpStatus.UNAUTHORIZED, "AUTH003", "access 토큰을 주세요!"),
     TOKEN_EXPIRED(HttpStatus.FORBIDDEN, "AUTH004", "access 토큰 만료"),
     TOKEN_INVALID(HttpStatus.BAD_REQUEST, "AUTH006", "access 토큰 모양이 이상함"),
+
+    // 영양제 관련 응답
+    ALREADY_SCRAPPED_ERROR(HttpStatus.BAD_REQUEST, "SUPPLEMENT001", "이미 스크랩한 영양제입니다."),
+    SUPPLEMENT_NOT_FOUND(HttpStatus.BAD_REQUEST, "SUPPLEMENT002", "영양제 젖보를 찾을 수 없습니다."),
+    NOT_SCRAPPED(HttpStatus.BAD_REQUEST, "SUPPLEMENT003", "해당 영양제는 스크랩 상태가 아닙니다"),
 
     // ~~ 관련 응답
 

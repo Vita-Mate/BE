@@ -46,10 +46,11 @@ public class SupplementRestController {
         return ApiResponse.onSuccess(MemberSupplementConverter.toTakingSupplementListDTO(memberSupplementPage));
     }
 
-    @PostMapping("/taking")
+    @PostMapping("/{supplementId}/taking")
     @Operation(summary = "사용자가 복용할 영양제 추가 API", description = "사용자가 복용할 영양제를 추가하는 API입니다.")
-    public ApiResponse<SupplementResponseDTO.AddIntakeSupplementResultDTO> addIntakeSupplement(@RequestBody SupplementRequestDTO.AddIntakeSupplementDTO requestDTO){
-        SupplementResponseDTO.AddIntakeSupplementResultDTO resultDTO = supplementCommandService.addIntakeSupplement(SecurityUtil.getCurrentUsername(), requestDTO);
+    public ApiResponse<SupplementResponseDTO.AddIntakeSupplementResultDTO> addIntakeSupplement(@PathVariable(name="supplementId") Long supplementId,
+                                                                                               @RequestBody SupplementRequestDTO.AddIntakeSupplementDTO requestDTO){
+        SupplementResponseDTO.AddIntakeSupplementResultDTO resultDTO = supplementCommandService.addIntakeSupplement(SecurityUtil.getCurrentUsername(), supplementId, requestDTO);
         return ApiResponse.onSuccess(resultDTO);
     }
 
@@ -85,5 +86,17 @@ public class SupplementRestController {
     public ApiResponse<SupplementResponseDTO.SupplementDetailDTO> getSupplementDetail(@PathVariable(name="supplementId") Long supplementId){
 
         return ApiResponse.onSuccess(supplementQueryService.getSupplementDetail(SecurityUtil.getCurrentUsername(), supplementId));
+    }
+
+    @PostMapping("/{supplementId}/scrap")
+    @Operation(summary = "영양제 스크랩 추가 API", description = "영양제 id로 특정 영양제를 스크랩 추가하는 API 입니다.")
+    public ApiResponse<SupplementResponseDTO.AddScrapResultDTO> addScrap(@PathVariable(name = "supplementId") Long supplementId){
+        return ApiResponse.onSuccess(supplementCommandService.addScrap(SecurityUtil.getCurrentUsername(), supplementId));
+    }
+
+    @PatchMapping("/{supplementId}/scrap")
+    @Operation(summary = "영양제 스크랩 취소 API", description = "영양제 스크랩 해제 API 입니다.")
+    public ApiResponse<SupplementResponseDTO.DeleteScrapResultDTO> deleteScrap(@PathVariable(name = "supplementId") Long supplementId){
+        return ApiResponse.onSuccess(supplementCommandService.deleteScrap(SecurityUtil.getCurrentUsername(), supplementId));
     }
 }
