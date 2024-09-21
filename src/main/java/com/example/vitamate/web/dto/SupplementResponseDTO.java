@@ -1,6 +1,5 @@
 package com.example.vitamate.web.dto;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -62,7 +61,7 @@ public class SupplementResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class SearchSupplementListDTO{
-        List<SearchSupplementDTO> supplementList;
+        List<PreviewSupplementDTO> supplementList;
         Integer listSize;
         Integer totalPage;
         Long totalElements;
@@ -70,14 +69,41 @@ public class SupplementResponseDTO {
         Boolean isLast;
     }
 
+    // 영양제 간단 정보 (이름, 브랜드, 사진)
     @Builder
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class SearchSupplementDTO{
-        Long id;
+    public static class PreviewSupplementDTO {
+        Long supplementId;
         String brand;
         String name;
         // String imageURL;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SupplementDetailDTO{
+        Long supplementId;
+        String brand;
+        String name;
+        String nutrientInfoImageUrl;
+        Boolean isScrapped;
+        List<ReviewResultDTO> reviewList;
+        List<PreviewSupplementDTO> recommendList;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    private static class ReviewResultDTO{
+        Long reviewId;
+        String nickname;
+        String content;
+        Integer grade;
+        LocalDate createdDate;
     }
 }
