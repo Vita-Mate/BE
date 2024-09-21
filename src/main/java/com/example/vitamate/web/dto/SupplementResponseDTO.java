@@ -78,7 +78,7 @@ public class SupplementResponseDTO {
         Long supplementId;
         String brand;
         String name;
-        // String imageURL;
+        String imageURL;
     }
 
     @Builder
