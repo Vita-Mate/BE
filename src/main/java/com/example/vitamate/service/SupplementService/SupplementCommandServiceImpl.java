@@ -28,11 +28,11 @@ public class SupplementCommandServiceImpl implements SupplementCommandService{
 
     @Override
     @Transactional
-    public SupplementResponseDTO.AddIntakeSupplementResultDTO addIntakeSupplement(String email, SupplementRequestDTO.AddIntakeSupplementDTO requestDTO) {
+    public SupplementResponseDTO.AddIntakeSupplementResultDTO addIntakeSupplement(String email, Long supplementId, SupplementRequestDTO.AddIntakeSupplementDTO requestDTO) {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
 
-        Supplement supplement = supplementRepository.findById(requestDTO.getSupplementId())
+        Supplement supplement = supplementRepository.findById(supplementId)
                 .orElseThrow(() -> new IllegalArgumentException("영양제 정보를 찾을 수 없습니다."));
 
         // 기존에 스크랩 된 영양제 재활용

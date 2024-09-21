@@ -10,8 +10,6 @@ public class SupplementRequestDTO {
     @Getter
     public static class AddIntakeSupplementDTO {
         @NotNull
-        Long supplementId;
-        @NotNull
         LocalDate startDate;
     }
 }

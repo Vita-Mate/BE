@@ -46,10 +46,11 @@ public class SupplementRestController {
         return ApiResponse.onSuccess(MemberSupplementConverter.toTakingSupplementListDTO(memberSupplementPage));
     }
 
-    @PostMapping("/taking")
+    @PostMapping("/{supplementId}/taking")
     @Operation(summary = "사용자가 복용할 영양제 추가 API", description = "사용자가 복용할 영양제를 추가하는 API입니다.")
-    public ApiResponse<SupplementResponseDTO.AddIntakeSupplementResultDTO> addIntakeSupplement(@RequestBody SupplementRequestDTO.AddIntakeSupplementDTO requestDTO){
-        SupplementResponseDTO.AddIntakeSupplementResultDTO resultDTO = supplementCommandService.addIntakeSupplement(SecurityUtil.getCurrentUsername(), requestDTO);
+    public ApiResponse<SupplementResponseDTO.AddIntakeSupplementResultDTO> addIntakeSupplement(@PathVariable(name="supplementId") Long supplementId,
+                                                                                               @RequestBody SupplementRequestDTO.AddIntakeSupplementDTO requestDTO){
+        SupplementResponseDTO.AddIntakeSupplementResultDTO resultDTO = supplementCommandService.addIntakeSupplement(SecurityUtil.getCurrentUsername(), supplementId, requestDTO);
         return ApiResponse.onSuccess(resultDTO);
     }
 
