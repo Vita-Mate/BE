@@ -22,7 +22,7 @@ public class MemberSupplementConverter {
                 .supplementId(memberSupplement.getSupplement().getId())
                 .brand(memberSupplement.getSupplement().getBrand())
                 .name(memberSupplement.getSupplement().getName())
-                .duration((int)DAYS.between(memberSupplement.getStartDate(), LocalDate.now()))
+                .duration((int)DAYS.between(memberSupplement.getStartDate(), LocalDate.now())+1)
                 .build();
     }
 
@@ -41,9 +41,7 @@ public class MemberSupplementConverter {
                 .build();
     }
 
-    public static SupplementResponseDTO.AddIntakeSupplementResultDTO toAddIntakeSupplementResultDTO(MemberSupplement memberSupplement){
-
-        Integer duration = (int) DAYS.between(memberSupplement.getStartDate(), LocalDate.now()) + 1;
+    public static SupplementResponseDTO.AddIntakeSupplementResultDTO toAddIntakeSupplementResultDTO(MemberSupplement memberSupplement, Integer duration){
 
         return SupplementResponseDTO.AddIntakeSupplementResultDTO.builder()
                 .supplementID(memberSupplement.getSupplement().getId())

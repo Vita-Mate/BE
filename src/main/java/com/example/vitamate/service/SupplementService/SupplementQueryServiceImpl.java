@@ -1,5 +1,7 @@
 package com.example.vitamate.service.SupplementService;
 
+import com.example.vitamate.apiPayload.code.status.ErrorStatus;
+import com.example.vitamate.apiPayload.exception.handler.MemberHandler;
 import com.example.vitamate.converter.SupplementConverter;
 import com.example.vitamate.domain.Member;
 import com.example.vitamate.domain.Supplement;
@@ -36,7 +38,7 @@ public class SupplementQueryServiceImpl implements SupplementQueryService {
     @Transactional
     public Page<MemberSupplement> getTakingSupplementPage(String email, Integer page){
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
         Page<MemberSupplement> memberSupplementPage = memberSupplementRepository.findAllByMemberAndIsTakingTrue(member, PageRequest.of(page, 10));
 

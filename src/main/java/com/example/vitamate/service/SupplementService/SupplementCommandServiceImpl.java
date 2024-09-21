@@ -19,6 +19,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Optional;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 @Slf4j
 @Service
@@ -35,26 +39,42 @@ public class SupplementCommandServiceImpl implements SupplementCommandService{
     @Transactional
     public SupplementResponseDTO.AddIntakeSupplementResultDTO addIntakeSupplement(String email, Long supplementId, SupplementRequestDTO.AddIntakeSupplementDTO requestDTO) {
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
         Supplement supplement = supplementRepository.findById(supplementId)
-                .orElseThrow(() -> new IllegalArgumentException("영양제 정보를 찾을 수 없습니다."));
+                .orElseThrow(() -> new SupplementHandler(ErrorStatus.SUPPLEMENT_NOT_FOUND));
 
-        // 기존에 스크랩 된 영양제 재활용
+        if(requestDTO.getStartDate().isAfter(LocalDate.now())){
+            throw new SupplementHandler(ErrorStatus.INVALID_DATE);
+        }
+
+        // 스크랩 되어 있으면 -> 복용중 true로 변경
+        // 스크랩 안되어있으면 -> 객체 생성해서 save
+        // 이미 복용중이면 -> 에러
         MemberSupplement memberSupplement = memberSupplementRepository.findByMemberAndSupplement(member, supplement)
                 .orElse(MemberSupplement.builder()
                         .member(member)
                         .supplement(supplement)
                         .isScrapped(false)
-                        .build());
+                        .isTaking(false)
+                        .build()
+                );
 
-        // 기존 객체 상태 업데이트
+        if(memberSupplement.getIsTaking()){
+            throw new SupplementHandler(ErrorStatus.ALREADY_TAKEN_ERROR);
+        }
+
         memberSupplement.setIsTaking(true);
         memberSupplement.setStartDate(LocalDate.now());
-
         memberSupplement = memberSupplementRepository.save(memberSupplement);
-        System.out.println("Update at: " + memberSupplement.getUpdatedAt());
-        return memberSupplementConverter.toAddIntakeSupplementResultDTO(memberSupplement);
+
+        LocalDate startDate = memberSupplement.getStartDate();
+        LocalDate now = LocalDate.now();
+
+        Integer duration = (int) DAYS.between(startDate, now);
+        duration += 1;
+
+        return memberSupplementConverter.toAddIntakeSupplementResultDTO(memberSupplement, duration);
 
     }
 
