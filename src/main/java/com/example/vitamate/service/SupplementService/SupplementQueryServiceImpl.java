@@ -77,8 +77,8 @@ public class SupplementQueryServiceImpl implements SupplementQueryService {
         Supplement supplement = supplementRepository.findById(supplementId)
                 .orElseThrow(() -> new IllegalArgumentException("영양제 정보를 찾을 수 없습니다."));
 
-        //MemberSupplement에 있는애는 스크랩 or 복용중 or 둘 다
-        // MemberSupplement에 있고, isScrapped가 true이면 스크랩인거임
+        // MemberSupplement에 있는 객체는 스크랩 or 복용중 or 둘 다
+        // MemberSupplement에 있고, isScrapped가 true이면 스크랩된 영양제
         Optional<MemberSupplement> memberSupplement = memberSupplementRepository.findByMemberAndSupplement(member, supplement);
 
         Boolean isScrapped = false;
