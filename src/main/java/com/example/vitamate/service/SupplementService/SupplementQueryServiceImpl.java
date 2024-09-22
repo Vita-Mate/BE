@@ -2,12 +2,16 @@ package com.example.vitamate.service.SupplementService;
 
 import com.example.vitamate.apiPayload.code.status.ErrorStatus;
 import com.example.vitamate.apiPayload.exception.handler.MemberHandler;
+import com.example.vitamate.apiPayload.exception.handler.SupplementHandler;
+import com.example.vitamate.converter.ReviewConverter;
 import com.example.vitamate.converter.SupplementConverter;
 import com.example.vitamate.domain.Member;
 import com.example.vitamate.domain.Supplement;
 import com.example.vitamate.domain.mapping.MemberSupplement;
 import com.example.vitamate.domain.mapping.NutrientInfo;
+import com.example.vitamate.domain.mapping.Review;
 import com.example.vitamate.repository.*;
+import com.example.vitamate.web.dto.ReviewResponseDTO;
 import com.example.vitamate.web.dto.SupplementResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -29,6 +33,8 @@ public class SupplementQueryServiceImpl implements SupplementQueryService {
     private final MemberSupplementRepository memberSupplementRepository;
     private final SupplementRepository supplementRepository;
     private final NutrientInfoRepository nutrientInfoRepository;
+    private final ReviewRepository reviewRepository;
+    private final ReviewConverter reviewConverter;
 
     @Override
     @Transactional
@@ -87,4 +93,16 @@ public class SupplementQueryServiceImpl implements SupplementQueryService {
 
         return SupplementConverter.toSupplementDetailDTO(supplement, isScrapped);
     }
+
+    @Override
+    @Transactional
+    public ReviewResponseDTO.ReviewListDTO getReviewList(Long supplementId, Integer page, Integer pageSize){
+        Supplement supplement = supplementRepository.findById(supplementId)
+                .orElseThrow(() -> new SupplementHandler(ErrorStatus.SUPPLEMENT_NOT_FOUND));
+
+        Page<Review> reviewPage = reviewRepository.findAllBySupplement(supplement, PageRequest.of(page, pageSize));
+
+        return reviewConverter.toReviewListDTO(reviewPage);
+    }
+
 }
