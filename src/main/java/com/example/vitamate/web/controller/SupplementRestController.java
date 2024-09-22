@@ -108,4 +108,16 @@ public class SupplementRestController {
                                                                     @RequestBody ReviewRequestDTO.AddReviewDTO requestDTO){
         return ApiResponse.onSuccess(supplementCommandService.addReview(SecurityUtil.getCurrentUsername(), supplementId, requestDTO));
     }
+
+    @GetMapping("/{supplementId}/review")
+    @Operation(summary = "리뷰 조회 API", description = "특정 영양제 리뷰 조회 API 입니다. 페이징을 포함합니다. query string으로 페이지 번호, 페이지 크기를 주세요.")
+    @Parameters({
+            @Parameter(name = "page", description = "페이지 번호, 0번이 첫 페이지 입니다."),
+            @Parameter(name = "pageSize", description = "한 페이지당 항목 개수입니다.")})
+    public ApiResponse<ReviewResponseDTO.ReviewListDTO> getReviewList(@PathVariable(name = "supplementId") Long supplementId,
+                                                                      @RequestParam(name = "page") Integer page,
+                                                                      @RequestParam(name = "pageSize") Integer pageSize){
+
+        return ApiResponse.onSuccess(supplementQueryService.getReviewList(supplementId, page, pageSize));
+    }
 }
