@@ -31,7 +31,7 @@ public class SupplementRestController {
     private final SupplementCommandService supplementCommandService;
 
     @GetMapping("/taking")
-    @Operation(summary = "사용자가 복용 중인 영양제 목록 조회 API", description = "사용자가 복용 중인 영양제 목록을 조회하는 API이며, 페이징을 포함합니다. query String 으로 page 번호를 주세요")
+    @Operation(summary = "복용 중인 영양제 목록 조회 API", description = "사용자가 복용 중인 영양제 목록을 조회하는 API이며, 페이징을 포함합니다. query String 으로 page 번호를 주세요")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON200",description = "OK, 성공"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "AUTH003", description = "access 토큰을 주세요!",content = @Content(schema = @Schema(implementation = ApiResponse.class))),
@@ -49,12 +49,19 @@ public class SupplementRestController {
     }
 
     @PostMapping("/{supplementId}/taking")
-    @Operation(summary = "사용자가 복용할 영양제 추가 API", description = "사용자가 복용할 영양제를 추가하는 API입니다.")
+    @Operation(summary = "복용할 영양제 추가 API", description = "사용자가 복용할 영양제를 추가하는 API입니다.")
     public ApiResponse<SupplementResponseDTO.AddIntakeSupplementResultDTO> addIntakeSupplement(@PathVariable(name="supplementId") Long supplementId,
                                                                                                @RequestBody SupplementRequestDTO.AddIntakeSupplementDTO requestDTO){
         SupplementResponseDTO.AddIntakeSupplementResultDTO resultDTO = supplementCommandService.addIntakeSupplement(SecurityUtil.getCurrentUsername(), supplementId, requestDTO);
         return ApiResponse.onSuccess(resultDTO);
     }
+
+    @DeleteMapping("/{supplementId}/taking")
+    @Operation(summary = "복용중인 영양제 삭제 API", description = "사용자가 복용중인 영양제를 삭제하는 API입니다.")
+    public ApiResponse<SupplementResponseDTO.DeleteIntakeSupplementResultDTO> deleteIntakeSupplement(@PathVariable(name = "supplementId") Long supplementId){
+        return ApiResponse.onSuccess(supplementCommandService.deleteIntakeSupplement(SecurityUtil.getCurrentUsername(), supplementId));
+    }
+
 
     @GetMapping("/search")
     @Operation(summary = "영양제 검색 API", description = "영양제 이름을 검색하는 API 이며, 페이징을 포함합니다. query string으로 page 번호, 검색 방식, 검색어를 주세요")
@@ -96,7 +103,7 @@ public class SupplementRestController {
         return ApiResponse.onSuccess(supplementCommandService.addScrap(SecurityUtil.getCurrentUsername(), supplementId));
     }
 
-    @PatchMapping("/{supplementId}/scrap")
+    @DeleteMapping("/{supplementId}/scrap")
     @Operation(summary = "스크랩 취소 API", description = "영양제 스크랩 해제 API 입니다.")
     public ApiResponse<SupplementResponseDTO.DeleteScrapResultDTO> deleteScrap(@PathVariable(name = "supplementId") Long supplementId){
         return ApiResponse.onSuccess(supplementCommandService.deleteScrap(SecurityUtil.getCurrentUsername(), supplementId));
@@ -120,4 +127,5 @@ public class SupplementRestController {
 
         return ApiResponse.onSuccess(supplementQueryService.getReviewList(supplementId, page, pageSize));
     }
+
 }
