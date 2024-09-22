@@ -92,20 +92,8 @@ public class SupplementResponseDTO {
         String name;
         String nutrientInfoImageUrl;
         Boolean isScrapped;
-        List<ReviewResultDTO> reviewList;
+        List<ReviewResponseDTO.ReviewResultDTO> reviewList;
         List<PreviewSupplementDTO> recommendList;
-    }
-
-    @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class ReviewResultDTO{
-        Long reviewId;
-        String nickname;
-        String content;
-        Integer grade;
-        LocalDate createdDate;
     }
 
     @Builder
@@ -129,5 +117,4 @@ public class SupplementResponseDTO {
         String supplementName;
         LocalDate deletedDate;
     }
-
 }

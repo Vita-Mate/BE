@@ -2,15 +2,21 @@ package com.example.vitamate.service.SupplementService;
 
 import com.example.vitamate.apiPayload.code.status.ErrorStatus;
 import com.example.vitamate.apiPayload.exception.handler.MemberHandler;
+import com.example.vitamate.apiPayload.exception.handler.ReviewHandler;
 import com.example.vitamate.apiPayload.exception.handler.SupplementHandler;
 import com.example.vitamate.converter.MemberSupplementConverter;
+import com.example.vitamate.converter.ReviewConverter;
 import com.example.vitamate.converter.SupplementConverter;
 import com.example.vitamate.domain.Member;
 import com.example.vitamate.domain.Supplement;
 import com.example.vitamate.domain.mapping.MemberSupplement;
+import com.example.vitamate.domain.mapping.Review;
 import com.example.vitamate.repository.MemberRepository;
 import com.example.vitamate.repository.MemberSupplementRepository;
+import com.example.vitamate.repository.ReviewRepository;
 import com.example.vitamate.repository.SupplementRepository;
+import com.example.vitamate.web.dto.ReviewRequestDTO;
+import com.example.vitamate.web.dto.ReviewResponseDTO;
 import com.example.vitamate.web.dto.SupplementRequestDTO;
 import com.example.vitamate.web.dto.SupplementResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
@@ -34,6 +38,8 @@ public class SupplementCommandServiceImpl implements SupplementCommandService{
     private final MemberSupplementRepository memberSupplementRepository;
     private final MemberSupplementConverter memberSupplementConverter;
     private final SupplementConverter supplementConverter;
+    private final ReviewConverter reviewConverter;
+    private final ReviewRepository reviewRepository;
 
     @Override
     @Transactional
@@ -132,4 +138,24 @@ public class SupplementCommandServiceImpl implements SupplementCommandService{
         return SupplementConverter.toDeleteScrapResultDTO(memberSupplement);
     }
 
+    @Override
+    @Transactional
+    public ReviewResponseDTO.ReviewResultDTO addReview(String email, Long supplementId, ReviewRequestDTO.AddReviewDTO requestDTO){
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+
+        Supplement supplement = supplementRepository.findById(supplementId)
+                .orElseThrow(() -> new SupplementHandler(ErrorStatus.SUPPLEMENT_NOT_FOUND));
+
+        if(requestDTO.getGrade()<0 || requestDTO.getGrade()>5){
+            throw new ReviewHandler(ErrorStatus.INVALID_GRADE_VALUE);
+        }
+
+        Review review = reviewConverter.toReview(member, supplement, requestDTO);
+        reviewRepository.save(review);
+        ReviewResponseDTO.ReviewResultDTO resultDTO = reviewConverter.toReviewResultDTO(reviewRepository.save(review));
+
+        return resultDTO;
+
+    }
 }

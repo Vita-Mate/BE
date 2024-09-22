@@ -8,6 +8,8 @@ import com.example.vitamate.domain.mapping.MemberSupplement;
 import com.example.vitamate.jwt.SecurityUtil;
 import com.example.vitamate.service.SupplementService.SupplementCommandService;
 import com.example.vitamate.service.SupplementService.SupplementQueryServiceImpl;
+import com.example.vitamate.web.dto.ReviewRequestDTO;
+import com.example.vitamate.web.dto.ReviewResponseDTO;
 import com.example.vitamate.web.dto.SupplementRequestDTO;
 import com.example.vitamate.web.dto.SupplementResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -82,21 +84,28 @@ public class SupplementRestController {
     }
 
     @GetMapping("/{supplementId}")
-    @Operation(summary = "특정 영양제 상세 정보 조회 API", description = "영양제 id로 상세 정보를 조회하는 API 입니다. 스크랩 여부도 반환합니다.")
+    @Operation(summary = "영양제 상세 정보 조회 API", description = "영양제 id로 상세 정보를 조회하는 API 입니다. 스크랩 여부도 반환합니다.")
     public ApiResponse<SupplementResponseDTO.SupplementDetailDTO> getSupplementDetail(@PathVariable(name="supplementId") Long supplementId){
 
         return ApiResponse.onSuccess(supplementQueryService.getSupplementDetail(SecurityUtil.getCurrentUsername(), supplementId));
     }
 
     @PostMapping("/{supplementId}/scrap")
-    @Operation(summary = "영양제 스크랩 추가 API", description = "영양제 id로 특정 영양제를 스크랩 추가하는 API 입니다.")
+    @Operation(summary = "스크랩 추가 API", description = "영양제 id로 특정 영양제를 스크랩 추가하는 API 입니다.")
     public ApiResponse<SupplementResponseDTO.AddScrapResultDTO> addScrap(@PathVariable(name = "supplementId") Long supplementId){
         return ApiResponse.onSuccess(supplementCommandService.addScrap(SecurityUtil.getCurrentUsername(), supplementId));
     }
 
     @PatchMapping("/{supplementId}/scrap")
-    @Operation(summary = "영양제 스크랩 취소 API", description = "영양제 스크랩 해제 API 입니다.")
+    @Operation(summary = "스크랩 취소 API", description = "영양제 스크랩 해제 API 입니다.")
     public ApiResponse<SupplementResponseDTO.DeleteScrapResultDTO> deleteScrap(@PathVariable(name = "supplementId") Long supplementId){
         return ApiResponse.onSuccess(supplementCommandService.deleteScrap(SecurityUtil.getCurrentUsername(), supplementId));
+    }
+
+    @PostMapping("/{supplementId}/review")
+    @Operation(summary = "리뷰 작성 API", description = "특정 영양제 리뷰 작성 API 입니다. (현재까지는 복용 여부 상관 없이 모두 작성 가능). 별점은 1~5 사이 값 입력 가능합니다.")
+    public ApiResponse<ReviewResponseDTO.ReviewResultDTO> addReview(@PathVariable(name = "supplementId") Long supplementId,
+                                                                    @RequestBody ReviewRequestDTO.AddReviewDTO requestDTO){
+        return ApiResponse.onSuccess(supplementCommandService.addReview(SecurityUtil.getCurrentUsername(), supplementId, requestDTO));
     }
 }

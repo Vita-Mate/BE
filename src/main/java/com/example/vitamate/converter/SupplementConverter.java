@@ -43,9 +43,6 @@ public class SupplementConverter {
                 .name(supplement.getName())
                 .isScrapped(isScrapped)
                 .nutrientInfoImageUrl(supplement.getNutrientsImageUrl())
-                //리뷰 기능 구현 후 마저 구현
-//                .reviewList()
-//                .recommendList()
                 .build();
     }
 
