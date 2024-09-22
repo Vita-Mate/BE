@@ -39,6 +39,8 @@ public enum ErrorStatus implements BaseErrorCode {
     NOT_SCRAPPED(HttpStatus.BAD_REQUEST, "SUPPLEMENT003", "해당 영양제는 스크랩 상태가 아닙니다"),
     ALREADY_TAKEN_ERROR(HttpStatus.BAD_REQUEST, "SUPPLEMENT004", "이미 복용중인 영양제입니다."),
     INVALID_DATE(HttpStatus.BAD_REQUEST, "SUPPLEMENT005", "복용 날짜가 미래일 수 없습니다."),
+    NOT_TAKEN_ERROR(HttpStatus.BAD_REQUEST, "SUPPLEMENT006", "해당 영양제는 복용중 상태가 아닙니다."),
+
 
     // 리뷰 관련 응답
     INVALID_GRADE_VALUE(HttpStatus.BAD_REQUEST, "REVIEW001", "별점 값이 유효하지 않습니다."),

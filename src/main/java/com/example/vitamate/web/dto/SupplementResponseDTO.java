@@ -44,6 +44,15 @@ public class SupplementResponseDTO {
         Integer duration;
     }
 
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DeleteIntakeSupplementResultDTO{
+        Long supplementID;
+        String supplementName;
+        String supplementBrand;
+    }
 //    @Getter
 //    @Setter
 //    @XmlRootElement

@@ -55,6 +55,14 @@ public class SupplementConverter {
                 .build();
     }
 
+    public static SupplementResponseDTO.DeleteIntakeSupplementResultDTO toDeleteIntakeSupplement(Supplement supplement){
+        return SupplementResponseDTO.DeleteIntakeSupplementResultDTO.builder()
+                .supplementID(supplement.getId())
+                .supplementBrand(supplement.getBrand())
+                .supplementName(supplement.getName())
+                .build();
+    }
+
     public static SupplementResponseDTO.DeleteScrapResultDTO toDeleteScrapResultDTO(MemberSupplement memberSupplement){
         return SupplementResponseDTO.DeleteScrapResultDTO.builder()
                 .supplementId(memberSupplement.getSupplement().getId())
