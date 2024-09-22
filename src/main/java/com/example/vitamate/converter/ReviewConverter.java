@@ -3,13 +3,13 @@ package com.example.vitamate.converter;
 import com.example.vitamate.domain.Member;
 import com.example.vitamate.domain.Supplement;
 import com.example.vitamate.domain.mapping.Review;
-import com.example.vitamate.web.dto.SupplementRequestDTO;
-import com.example.vitamate.web.dto.SupplementResponseDTO;
+import com.example.vitamate.web.dto.ReviewRequestDTO;
+import com.example.vitamate.web.dto.ReviewResponseDTO;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ReviewConverter {
-    public static Review toReview(Member member, Supplement supplement, SupplementRequestDTO.AddReviewDTO requestDTO){
+    public static Review toReview(Member member, Supplement supplement, ReviewRequestDTO.AddReviewDTO requestDTO){
         return Review.builder()
                 .grade(requestDTO.getGrade())
                 .content(requestDTO.getContent())
@@ -18,8 +18,8 @@ public class ReviewConverter {
                 .build();
     }
 
-    public static SupplementResponseDTO.ReviewResultDTO toReviewResultDTO(Review review){
-        return SupplementResponseDTO.ReviewResultDTO.builder()
+    public static ReviewResponseDTO.ReviewResultDTO toReviewResultDTO(Review review){
+        return ReviewResponseDTO.ReviewResultDTO.builder()
                 .reviewId(review.getId())
                 .content(review.getContent())
                 .nickname(review.getMember().getNickname())

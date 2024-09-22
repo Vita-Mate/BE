@@ -15,6 +15,8 @@ import com.example.vitamate.repository.MemberRepository;
 import com.example.vitamate.repository.MemberSupplementRepository;
 import com.example.vitamate.repository.ReviewRepository;
 import com.example.vitamate.repository.SupplementRepository;
+import com.example.vitamate.web.dto.ReviewRequestDTO;
+import com.example.vitamate.web.dto.ReviewResponseDTO;
 import com.example.vitamate.web.dto.SupplementRequestDTO;
 import com.example.vitamate.web.dto.SupplementResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
@@ -140,7 +140,7 @@ public class SupplementCommandServiceImpl implements SupplementCommandService{
 
     @Override
     @Transactional
-    public SupplementResponseDTO.ReviewResultDTO addReview(String email, Long supplementId, SupplementRequestDTO.AddReviewDTO requestDTO){
+    public ReviewResponseDTO.ReviewResultDTO addReview(String email, Long supplementId, ReviewRequestDTO.AddReviewDTO requestDTO){
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
@@ -153,7 +153,7 @@ public class SupplementCommandServiceImpl implements SupplementCommandService{
 
         Review review = reviewConverter.toReview(member, supplement, requestDTO);
         reviewRepository.save(review);
-        SupplementResponseDTO.ReviewResultDTO resultDTO = reviewConverter.toReviewResultDTO(reviewRepository.save(review));
+        ReviewResponseDTO.ReviewResultDTO resultDTO = reviewConverter.toReviewResultDTO(reviewRepository.save(review));
 
         return resultDTO;
 

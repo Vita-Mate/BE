@@ -7,15 +7,11 @@ import com.example.vitamate.domain.Member;
 import com.example.vitamate.domain.Supplement;
 import com.example.vitamate.domain.mapping.MemberSupplement;
 import com.example.vitamate.domain.mapping.NutrientInfo;
-import com.example.vitamate.repository.MemberRepository;
-import com.example.vitamate.repository.MemberSupplementRepository;
-import com.example.vitamate.repository.NutrientInfoRepository;
-import com.example.vitamate.repository.SupplementRepository;
+import com.example.vitamate.repository.*;
 import com.example.vitamate.web.dto.SupplementResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -3,7 +3,6 @@ package com.example.vitamate.web.dto;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class SupplementResponseDTO {
@@ -93,20 +92,8 @@ public class SupplementResponseDTO {
         String name;
         String nutrientInfoImageUrl;
         Boolean isScrapped;
-        List<ReviewResultDTO> reviewList;
+        List<ReviewResponseDTO.ReviewResultDTO> reviewList;
         List<PreviewSupplementDTO> recommendList;
-    }
-
-    @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class ReviewResultDTO{
-        Long reviewId;
-        String nickname;
-        String content;
-        Integer grade;
-        LocalDateTime createdDate;
     }
 
     @Builder

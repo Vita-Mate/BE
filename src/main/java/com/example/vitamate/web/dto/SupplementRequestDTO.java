@@ -15,12 +15,4 @@ public class SupplementRequestDTO {
         @NotNull
         LocalDate startDate;
     }
-
-    @Getter
-    public static class AddReviewDTO{
-        @NotNull
-        Integer grade;
-
-        String content;
-    }
 }

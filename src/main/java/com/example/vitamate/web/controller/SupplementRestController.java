@@ -8,6 +8,8 @@ import com.example.vitamate.domain.mapping.MemberSupplement;
 import com.example.vitamate.jwt.SecurityUtil;
 import com.example.vitamate.service.SupplementService.SupplementCommandService;
 import com.example.vitamate.service.SupplementService.SupplementQueryServiceImpl;
+import com.example.vitamate.web.dto.ReviewRequestDTO;
+import com.example.vitamate.web.dto.ReviewResponseDTO;
 import com.example.vitamate.web.dto.SupplementRequestDTO;
 import com.example.vitamate.web.dto.SupplementResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -102,8 +104,8 @@ public class SupplementRestController {
 
     @PostMapping("/{supplementId}/review")
     @Operation(summary = "리뷰 작성 API", description = "특정 영양제 리뷰 작성 API 입니다. (현재까지는 복용 여부 상관 없이 모두 작성 가능). 별점은 1~5 사이 값 입력 가능합니다.")
-    public ApiResponse<SupplementResponseDTO.ReviewResultDTO> addReview(@PathVariable(name = "supplementId") Long supplementId,
-                                                                           @RequestBody SupplementRequestDTO.AddReviewDTO requestDTO){
+    public ApiResponse<ReviewResponseDTO.ReviewResultDTO> addReview(@PathVariable(name = "supplementId") Long supplementId,
+                                                                    @RequestBody ReviewRequestDTO.AddReviewDTO requestDTO){
         return ApiResponse.onSuccess(supplementCommandService.addReview(SecurityUtil.getCurrentUsername(), supplementId, requestDTO));
     }
 }
