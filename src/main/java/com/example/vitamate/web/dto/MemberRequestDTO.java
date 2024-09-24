@@ -28,7 +28,7 @@ public class MemberRequestDTO {
         @NotNull
         Double weight;
         @NotNull
-        Gender gender;
+        Integer gender;
 
 
         Optional<Integer> bmr = Optional.empty();

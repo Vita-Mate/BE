@@ -1,5 +1,6 @@
 package com.example.vitamate.web.dto;
 
+import com.example.vitamate.domain.enums.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,6 +18,7 @@ public class MemberResponseDTO {
         Long id;
         String email;
         String nickname;
+        Gender gender;
         Integer age;
         LocalDateTime createdAt;
     }
