@@ -27,6 +27,8 @@ public enum ErrorStatus implements BaseErrorCode {
     INVALID_AGE_VALUE(HttpStatus.BAD_REQUEST, "MEMBER4004", "나이 값이 유효하지 않습니다."),
     INVALID_HEIGHT_VALUE(HttpStatus.BAD_REQUEST, "MEMBER4005", "키 값이 유효하지 않습니다."),
     INVALID_WEIGHT_VALUE(HttpStatus.BAD_REQUEST, "MEMBER4006", "체중 값이 유효하지 않습니다."),
+    ALREADY_JOINED_EMAIL(HttpStatus.BAD_REQUEST, "MEMBER4007", "이미 가입된 이메일입니다."),
+
 
     // 토큰 관련 응답
     TOKEN_MISSING(HttpStatus.UNAUTHORIZED, "AUTH003", "access 토큰을 주세요!"),

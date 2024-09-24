@@ -19,10 +19,10 @@ public class MemberConverter {
         Gender gender = null;
 
         switch (request.getGender()){
-            case MALE:
+            case 0:
                 gender = Gender.MALE;
                 break;
-            case FEMALE:
+            case 1:
                 gender = Gender.FEMALE;
                 break;
         }
@@ -44,9 +44,9 @@ public class MemberConverter {
                 .build();
     }
 
-    private Integer calculateBMR(Gender gender, Double height, Double weight){
+    private Integer calculateBMR(Integer gender, Double height, Double weight){
         Double LBM;
-        if(gender == Gender.MALE){
+        if(gender == 0){
             LBM = 0.407 * weight + 0.267 * height - 19.2;
         }else{
             LBM = 0.252 * weight + 0.473 * height - 48.3;
@@ -62,6 +62,7 @@ public class MemberConverter {
                 .email(member.getEmail())
                 .nickname(member.getNickname())
                 .age(calculateAge(member.getBirthDay())) // 나이 계산 메서드 활용
+                .gender(member.getGender())
                 .createdAt(member.getCreatedAt())
                 .build();
     }

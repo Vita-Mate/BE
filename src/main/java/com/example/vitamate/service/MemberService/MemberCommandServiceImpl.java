@@ -53,18 +53,16 @@ public class MemberCommandServiceImpl implements MemberCommandService{
     @Override
     @Transactional
     public MemberResponseDTO.SignUpResultDTO signUp(MemberRequestDTO.SignUpDTO request){
-        if(memberRepository.existsByEmail(request.getEmail())){
-            throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
-        }
-
         // 잘못된 값 입력 에러핸들링
+        if(memberRepository.existsByEmail(request.getEmail()))
+            throw new MemberHandler(ErrorStatus.ALREADY_JOINED_EMAIL);
         if(request.getBirthDay().isAfter(LocalDate.now()) || request.getBirthDay().isBefore(LocalDate.now().minusYears(120)))
             throw new MemberHandler(ErrorStatus.INVALID_AGE_VALUE);
         if(request.getHeight()<0)
             throw new MemberHandler(ErrorStatus.INVALID_HEIGHT_VALUE);
         if(request.getWeight()<0)
             throw new MemberHandler(ErrorStatus.INVALID_WEIGHT_VALUE);
-        if(request.getGender()!= MALE && request.getGender()!=FEMALE)
+        if(request.getGender()!= 0 && request.getGender()!= 1)
             throw new MemberHandler(ErrorStatus.INVALID_GENDER_VALUE);
         // 닉네임 중복 체크 할건지?
 

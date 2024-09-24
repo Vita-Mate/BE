@@ -36,7 +36,7 @@ public class MemberRestController {
     @PostMapping("/sign-up")
     @Operation(summary = "회원가입 API", description = "사용자의 카카오 계정 이메일과 기타 정보를 입력해주세요. " +
             "bmr(기초대사량) 정보가 없는 경우엔 ,(콤마부터) \"bmr\": 0 (까지) 을 제거해주세요! (gender 필드가 마지막 필드인 것 처럼! 마지막에 콤마로 끝나지 않도록 꼭 지우기!) " +
-            "성별은 MALE 또는 FEMALE 입니다. ")
+            "성별은 남성은 0, 여성은 1 입니다. ")
     public ApiResponse<MemberResponseDTO.SignUpResultDTO> signUp(@RequestBody MemberRequestDTO.SignUpDTO signUpDTO){
         MemberResponseDTO.SignUpResultDTO signUpResultDTO = memberCommandService.signUp(signUpDTO);
         return ApiResponse.onSuccess(signUpResultDTO);
