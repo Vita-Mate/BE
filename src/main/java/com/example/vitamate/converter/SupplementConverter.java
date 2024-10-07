@@ -82,14 +82,14 @@ public class SupplementConverter {
             .build();
     }
 
-    public static SupplementResponseDTO.IntakeNutrientListDTO toIntakeNutrientListDTO(List<SupplementResponseDTO.IntakeNutrientResultDTO> intakeNutrientResultDTOList, int totalElements, int totalPage, Integer page){
+    public static SupplementResponseDTO.IntakeNutrientListDTO toIntakeNutrientListDTO(List<SupplementResponseDTO.IntakeNutrientResultDTO> intakeNutrientResultDTOList, int totalPage, int totalElements, Integer page){
         return SupplementResponseDTO.IntakeNutrientListDTO.builder()
             .intakeNutrientList(intakeNutrientResultDTOList)
             .listSize(intakeNutrientResultDTOList.size())
             .totalPage(totalPage)
             .totalElements((long)totalElements)
             .isFirst(page == 0)
-            .isLast(page == totalPage)
+            .isLast(page + 1 == totalPage)
             .build();
     }
 }
