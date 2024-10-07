@@ -6,6 +6,7 @@ import com.example.vitamate.apiPayload.exception.handler.SupplementHandler;
 import com.example.vitamate.converter.ReviewConverter;
 import com.example.vitamate.converter.SupplementConverter;
 import com.example.vitamate.domain.Member;
+import com.example.vitamate.domain.NutrientAlias;
 import com.example.vitamate.domain.Supplement;
 import com.example.vitamate.domain.mapping.MemberSupplement;
 import com.example.vitamate.domain.mapping.NutrientInfo;
@@ -15,10 +16,12 @@ import com.example.vitamate.web.dto.ReviewResponseDTO;
 import com.example.vitamate.web.dto.SupplementResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -35,6 +38,7 @@ public class SupplementQueryServiceImpl implements SupplementQueryService {
     private final NutrientInfoRepository nutrientInfoRepository;
     private final ReviewRepository reviewRepository;
     private final ReviewConverter reviewConverter;
+    private final NutrientAliasRepository nutrientAliasRepository;
 
     @Override
     @Transactional
@@ -58,16 +62,21 @@ public class SupplementQueryServiceImpl implements SupplementQueryService {
     @Override
     @Transactional
     public Page<Supplement> getSupplementsByNutrient(String keyword, Integer page, Integer pageSize){
-        // NutrientInfo를 검색하여 관련 Supplement ID 추출
-        List<NutrientInfo> nutrientInfoList =nutrientInfoRepository.findByNutrientNameContaining(keyword);
 
-        // 중복된 Supplement ID를 Set에 저장
-        Set<Long> supplementIdSet = nutrientInfoList.stream()
-                .map(nutrientInfo -> nutrientInfo.getSupplement().getId())
-                .collect(Collectors.toSet());
+        // 검색 키워드를 포함하는 영양소 이름 모두 조회
+        List<NutrientAlias> nutrientAliasList = nutrientAliasRepository.findByAliasNameContaining(keyword);
 
-        // 중복 제거된 Supplement ID를 기준으로 Supplement를 검색하고 페이지네이션 적용
-        Page<Supplement> supplementPage = supplementRepository.findAllByIdIn(supplementIdSet, PageRequest.of(page, pageSize));
+        // 각각의 영양소 id 추출
+        Set<Integer> nutrientIdSet = nutrientAliasList.stream().map(nutrientAlias-> nutrientAlias.getNutrient().getId()).collect(Collectors.toSet());
+
+        Page<NutrientInfo> nutrientInfoPage = nutrientInfoRepository.findByNutrientIdIn(nutrientIdSet, PageRequest.of(page, pageSize));
+
+        // 추출한 supplement_id 목록
+        List<Supplement> supplementList = nutrientInfoPage.stream()
+            .map(NutrientInfo::getSupplement)
+            .collect(Collectors.toList());
+
+        Page<Supplement> supplementPage = new PageImpl<>(supplementList, nutrientInfoPage.getPageable(), nutrientInfoPage.getTotalElements());
 
         return supplementPage;
     }
@@ -105,4 +114,24 @@ public class SupplementQueryServiceImpl implements SupplementQueryService {
         return reviewConverter.toReviewListDTO(reviewPage);
     }
 
+    @Override
+    @Transactional
+    public SupplementResponseDTO.IntakeNutrientListDTO getIntakeNutrientList(String email, Integer page, Integer pageSize) {
+        Member member = memberRepository.findByEmail(email)
+            .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
+
+        // 유저가 복용중인 영양제에 대한 MemberSupplement 객체 리스트
+        Page<MemberSupplement> memberSupplementPage = memberSupplementRepository.findAllByMemberAndIsTakingTrue(member, PageRequest.of(page, pageSize));
+
+        // 복용중인 영양소를 담을 리스트
+        List<NutrientInfo> nutrientInfoList = new ArrayList<>();
+
+        // MemberSupplement 리스트에 있는 각 객체에 포함된 NutrientInfo를 리스트에 추가
+        for(MemberSupplement memberSupplement : memberSupplementPage){
+              Supplement supplement = memberSupplement.getSupplement();
+              nutrientInfoList.addAll(nutrientInfoRepository.findAllBySupplement(supplement));
+        }
+        return null;
+
+    }
 }

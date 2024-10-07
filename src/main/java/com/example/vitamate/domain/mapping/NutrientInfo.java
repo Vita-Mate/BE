@@ -13,7 +13,7 @@ public class NutrientInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String nutrientName;
+    private Integer nutrientId;
     private String amount;
     private String unit;
     private String totalAmount;

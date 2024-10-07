@@ -1,6 +1,7 @@
 package com.example.vitamate.domain;
 
-import com.example.vitamate.domain.common.BaseEntity;
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,4 +17,7 @@ public class Nutrient {
 
     @Column(name = "name", nullable = false, length = 50)
     private String name;
+
+    @OneToMany(mappedBy = "nutrient", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<NutrientAlias> aliases;
 }

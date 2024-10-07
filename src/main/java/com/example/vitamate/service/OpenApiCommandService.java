@@ -1,8 +1,10 @@
 package com.example.vitamate.service;
 
+import com.example.vitamate.domain.NutrientAlias;
 import com.example.vitamate.domain.Supplement;
 import com.example.vitamate.domain.SupplementDataSave;
 import com.example.vitamate.domain.mapping.NutrientInfo;
+import com.example.vitamate.repository.NutrientAliasRepository;
 import com.example.vitamate.repository.SupplementRepository;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -34,6 +36,7 @@ public class OpenApiCommandService {
 
     private final SupplementRepository supplementRepository;
     private final NutrientService nutrientService;
+    private final NutrientAliasRepository nutrientAliasRepository;
 
     @Transactional
     public void callApiAndSaveData(String apiKey, String startIdx, String endIdx) throws IOException {
@@ -141,12 +144,12 @@ public class OpenApiCommandService {
 
             log.info(nutrientName);
 
-            if(!validNutrients.contains(nutrientName)){
+            NutrientAlias nutrientAlias = nutrientAliasRepository.findByAliasName(nutrientName)
+                .orElse(null);
+
+            if(nutrientAlias == null){
                 continue;
             }
-
-            if (nutrientName.equals("니아신"))
-                nutrientName = "나이아신";
 
             String amount = matcher.group(2) != null ? matcher.group(2).trim() : "";
             String unit = matcher.group(3) != null ? matcher.group(3).trim() : "";
@@ -160,7 +163,7 @@ public class OpenApiCommandService {
             System.out.println("Total Unit: " + totalUnit);
 
             NutrientInfo nutrientInfo = NutrientInfo.builder()
-                    .nutrientName(nutrientName)
+                    .nutrientId(nutrientAlias.getNutrient().getId())
                     .amount(amount)
                     .unit(unit)
                     .totalAmount(totalAmount)

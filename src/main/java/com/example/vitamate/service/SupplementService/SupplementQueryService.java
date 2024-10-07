@@ -17,4 +17,5 @@ public interface SupplementQueryService {
     SupplementResponseDTO.SupplementDetailDTO getSupplementDetail(String email, Long supplementId);
 
     ReviewResponseDTO.ReviewListDTO getReviewList(Long supplementId, Integer page, Integer pageSize);
+    SupplementResponseDTO.IntakeNutrientListDTO getIntakeNutrientList(String email, Integer page, Integer pageSize);
 }
