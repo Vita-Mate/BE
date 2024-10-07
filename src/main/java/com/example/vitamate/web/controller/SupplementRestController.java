@@ -22,6 +22,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/supplements")
@@ -62,6 +64,16 @@ public class SupplementRestController {
         return ApiResponse.onSuccess(supplementCommandService.deleteIntakeSupplement(SecurityUtil.getCurrentUsername(), supplementId));
     }
 
+   @GetMapping("/taking/nutrients")
+   @Operation(summary = "복용중인 영양소 종류와 합산량 조회 API", description = "사용자가 복용중인 영양제에 포함된 영양소의 종류와 양을 조회하는 API 입니다. recommendedAmount(권장섭취량), nutrientAmount(실제섭취량), unit(단위)를 반환합니다.")
+   @Parameters({
+       @Parameter(name = "page", description = "페이지 번호, 0번이 첫 페이지 입니다."),
+       @Parameter(name = "pageSize", description = "한 페이지당 항목 개수입니다.")
+   })
+   public ApiResponse<SupplementResponseDTO.IntakeNutrientListDTO> getTakingNutrientList(@RequestParam(name = "page") Integer page,
+                                                                                         @RequestParam(name = "pageSize") Integer pageSize){
+        return ApiResponse.onSuccess(supplementQueryService.getIntakeNutrientList(SecurityUtil.getCurrentUsername(), page, pageSize));
+   }
 
     @GetMapping("/search")
     @Operation(summary = "영양제 검색 API", description = "영양제 이름을 검색하는 API 이며, 페이징을 포함합니다. query string으로 page 번호, 검색 방식, 검색어를 주세요")

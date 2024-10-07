@@ -1,5 +1,6 @@
 package com.example.vitamate.converter;
 
+import com.example.vitamate.domain.NutrientRecommendations;
 import com.example.vitamate.domain.Supplement;
 import com.example.vitamate.domain.mapping.MemberSupplement;
 import com.example.vitamate.web.dto.SupplementResponseDTO;
@@ -70,5 +71,25 @@ public class SupplementConverter {
                 .supplementBrand(memberSupplement.getSupplement().getBrand())
                 .deletedDate(LocalDate.now())
                 .build();
+    }
+
+    public static SupplementResponseDTO.IntakeNutrientResultDTO toIntakeNutrientResultDTO(NutrientRecommendations recommended, Double totalAmount){
+        return SupplementResponseDTO.IntakeNutrientResultDTO.builder()
+            .nutrientAmount(totalAmount)
+            .nutrientName(recommended.getNutrient().getName())
+            .recommendedAmount(recommended.getRecommendedIntake())
+            .unit(recommended.getUnit().getUnitName())
+            .build();
+    }
+
+    public static SupplementResponseDTO.IntakeNutrientListDTO toIntakeNutrientListDTO(List<SupplementResponseDTO.IntakeNutrientResultDTO> intakeNutrientResultDTOList, int totalPage, int totalElements, Integer page){
+        return SupplementResponseDTO.IntakeNutrientListDTO.builder()
+            .intakeNutrientList(intakeNutrientResultDTOList)
+            .listSize(intakeNutrientResultDTOList.size())
+            .totalPage(totalPage)
+            .totalElements((long)totalElements)
+            .isFirst(page == 0)
+            .isLast(page + 1 == totalPage)
+            .build();
     }
 }

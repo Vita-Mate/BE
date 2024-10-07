@@ -2,7 +2,9 @@ package com.example.vitamate.web.dto;
 
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class SupplementResponseDTO {
@@ -126,4 +128,29 @@ public class SupplementResponseDTO {
         String supplementName;
         LocalDate deletedDate;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class IntakeNutrientResultDTO {
+        String nutrientName;
+        BigDecimal recommendedAmount;
+        Double nutrientAmount;
+        String unit;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class IntakeNutrientListDTO{
+        List<IntakeNutrientResultDTO> intakeNutrientList;
+        Integer listSize;
+        Integer totalPage;
+        Long totalElements;
+        Boolean isFirst;
+        Boolean isLast;
+    }
+
 }

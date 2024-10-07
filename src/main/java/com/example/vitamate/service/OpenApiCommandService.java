@@ -1,14 +1,17 @@
 package com.example.vitamate.service;
 
+import com.example.vitamate.domain.NutrientAlias;
 import com.example.vitamate.domain.Supplement;
 import com.example.vitamate.domain.SupplementDataSave;
 import com.example.vitamate.domain.mapping.NutrientInfo;
+import com.example.vitamate.repository.NutrientAliasRepository;
 import com.example.vitamate.repository.SupplementRepository;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,9 +33,12 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@ComponentScan
 public class OpenApiCommandService {
 
     private final SupplementRepository supplementRepository;
+    private final NutrientService nutrientService;
+    private final NutrientAliasRepository nutrientAliasRepository;
 
     @Transactional
     public void callApiAndSaveData(String apiKey, String startIdx, String endIdx) throws IOException {
@@ -119,6 +125,8 @@ public class OpenApiCommandService {
     public List<NutrientInfo> parseNutrients(String stdrStnd, Supplement supplement){
         List<NutrientInfo> nutrientInfoList = new ArrayList<>();
 
+        List<String> validNutrients = nutrientService.getValidNutrientsFromDB();
+
         // 정규 표현식을 이용해 영양성분과 함량을 추출
         Pattern pattern = Pattern.compile(
                 "([가-힣A-Za-z0-9\\s,]+?)\\s*:\\s*표시량\\s*\\(?(\\d+(?:,\\d{3})*(?:\\.\\d+)?)\\s?(mg|g|µg|ug|ugRE|㎍|mcg|㎍RE|mgNE|R.E|mgα-TE|ml)?\\/(?:(\\d+(?:,\\d{3})*(?:\\.\\d+)?)\\s?(mg|g|µg|ug|ugRE|㎍|mcg|㎍RE|mgNE|R.E|mgα-TE|ml)?)");
@@ -131,6 +139,19 @@ public class OpenApiCommandService {
             nutrientName = nutrientName.replaceAll("^\\d+\\s+", "").trim();
             // 특정 접두사 제거
             nutrientName = nutrientName.replaceAll("^총\\s+", "").trim();
+            // 중간 공백 제거
+            nutrientName = nutrientName.replaceAll("\\s+", "").trim();
+            // '-' 문자 제거
+            nutrientName = nutrientName.replaceAll("-", "").trim();
+
+            log.info(nutrientName);
+
+            NutrientAlias nutrientAlias = nutrientAliasRepository.findByAliasName(nutrientName)
+                .orElse(null);
+
+            if(nutrientAlias == null){
+                continue;
+            }
 
             String amount = matcher.group(2) != null ? matcher.group(2).trim() : "";
             String unit = matcher.group(3) != null ? matcher.group(3).trim() : "";
@@ -144,7 +165,7 @@ public class OpenApiCommandService {
             System.out.println("Total Unit: " + totalUnit);
 
             NutrientInfo nutrientInfo = NutrientInfo.builder()
-                    .nutrientName(nutrientName)
+                    .nutrientId(nutrientAlias.getNutrient().getId())
                     .amount(amount)
                     .unit(unit)
                     .totalAmount(totalAmount)
@@ -157,5 +178,4 @@ public class OpenApiCommandService {
         return nutrientInfoList;
 
     }
-
 }

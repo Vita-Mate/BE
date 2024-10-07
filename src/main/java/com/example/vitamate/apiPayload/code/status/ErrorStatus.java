@@ -43,6 +43,8 @@ public enum ErrorStatus implements BaseErrorCode {
     INVALID_DATE(HttpStatus.BAD_REQUEST, "SUPPLEMENT005", "복용 날짜가 미래일 수 없습니다."),
     NOT_TAKEN_ERROR(HttpStatus.BAD_REQUEST, "SUPPLEMENT006", "해당 영양제는 복용중 상태가 아닙니다."),
 
+    // 영양소 관련 응답
+    RECOMMENDATION_NOT_FOUND(HttpStatus.NOT_FOUND, "NUTRIENT5001", "권장량 정보를 찾을 수 없습니다."),
 
     // 리뷰 관련 응답
     INVALID_GRADE_VALUE(HttpStatus.BAD_REQUEST, "REVIEW001", "별점 값이 유효하지 않습니다."),
