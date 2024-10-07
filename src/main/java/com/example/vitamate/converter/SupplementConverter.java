@@ -89,7 +89,7 @@ public class SupplementConverter {
             .totalPage(totalPage)
             .totalElements((long)totalElements)
             .isFirst(page == 0)
-            .isLast(page + 1 == totalPage)
+            .isLast(page == totalPage)
             .build();
     }
 }
