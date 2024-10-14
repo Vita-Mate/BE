@@ -14,4 +14,6 @@ public interface MemberSupplementRepository extends JpaRepository<MemberSuppleme
     Page<MemberSupplement> findAllByMemberAndIsTakingTrue(Member member, PageRequest pageRequest);
 
     Optional<MemberSupplement> findByMemberAndSupplement(Member member, Supplement supplement);
+
+    Optional<MemberSupplement> findByMemberIdAndIsScrappedTrue(Long memberId);
 }

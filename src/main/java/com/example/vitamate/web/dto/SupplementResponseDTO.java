@@ -80,8 +80,10 @@ public class SupplementResponseDTO {
         String brand;
         String name;
         String imageURL;
+        Boolean isScrapped;
     }
 
+    // 영양제 상세 조회
     @Builder
     @Getter
     @NoArgsConstructor
@@ -96,6 +98,7 @@ public class SupplementResponseDTO {
         List<PreviewSupplementDTO> recommendList;
     }
 
+    // 스크랩 추가
     @Builder
     @Getter
     @NoArgsConstructor
@@ -107,6 +110,7 @@ public class SupplementResponseDTO {
         LocalDate scrappedDate;
     }
 
+    // 스크랩 삭제
     @Builder
     @Getter
     @NoArgsConstructor
@@ -118,6 +122,8 @@ public class SupplementResponseDTO {
         LocalDate deletedDate;
     }
 
+
+    // 섭취중인 영양소
     @Builder
     @Getter
     @NoArgsConstructor

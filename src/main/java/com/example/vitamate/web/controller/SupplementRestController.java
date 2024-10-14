@@ -87,14 +87,14 @@ public class SupplementRestController {
                                                                                         @RequestParam(name = "keyword") String keyword,
                                                                                         @RequestParam(name = "page") Integer page,
                                                                                         @RequestParam(name = "pageSize") Integer pageSize){
-        Page<Supplement> supplementPage;
+        Page<SupplementResponseDTO.PreviewSupplementDTO> supplementPage;
 
         if("name".equals(searchType)){
             //키워드, 페이지 번호로 조회한 페이지
-            supplementPage = supplementQueryService.getSupplementsByName(keyword, page, pageSize);
+            supplementPage = supplementQueryService.getSupplementsByName(SecurityUtil.getCurrentUsername(), keyword, page, pageSize);
         }else if("nutrient".equals(searchType)){
             //키워드, 페이지 번호로 조회한 페이지
-            supplementPage = supplementQueryService.getSupplementsByNutrient(keyword, page, pageSize);
+            supplementPage = supplementQueryService.getSupplementsByNutrient(SecurityUtil.getCurrentUsername(), keyword, page, pageSize);
         } else{
             throw new IllegalArgumentException("Invalid search Type");
         }
