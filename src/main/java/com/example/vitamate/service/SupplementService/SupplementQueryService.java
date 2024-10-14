@@ -12,8 +12,8 @@ public interface SupplementQueryService {
 
     Page<MemberSupplement> getTakingSupplementPage(String email, Integer page);
 
-    Page<Supplement> getSupplementsByName(String keyword, Integer page, Integer pageSize);
-    Page<Supplement> getSupplementsByNutrient(String keyword, Integer page, Integer pageSize);
+    Page<SupplementResponseDTO.PreviewSupplementDTO> getSupplementsByName(String email, String keyword, Integer page, Integer pageSize);
+    Page<SupplementResponseDTO.PreviewSupplementDTO> getSupplementsByNutrient(String email, String keyword, Integer page, Integer pageSize);
     SupplementResponseDTO.SupplementDetailDTO getSupplementDetail(String email, Long supplementId);
 
     ReviewResponseDTO.ReviewListDTO getReviewList(Long supplementId, Integer page, Integer pageSize);

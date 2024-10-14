@@ -55,17 +55,6 @@ public class SupplementResponseDTO {
         String supplementName;
         String supplementBrand;
     }
-//    @Getter
-//    @Setter
-//    @XmlRootElement
-//    public static class SupplementInfoResultDTO{
-//        private Long id;
-//        private String brand;  // 업소명 BSSH_NM
-//        private String name; // 품목명 PRDLST_NM
-//        private String intakeMethod; // 섭취방법 NTK_MTHD
-//        private String mainFunction; // 주된기능성 PRIMARY_FNCLTY
-//        private String standardSpecification; // 기준규격 STDR_STND
-//    }
 
     // 영양제 검색 DTO
     @Builder
@@ -91,8 +80,10 @@ public class SupplementResponseDTO {
         String brand;
         String name;
         String imageURL;
+        Boolean isScrapped;
     }
 
+    // 영양제 상세 조회
     @Builder
     @Getter
     @NoArgsConstructor
@@ -107,6 +98,7 @@ public class SupplementResponseDTO {
         List<PreviewSupplementDTO> recommendList;
     }
 
+    // 스크랩 추가
     @Builder
     @Getter
     @NoArgsConstructor
@@ -118,6 +110,7 @@ public class SupplementResponseDTO {
         LocalDate scrappedDate;
     }
 
+    // 스크랩 삭제
     @Builder
     @Getter
     @NoArgsConstructor
@@ -129,6 +122,8 @@ public class SupplementResponseDTO {
         LocalDate deletedDate;
     }
 
+
+    // 섭취중인 영양소
     @Builder
     @Getter
     @NoArgsConstructor

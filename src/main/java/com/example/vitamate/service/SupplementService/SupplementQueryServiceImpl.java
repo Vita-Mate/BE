@@ -62,15 +62,31 @@ public class SupplementQueryServiceImpl implements SupplementQueryService {
 
     @Override
     @Transactional
-    public Page<Supplement> getSupplementsByName(String keyword, Integer page, Integer pageSize){
+    public Page<SupplementResponseDTO.PreviewSupplementDTO> getSupplementsByName(String email, String keyword, Integer page, Integer pageSize){
+        Member member = memberRepository.findByEmail(email)
+            .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
 
-        return supplementRepository.findByNameContaining(keyword, PageRequest.of(page, pageSize));
+        Page<Supplement> supplementPage = supplementRepository.findByNameContaining(keyword, PageRequest.of(page, pageSize));
+        List<Supplement> supplements = supplementPage.getContent();
+        List<SupplementResponseDTO.PreviewSupplementDTO> previewSupplementDTOs = supplements.stream()
+            .map(supplement -> {
+                Optional<MemberSupplement> memberSupplementOpt = memberSupplementRepository.findByMemberAndSupplement(member, supplement);
+
+                boolean isScrapped = memberSupplementOpt.map(MemberSupplement::getIsScrapped).orElse(false);
+
+                return supplementConverter.toSearchSupplementDTO(supplement, isScrapped);
+            })
+            .toList();
+
+        return new PageImpl<>(previewSupplementDTOs, supplementPage.getPageable(), supplementPage.getTotalElements());
 
     }
 
     @Override
     @Transactional
-    public Page<Supplement> getSupplementsByNutrient(String keyword, Integer page, Integer pageSize){
+    public Page<SupplementResponseDTO.PreviewSupplementDTO> getSupplementsByNutrient(String email, String keyword, Integer page, Integer pageSize){
+        Member member = memberRepository.findByEmail(email)
+            .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
 
         // 검색 키워드를 포함하는 영양소 이름 모두 조회
         List<NutrientAlias> nutrientAliasList = nutrientAliasRepository.findByAliasNameContaining(keyword);
@@ -87,7 +103,18 @@ public class SupplementQueryServiceImpl implements SupplementQueryService {
 
         Page<Supplement> supplementPage = new PageImpl<>(supplementList, nutrientInfoPage.getPageable(), nutrientInfoPage.getTotalElements());
 
-        return supplementPage;
+        List<Supplement> supplements = supplementPage.getContent();
+        List<SupplementResponseDTO.PreviewSupplementDTO> previewSupplementDTOs = supplements.stream()
+            .map(supplement -> {
+                Optional<MemberSupplement> memberSupplementOpt = memberSupplementRepository.findByMemberAndSupplement(member, supplement);
+
+                boolean isScrapped = memberSupplementOpt.map(MemberSupplement::getIsScrapped).orElse(false);
+
+                return supplementConverter.toSearchSupplementDTO(supplement, isScrapped);
+            })
+            .toList();
+
+        return new PageImpl<>(previewSupplementDTOs, supplementPage.getPageable(), supplementPage.getTotalElements());
     }
 
     @Override

@@ -14,9 +14,8 @@ import java.util.stream.Collectors;
 @Component
 public class SupplementConverter {
 
-    public static SupplementResponseDTO.SearchSupplementListDTO toSearchSupplementListDTO(Page<Supplement> supplementPage) {
-        List<SupplementResponseDTO.PreviewSupplementDTO> previewSupplementDTOList = supplementPage.stream()
-                .map(SupplementConverter::toSearchSupplementDTO).collect(Collectors.toList());
+    public static SupplementResponseDTO.SearchSupplementListDTO toSearchSupplementListDTO(Page<SupplementResponseDTO.PreviewSupplementDTO> supplementPage) {
+        List<SupplementResponseDTO.PreviewSupplementDTO> previewSupplementDTOList = supplementPage.getContent();
 
         return SupplementResponseDTO.SearchSupplementListDTO.builder()
                 .isFirst(supplementPage.isFirst())
@@ -28,11 +27,12 @@ public class SupplementConverter {
     }
 
 
-    public static SupplementResponseDTO.PreviewSupplementDTO toSearchSupplementDTO(Supplement supplement) {
+    public static SupplementResponseDTO.PreviewSupplementDTO toSearchSupplementDTO(Supplement supplement, boolean isScrapped) {
         return SupplementResponseDTO.PreviewSupplementDTO.builder()
                 .supplementId(supplement.getId())
                 .brand(supplement.getBrand())
                 .name(supplement.getName())
+                .isScrapped(isScrapped)
                 .imageURL(supplement.getNutrientsImageUrl())
                 .build();
     }
