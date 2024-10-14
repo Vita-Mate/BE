@@ -4,6 +4,8 @@ import com.example.vitamate.domain.common.BaseEntity;
 import com.example.vitamate.domain.enums.ChallengeDuration;
 import jakarta.persistence.*;
 import com.example.vitamate.domain.enums.Category;
+import com.example.vitamate.domain.enums.ChallengeStatus;
+
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -40,6 +42,10 @@ public class Challenge extends BaseEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ChallengeDuration duration;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private ChallengeStatus status;
 
     @Column(nullable = false)
     private Integer weeklyFrequency;
