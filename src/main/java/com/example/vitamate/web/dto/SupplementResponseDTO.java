@@ -55,17 +55,6 @@ public class SupplementResponseDTO {
         String supplementName;
         String supplementBrand;
     }
-//    @Getter
-//    @Setter
-//    @XmlRootElement
-//    public static class SupplementInfoResultDTO{
-//        private Long id;
-//        private String brand;  // 업소명 BSSH_NM
-//        private String name; // 품목명 PRDLST_NM
-//        private String intakeMethod; // 섭취방법 NTK_MTHD
-//        private String mainFunction; // 주된기능성 PRIMARY_FNCLTY
-//        private String standardSpecification; // 기준규격 STDR_STND
-//    }
 
     // 영양제 검색 DTO
     @Builder
