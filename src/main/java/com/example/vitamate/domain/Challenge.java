@@ -42,8 +42,5 @@ public class Challenge extends BaseEntity {
     private ChallengeDuration duration;
 
     @Column(nullable = false)
-    private Integer betAmount;
-
-    @Column(nullable = false)
     private Integer weeklyFrequency;
 }
