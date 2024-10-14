@@ -16,7 +16,7 @@ public class ChallengeResponseDTO {
 	@Getter
 	@NoArgsConstructor
 	@AllArgsConstructor
-	public static class CreateChallengeResponseDTO {
+	public static class CreateChallengeResultDTO {
 		Long challengeId;
 		String title;
 		ChallengeStatus status;
