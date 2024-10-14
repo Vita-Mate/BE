@@ -17,9 +17,6 @@ public class MemberChallenge extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String pledge;
-
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;

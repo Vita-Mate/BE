@@ -3,7 +3,7 @@ package com.example.vitamate.domain;
 import com.example.vitamate.domain.common.BaseEntity;
 import com.example.vitamate.domain.enums.ChallengeDuration;
 import jakarta.persistence.*;
-import com.example.vitamate.domain.enums.Category;
+import com.example.vitamate.domain.enums.ChallengeCategory;
 import com.example.vitamate.domain.enums.ChallengeStatus;
 
 import lombok.*;
@@ -25,7 +25,12 @@ public class Challenge extends BaseEntity {
     private String title;
 
     @Column(nullable = false)
-    @ColumnDefault("10")
+    private String description;
+
+    @Column(nullable = false)
+    private Integer minUsers;
+
+    @Column(nullable = false)
     private Integer maxUsers;
 
     @Column(nullable = false)
@@ -37,7 +42,7 @@ public class Challenge extends BaseEntity {
 
     @Column(nullable = false, columnDefinition = "VARCHAR(20)")
     @Enumerated(EnumType.STRING)
-    private Category category;
+    private ChallengeCategory challengeCategory;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
