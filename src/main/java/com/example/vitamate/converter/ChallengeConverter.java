@@ -76,4 +76,11 @@ public class ChallengeConverter {
 			.isLast(challnegePage.isLast())
 			.build();
 	}
+
+	public static ChallengeResponseDTO.JoinChallengeResultDTO toJoinChallengeResultDTO(MemberChallenge memberChallenge){
+		return ChallengeResponseDTO.JoinChallengeResultDTO.builder()
+			.joinedAt(memberChallenge.getCreatedAt())
+			.ChallengeId(memberChallenge.getChallenge().getId())
+			.build();
+	}
 }

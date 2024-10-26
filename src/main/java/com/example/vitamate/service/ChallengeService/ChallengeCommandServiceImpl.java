@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.vitamate.apiPayload.code.status.ErrorStatus;
 import com.example.vitamate.apiPayload.exception.handler.ChallengeHandler;
-import com.example.vitamate.apiPayload.exception.handler.MemberHandler;
 import com.example.vitamate.converter.ChallengeConverter;
 import com.example.vitamate.domain.Challenge;
 import com.example.vitamate.domain.Member;
@@ -16,7 +15,6 @@ import com.example.vitamate.domain.enums.ChallengeStatus;
 import com.example.vitamate.domain.mapping.MemberChallenge;
 import com.example.vitamate.repository.ChallengeRepository;
 import com.example.vitamate.repository.MemberChallengeRepository;
-import com.example.vitamate.repository.MemberRepository;
 import com.example.vitamate.service.MemberService.MemberCommandService;
 import com.example.vitamate.web.dto.ChallengeRequestDTO;
 import com.example.vitamate.web.dto.ChallengeResponseDTO;
@@ -30,6 +28,7 @@ public class ChallengeCommandServiceImpl implements ChallengeCommandService{
 	private final MemberCommandService memberCommandService;
 	private final MemberChallengeRepository memberChallengeRepository;
 	private final ChallengeRepository challengeRepository;
+	private final ChallengeConverter challengeConverter;
 
 	@Override
 	@Transactional
@@ -51,6 +50,40 @@ public class ChallengeCommandServiceImpl implements ChallengeCommandService{
 		return ChallengeConverter.toCreateChallengeResponseDTO(challenge);
 	}
 
+	@Override
+	@Transactional
+	public ChallengeResponseDTO.JoinChallengeResultDTO joinChallenge(String email, Long challengeId){
+		Member member = memberCommandService.validMember(email);
+		Challenge challenge = validChallenge(challengeId);
+
+		// 인원 제한 확인
+		if (challenge.getCurrentUsers() == challenge.getMaxUsers()){
+			throw new ChallengeHandler(ErrorStatus.CHALLENGE_FULL);
+		}
+
+		checkParticipationInChallengeType(member, challenge.getChallengeCategory());
+
+		challenge.setCurrentUsers(challenge.getCurrentUsers() + 1);
+		challengeRepository.save(challenge);
+
+		MemberChallenge memberChallenge = challengeConverter.toMemberChallenge(member, challenge, false);
+		memberChallengeRepository.save(memberChallenge);
+
+		return challengeConverter.toJoinChallengeResultDTO(memberChallenge);
+	}
+
+	@Override
+	@Transactional
+	public Challenge validChallenge(Long challengeId){
+		Challenge challenge = challengeRepository.findById(challengeId)
+			.orElseThrow(() -> new ChallengeHandler(ErrorStatus.CHALLENGE_NOT_FOUND));
+
+		return challenge;
+	}
+
+
+	// 검증 메소드
+
 
 	@Override
 	@Transactional
@@ -62,4 +95,6 @@ public class ChallengeCommandServiceImpl implements ChallengeCommandService{
 			throw new ChallengeHandler(ErrorStatus.DUPLICATE_CATEGORY_PARTICIPATION);
 		}
 	}
+
+
 }

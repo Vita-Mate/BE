@@ -35,6 +35,8 @@ public class ChallengeQueryServiceImpl implements ChallengeQueryService{
 		List<Integer> weeklyFrequency,
 		LocalDate startDate,
 		ChallengeDuration duration,
+		Integer minParticipants,
+		Integer maxParticipants,
 		Integer page,
 		Integer pageSize){
 
@@ -58,11 +60,16 @@ public class ChallengeQueryServiceImpl implements ChallengeQueryService{
 			if(duration != null){
 				predicates.add(builder.equal(root.get("duration"), duration));
 			}
+			if(minParticipants != null){
+				predicates.add(builder.greaterThanOrEqualTo(root.get("minParticipants"), minParticipants));
+			}
+			if(maxParticipants != null){
+				predicates.add(builder.lessThanOrEqualTo(root.get("maxParticipants"), maxParticipants));
+			}
 			return builder.and(predicates.toArray(new Predicate[0]));
 		};
 
 		Page<Challenge> challengePage = challengeRepository.findAll(spec, pageRequest);
-
 
 		return challengeConverter.toChallengeListDTO(challengePage);
 	}

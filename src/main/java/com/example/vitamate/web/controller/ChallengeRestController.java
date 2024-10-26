@@ -16,7 +16,7 @@ import com.example.vitamate.domain.enums.ChallengeCategory;
 import com.example.vitamate.domain.enums.ChallengeDuration;
 import com.example.vitamate.jwt.SecurityUtil;
 import com.example.vitamate.service.ChallengeService.ChallengeCommandService;
-import com.example.vitamate.service.ChallengeService.ChallengeQueryServiceImpl;
+import com.example.vitamate.service.ChallengeService.ChallengeQueryService;
 import com.example.vitamate.web.dto.ChallengeRequestDTO;
 import com.example.vitamate.web.dto.ChallengeResponseDTO;
 
@@ -32,7 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ChallengeRestController {
 
 	private final ChallengeCommandService challengeCommandService;
-	private final ChallengeQueryServiceImpl challengeQueryServiceImpl;
+	private final ChallengeQueryService challengeQueryService;
 
 	@PostMapping("/")
 	@Operation(summary = "챌린지 방 생성 API", description = "방장이 챌린지 방을 생성하는 API 입니다. CreateChallengeRequestDTO 설명 참고해주세요.")
@@ -48,9 +48,19 @@ public class ChallengeRestController {
 		@RequestParam(value="weeklyFrequency", required = false) List<Integer> weeklyFrequency,
 		@RequestParam(value="startDate", required = false) LocalDate startDate,
 		@RequestParam(value="duration", required = false) ChallengeDuration duration,
+		@RequestParam(value = "minParticipants", required = false) Integer minParticipants,
+		@RequestParam(value = "maxParticipants", required = false) Integer maxParticipants,
 		@RequestParam(value = "page", defaultValue = "0") int page,
 		@RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
 
-		return ApiResponse.onSuccess(challengeQueryServiceImpl.getChallengeList(category, weeklyFrequency, startDate, duration, page, pageSize));
+		return ApiResponse.onSuccess(challengeQueryService.getChallengeList(category, weeklyFrequency, startDate, duration, minParticipants, maxParticipants, page, pageSize));
 	}
+
+	@PostMapping("/{challengeId}")
+	@Operation(summary = "챌린지 참가 API")
+	public ApiResponse<ChallengeResponseDTO.JoinChallengeResultDTO> joinChallenge(
+		@PathVariable(name = "challengeId") Long challengeId){
+		return ApiResponse.onSuccess(challengeCommandService.joinChallenge(SecurityUtil.getCurrentUsername(), challengeId));
+	}
+
 }
