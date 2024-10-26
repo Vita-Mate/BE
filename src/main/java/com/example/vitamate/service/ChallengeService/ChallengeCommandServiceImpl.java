@@ -17,6 +17,7 @@ import com.example.vitamate.domain.mapping.MemberChallenge;
 import com.example.vitamate.repository.ChallengeRepository;
 import com.example.vitamate.repository.MemberChallengeRepository;
 import com.example.vitamate.repository.MemberRepository;
+import com.example.vitamate.service.MemberService.MemberCommandService;
 import com.example.vitamate.web.dto.ChallengeRequestDTO;
 import com.example.vitamate.web.dto.ChallengeResponseDTO;
 
@@ -26,14 +27,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ChallengeCommandServiceImpl implements ChallengeCommandService{
 
-	private final MemberRepository memberRepository;
+	private final MemberCommandService memberCommandService;
 	private final MemberChallengeRepository memberChallengeRepository;
 	private final ChallengeRepository challengeRepository;
 
 	@Override
 	@Transactional
 	public ChallengeResponseDTO.CreateChallengeResultDTO createChallenge(String email, ChallengeRequestDTO.CreateChallengeRequestDTO requestDTO){
-		Member member = validMember(email);
+		Member member = memberCommandService.validMember(email);
 
 		checkParticipationInChallengeType(member, requestDTO.getCategory());
 
@@ -50,14 +51,10 @@ public class ChallengeCommandServiceImpl implements ChallengeCommandService{
 		return ChallengeConverter.toCreateChallengeResponseDTO(challenge);
 	}
 
-	private Member validMember(String email){
-		Member member = memberRepository.findByEmail(email)
-			.orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
-		return member;
-	}
-
-	private void checkParticipationInChallengeType(Member member, ChallengeCategory category){
+	@Override
+	@Transactional
+	public void checkParticipationInChallengeType(Member member, ChallengeCategory category){
 		Boolean alreadyJoinChallenge = memberChallengeRepository.existsByMemberAndChallenge_ChallengeCategoryAndChallenge_StatusIn(member, category,
 			List.of(ChallengeStatus.IN_PROGRESS, ChallengeStatus.WAITING));
 

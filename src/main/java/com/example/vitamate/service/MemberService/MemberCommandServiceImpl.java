@@ -3,6 +3,7 @@ package com.example.vitamate.service.MemberService;
 import com.example.vitamate.apiPayload.code.status.ErrorStatus;
 import com.example.vitamate.apiPayload.exception.handler.MemberHandler;
 import com.example.vitamate.converter.MemberConverter;
+import com.example.vitamate.domain.Member;
 import com.example.vitamate.domain.enums.Gender;
 import com.example.vitamate.jwt.JwtTokenDTO;
 import com.example.vitamate.jwt.JwtTokenProvider;
@@ -20,8 +21,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.vitamate.domain.enums.Gender.FEMALE;
-import static com.example.vitamate.domain.enums.Gender.MALE;
 
 @Service
 @RequiredArgsConstructor
@@ -73,5 +72,12 @@ public class MemberCommandServiceImpl implements MemberCommandService{
 
     }
 
+
+    public Member validMember(String email){
+        Member member = memberRepository.findByEmail(email)
+            .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+
+        return member;
+    }
 
 }
