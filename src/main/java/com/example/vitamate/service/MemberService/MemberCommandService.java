@@ -14,4 +14,6 @@ public interface MemberCommandService {
     MemberResponseDTO.SignUpResultDTO signUp(MemberRequestDTO.SignUpDTO request);
 
     Member validMember(String email);
+
+    String validNickname(String nickname);
 }

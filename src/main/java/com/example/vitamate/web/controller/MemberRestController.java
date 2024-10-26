@@ -7,11 +7,15 @@ import com.example.vitamate.service.MemberService.MemberCommandService;
 import com.example.vitamate.web.dto.MemberRequestDTO;
 import com.example.vitamate.web.dto.MemberResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -41,6 +45,16 @@ public class MemberRestController {
         MemberResponseDTO.SignUpResultDTO signUpResultDTO = memberCommandService.signUp(signUpDTO);
         return ApiResponse.onSuccess(signUpResultDTO);
     }
+
+    @GetMapping("/check-nickname")
+    @Operation(summary = "닉네임 중복 확인 및 유효성 검사 API")
+    public ApiResponse<String> checkNickname(
+        @RequestParam("nickname")
+        @Pattern(regexp = "^[a-zA-Z0-9가-힣]+$", message = "닉네임은 특수문자를 포함할 수 없습니다.")
+        String nickname){
+        return ApiResponse.onSuccess(memberCommandService.validNickname(nickname));
+    }
+
 
     @PostMapping("/test")
     public String test(){
