@@ -32,7 +32,7 @@ public class ChallengeCommandServiceImpl implements ChallengeCommandService{
 
 	@Override
 	@Transactional
-	public ChallengeResponseDTO.CreateChallengeResponseDTO createChallenge(String email, ChallengeRequestDTO.CreateChallengeRequestDTO requestDTO){
+	public ChallengeResponseDTO.CreateChallengeResultDTO createChallenge(String email, ChallengeRequestDTO.CreateChallengeRequestDTO requestDTO){
 		Member member = validMember(email);
 
 		checkParticipationInChallengeType(member, requestDTO.getCategory());
@@ -40,7 +40,7 @@ public class ChallengeCommandServiceImpl implements ChallengeCommandService{
 		if(requestDTO.getMaxParticipants() < requestDTO.getMinParticipants())
 			throw new ChallengeHandler(ErrorStatus.INVALID_NUMBERS_VALUE);
 
-		Challenge challenge = ChallengeConverter.toChallenge(member, requestDTO);
+		Challenge challenge = ChallengeConverter.toChallenge(requestDTO);
 		challengeRepository.save(challenge);
 
 		boolean isLeader = true;

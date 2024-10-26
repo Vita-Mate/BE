@@ -5,6 +5,6 @@ import com.example.vitamate.web.dto.ChallengeResponseDTO;
 
 public interface ChallengeCommandService {
 
-	ChallengeResponseDTO.CreateChallengeResponseDTO createChallenge(String email, ChallengeRequestDTO.CreateChallengeRequestDTO requestDTO);
+	ChallengeResponseDTO.CreateChallengeResultDTO createChallenge(String email, ChallengeRequestDTO.CreateChallengeRequestDTO requestDTO);
 
 }

@@ -13,7 +13,7 @@ import com.example.vitamate.web.dto.ChallengeResponseDTO;
 
 @Component
 public class ChallengeConverter {
-	public static Challenge toChallenge(Member member, ChallengeRequestDTO.CreateChallengeRequestDTO requestDTO){
+	public static Challenge toChallenge(ChallengeRequestDTO.CreateChallengeRequestDTO requestDTO){
 		return Challenge.builder()
 			.title(requestDTO.getTitle())
 			.description(requestDTO.getDescription())
@@ -21,6 +21,7 @@ public class ChallengeConverter {
 			.maxUsers(requestDTO.getMaxParticipants())
 			.currentUsers(1)
 			.expiryDate(LocalDate.now().plusWeeks(1))
+			.startDate(requestDTO.getStartDate())
 			.challengeCategory(requestDTO.getCategory())
 			.duration(requestDTO.getDuration())
 			.status(ChallengeStatus.WAITING)
@@ -36,8 +37,8 @@ public class ChallengeConverter {
 			.build();
 	}
 
-	public static ChallengeResponseDTO.CreateChallengeResponseDTO toCreateChallengeResponseDTO(Challenge challenge){
-		return ChallengeResponseDTO.CreateChallengeResponseDTO.builder()
+	public static ChallengeResponseDTO.CreateChallengeResultDTO toCreateChallengeResponseDTO(Challenge challenge){
+		return ChallengeResponseDTO.CreateChallengeResultDTO.builder()
 			.challengeId(challenge.getId())
 			.title(challenge.getTitle())
 			.status(challenge.getStatus())
