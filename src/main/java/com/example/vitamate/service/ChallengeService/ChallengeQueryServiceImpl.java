@@ -71,7 +71,6 @@ public class ChallengeQueryServiceImpl implements ChallengeQueryService{
 
 		Page<Challenge> challengePage = challengeRepository.findAll(spec, pageRequest);
 
-
 		return challengeConverter.toChallengeListDTO(challengePage);
 	}
 

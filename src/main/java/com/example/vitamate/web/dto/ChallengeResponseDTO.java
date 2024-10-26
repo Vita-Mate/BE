@@ -49,4 +49,13 @@ public class ChallengeResponseDTO {
 		Integer currentParticipants;
 		Integer weeklyFrequency;
 	}
+
+	@Builder
+	@Getter
+	@NoArgsConstructor
+	@AllArgsConstructor
+	public static class JoinChallengeResultDTO {
+		Long ChallengeId;
+		LocalDateTime joinedAt;
+	}
 }

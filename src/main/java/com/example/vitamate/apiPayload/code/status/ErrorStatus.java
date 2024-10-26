@@ -52,6 +52,8 @@ public enum ErrorStatus implements BaseErrorCode {
     // 챌린지 관련 응답
     DUPLICATE_CATEGORY_PARTICIPATION(HttpStatus.BAD_REQUEST, "CHALLENGE4001", "이미 같은 카테고리의 챌린지에 참여중입니다."),
     INVALID_NUMBERS_VALUE(HttpStatus.BAD_REQUEST, "CHALLENGE4002", "최소 인원수는 최대 인원수 이하여야 합니다."),
+    CHALLENGE_NOT_FOUND(HttpStatus.NOT_FOUND, "CHALLENGE4003", "챌린지 정보를 찾을 수 없습니다."),
+
     // ~~ 관련 응답
 
     // For test

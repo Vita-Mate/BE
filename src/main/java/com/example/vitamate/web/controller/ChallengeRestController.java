@@ -55,4 +55,12 @@ public class ChallengeRestController {
 
 		return ApiResponse.onSuccess(challengeQueryService.getChallengeList(category, weeklyFrequency, startDate, duration, minParticipants, maxParticipants, page, pageSize));
 	}
+
+	@PostMapping("/{challengeId}")
+	@Operation(summary = "챌린지 참가 API")
+	public ApiResponse<ChallengeResponseDTO.JoinChallengeResultDTO> joinChallenge(
+		@PathVariable(name = "challengeId") Long challengeId){
+		return ApiResponse.onSuccess(challengeCommandService.joinChallenge(SecurityUtil.getCurrentUsername(), challengeId));
+	}
+
 }
