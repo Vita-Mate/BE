@@ -1,7 +1,11 @@
 package com.example.vitamate.converter;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import com.example.vitamate.domain.Challenge;
@@ -43,6 +47,33 @@ public class ChallengeConverter {
 			.title(challenge.getTitle())
 			.status(challenge.getStatus())
 			.createdAt(challenge.getCreatedAt())
+			.build();
+	}
+
+
+	public static ChallengeResponseDTO.ChallengePreviewDTO toChallengePreviewDTO(Challenge challenge){
+		return ChallengeResponseDTO.ChallengePreviewDTO.builder()
+			.ChallengeId(challenge.getId())
+			.title(challenge.getTitle())
+			.dDay((int)ChronoUnit.DAYS.between(LocalDate.now(), challenge.getStartDate()))
+			.weeklyFrequency(challenge.getWeeklyFrequency())
+			.currentParticipants(challenge.getCurrentUsers())
+			.maxParticipants(challenge.getMaxUsers())
+			.build();
+	}
+
+	public static ChallengeResponseDTO.ChallengeListDTO toChallengeListDTO(
+		Page<Challenge> challnegePage) {
+		List<ChallengeResponseDTO.ChallengePreviewDTO> challengePreviewDTOList = challnegePage.stream()
+			.map(ChallengeConverter::toChallengePreviewDTO).collect(Collectors.toList());
+
+		return ChallengeResponseDTO.ChallengeListDTO.builder()
+			.challengeList(challengePreviewDTOList)
+			.listSize(challengePreviewDTOList.size())
+			.totalPage(challnegePage.getTotalPages())
+			.totalElements(challnegePage.getTotalElements())
+			.isFirst(challnegePage.isFirst())
+			.isLast(challnegePage.isLast())
 			.build();
 	}
 }
