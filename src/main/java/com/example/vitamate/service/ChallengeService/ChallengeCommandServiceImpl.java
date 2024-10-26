@@ -50,6 +50,40 @@ public class ChallengeCommandServiceImpl implements ChallengeCommandService{
 		return ChallengeConverter.toCreateChallengeResponseDTO(challenge);
 	}
 
+	@Override
+	@Transactional
+	public ChallengeResponseDTO.JoinChallengeResultDTO joinChallenge(String email, Long challengeId){
+		Member member = memberCommandService.validMember(email);
+		Challenge challenge = validChallenge(challengeId);
+
+		// 인원 제한 확인
+		if (challenge.getCurrentUsers() == challenge.getMaxUsers()){
+			throw new ChallengeHandler(ErrorStatus.CHALLENGE_FULL);
+		}
+
+		checkParticipationInChallengeType(member, challenge.getChallengeCategory());
+
+		challenge.setCurrentUsers(challenge.getCurrentUsers() + 1);
+		challengeRepository.save(challenge);
+
+		MemberChallenge memberChallenge = challengeConverter.toMemberChallenge(member, challenge, false);
+		memberChallengeRepository.save(memberChallenge);
+
+		return challengeConverter.toJoinChallengeResultDTO(memberChallenge);
+	}
+
+	@Override
+	@Transactional
+	public Challenge validChallenge(Long challengeId){
+		Challenge challenge = challengeRepository.findById(challengeId)
+			.orElseThrow(() -> new ChallengeHandler(ErrorStatus.CHALLENGE_NOT_FOUND));
+
+		return challenge;
+	}
+
+
+	// 검증 메소드
+
 
 	@Override
 	@Transactional
@@ -62,26 +96,5 @@ public class ChallengeCommandServiceImpl implements ChallengeCommandService{
 		}
 	}
 
-	@Override
-	@Transactional
-	public ChallengeResponseDTO.JoinChallengeResultDTO joinChallenge(String email, Long challengeId){
-		Member member = memberCommandService.validMember(email);
-		Challenge challenge = validChallenge(challengeId);
 
-		checkParticipationInChallengeType(member, challenge.getChallengeCategory());
-
-		MemberChallenge memberChallenge = challengeConverter.toMemberChallenge(member, challenge, false);
-		memberChallengeRepository.save(memberChallenge);
-		return challengeConverter.toJoinChallengeResultDTO(memberChallenge);
-
-	}
-
-	@Override
-	@Transactional
-	public Challenge validChallenge(Long challengeId){
-		Challenge challenge = challengeRepository.findById(challengeId)
-			.orElseThrow(() -> new ChallengeHandler(ErrorStatus.CHALLENGE_NOT_FOUND));
-
-		return challenge;
-	}
 }
