@@ -72,6 +72,16 @@ public class MemberCommandServiceImpl implements MemberCommandService{
 
     }
 
+    @Override
+    @Transactional
+    public String validNickname(String nickname) {
+        if (memberRepository.existsByNickname(nickname)){
+            return "중복된 닉네임입니다.";
+        } else {
+            return "사용 가능한 닉네임입니다.";
+        }
+    }
+
 
     public Member validMember(String email){
         Member member = memberRepository.findByEmail(email)
