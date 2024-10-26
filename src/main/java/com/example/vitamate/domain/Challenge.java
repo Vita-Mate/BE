@@ -40,6 +40,9 @@ public class Challenge extends BaseEntity {
     @Column(nullable = false)
     private LocalDate expiryDate;
 
+    @Column(nullable = false)
+    private LocalDate startDate;
+
     @Column(nullable = false, columnDefinition = "VARCHAR(20)")
     @Enumerated(EnumType.STRING)
     private ChallengeCategory challengeCategory;
