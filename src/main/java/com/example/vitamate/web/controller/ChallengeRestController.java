@@ -63,4 +63,10 @@ public class ChallengeRestController {
 		return ApiResponse.onSuccess(challengeCommandService.joinChallenge(SecurityUtil.getCurrentUsername(), challengeId));
 	}
 
+	@GetMapping("/my")
+	@Operation(summary = "참여중인 챌린지 목록 조회 API")
+	public ApiResponse<ChallengeResponseDTO.ParticipatingChallengeListDTO> getParticipatingChallengeList(){
+		return ApiResponse.onSuccess(challengeQueryService.getParticipatingChallengeList(SecurityUtil.getCurrentUsername()));
+	}
+
 }

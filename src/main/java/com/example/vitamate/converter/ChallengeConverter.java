@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.example.vitamate.domain.Challenge;
 import com.example.vitamate.domain.Member;
+import com.example.vitamate.domain.enums.ChallengeDuration;
 import com.example.vitamate.domain.enums.ChallengeStatus;
 import com.example.vitamate.domain.mapping.MemberChallenge;
 import com.example.vitamate.web.dto.ChallengeRequestDTO;
@@ -82,5 +83,44 @@ public class ChallengeConverter {
 			.joinedAt(memberChallenge.getCreatedAt())
 			.ChallengeId(memberChallenge.getChallenge().getId())
 			.build();
+	}
+
+	public static ChallengeResponseDTO.ParticipatingChallengeDTO toParticipatingChallengeDTO(Challenge challenge){
+		return ChallengeResponseDTO.ParticipatingChallengeDTO.builder()
+			.category(challenge.getChallengeCategory())
+			.title(challenge.getTitle())
+			.challengeId(challenge.getId())
+			.startDate(challenge.getStartDate())
+			.endDate(getEndDate(challenge.getStartDate(), challenge.getDuration()))
+			.build();
+	}
+
+	public static ChallengeResponseDTO.ParticipatingChallengeListDTO toParticipatingChallengeListDTO(
+		ChallengeResponseDTO.ParticipatingChallengeDTO exerciseChallenge,
+		ChallengeResponseDTO.ParticipatingChallengeDTO quitAlcoholChallenge,
+		ChallengeResponseDTO.ParticipatingChallengeDTO quitSmokeChallenge){
+		return ChallengeResponseDTO.ParticipatingChallengeListDTO.builder()
+			.exerciseChallenge(exerciseChallenge)
+			.quitSmokeChallenge(quitSmokeChallenge)
+			.quitAlcoholChallenge(quitAlcoholChallenge)
+			.build();
+	}
+
+
+	public static LocalDate getEndDate(LocalDate startDate, ChallengeDuration duration){
+		switch(duration){
+			case ONE_WEEK :
+				return startDate.plusWeeks(1);
+			case ONE_MONTH :
+				return startDate.plusMonths(1);
+			case THREE_MONTHS:
+				return startDate.plusMonths(3);
+			case SIX_MONTHS:
+				return startDate.plusMonths(6);
+			case ONE_YEAR :
+				return startDate.plusYears(1);
+			default:
+				throw new IllegalArgumentException("Invalid duration");
+		}
 	}
 }

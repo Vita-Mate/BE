@@ -1,8 +1,10 @@
 package com.example.vitamate.web.dto;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.example.vitamate.domain.enums.ChallengeCategory;
 import com.example.vitamate.domain.enums.ChallengeStatus;
 
 import lombok.AllArgsConstructor;
@@ -57,5 +59,27 @@ public class ChallengeResponseDTO {
 	public static class JoinChallengeResultDTO {
 		Long ChallengeId;
 		LocalDateTime joinedAt;
+	}
+
+	@Builder
+	@Getter
+	@NoArgsConstructor
+	@AllArgsConstructor
+	public static class ParticipatingChallengeDTO{
+		Long challengeId;
+		ChallengeCategory category;
+		String title;
+		LocalDate startDate;
+		LocalDate endDate;
+	}
+
+	@Builder
+	@Getter
+	@NoArgsConstructor
+	@AllArgsConstructor
+	public static class ParticipatingChallengeListDTO{
+		ParticipatingChallengeDTO exerciseChallenge;
+		ParticipatingChallengeDTO quitAlcoholChallenge;
+		ParticipatingChallengeDTO quitSmokeChallenge;
 	}
 }

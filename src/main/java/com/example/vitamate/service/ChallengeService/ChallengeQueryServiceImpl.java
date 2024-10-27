@@ -2,6 +2,7 @@ package com.example.vitamate.service.ChallengeService;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -12,12 +13,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.vitamate.converter.ChallengeConverter;
 import com.example.vitamate.domain.Challenge;
+import com.example.vitamate.domain.Member;
 import com.example.vitamate.domain.enums.ChallengeCategory;
 import com.example.vitamate.domain.enums.ChallengeDuration;
 import com.example.vitamate.domain.enums.ChallengeStatus;
+import com.example.vitamate.domain.mapping.MemberChallenge;
 import com.example.vitamate.repository.ChallengeRepository;
+import com.example.vitamate.repository.MemberChallengeRepository;
+import com.example.vitamate.service.MemberService.MemberCommandServiceImpl;
 import com.example.vitamate.web.dto.ChallengeResponseDTO;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 
@@ -27,6 +33,8 @@ public class ChallengeQueryServiceImpl implements ChallengeQueryService{
 
 	private final ChallengeRepository challengeRepository;
 	private final ChallengeConverter challengeConverter;
+	private final MemberCommandServiceImpl memberCommandServiceImpl;
+	private final MemberChallengeRepository memberChallengeRepository;
 
 	@Override
 	@Transactional
@@ -74,4 +82,32 @@ public class ChallengeQueryServiceImpl implements ChallengeQueryService{
 		return challengeConverter.toChallengeListDTO(challengePage);
 	}
 
+	@Override
+	@Transactional
+	public ChallengeResponseDTO.ParticipatingChallengeListDTO getParticipatingChallengeList(String email){
+		Member member = memberCommandServiceImpl.validMember(email);
+
+		List<MemberChallenge> memberChallenges = memberChallengeRepository.findByMemberIdAndChallenge_StatusIn(member.getId(), Arrays.asList(ChallengeStatus.WAITING, ChallengeStatus.IN_PROGRESS));
+
+		ChallengeResponseDTO.ParticipatingChallengeDTO exerciseChallenge = null;
+		ChallengeResponseDTO.ParticipatingChallengeDTO quitAlcoholChallenge = null;
+		ChallengeResponseDTO.ParticipatingChallengeDTO quitSmokeChallenge = null;
+
+		for(MemberChallenge memberChallenge : memberChallenges){
+			ChallengeResponseDTO.ParticipatingChallengeDTO challengeDTO = challengeConverter.toParticipatingChallengeDTO(memberChallenge.getChallenge());
+			switch (memberChallenge.getChallenge().getChallengeCategory()){
+				case EXERCISE :
+					exerciseChallenge = challengeDTO;
+					break;
+				case QUIT_ALCOHOL:
+					quitAlcoholChallenge = challengeDTO;
+					break;
+				case QUIT_SMOKE:
+					quitSmokeChallenge = challengeDTO;
+					break;
+			}
+		}
+
+		return challengeConverter.toParticipatingChallengeListDTO(exerciseChallenge, quitAlcoholChallenge, quitSmokeChallenge);
+	}
 }
