@@ -1,8 +1,10 @@
 package com.example.vitamate.service.ChallengeService;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -50,6 +52,15 @@ public class ChallengeCommandServiceImpl implements ChallengeCommandService{
 
 		checkParticipationInChallengeType(member, requestDTO.getCategory());
 
+		// 시작일 유효성 검사
+		LocalDate now = LocalDate.now();
+		LocalDate maxStartDate = now.plusWeeks(1);
+
+		if(requestDTO.getStartDate().isBefore(now) || requestDTO.getStartDate().isEqual(now) || requestDTO.getStartDate().isAfter(maxStartDate)){
+			throw new ChallengeHandler(ErrorStatus.INVALID_START_DATE);
+		}
+
+		// 인원 제한 검사
 		if(requestDTO.getMaxParticipants() < requestDTO.getMinParticipants())
 			throw new ChallengeHandler(ErrorStatus.INVALID_NUMBERS_VALUE);
 
@@ -85,6 +96,32 @@ public class ChallengeCommandServiceImpl implements ChallengeCommandService{
 		return challengeConverter.toJoinChallengeResultDTO(memberChallenge);
 	}
 
+	// 매일 자정에 실행
+	@Scheduled(cron = "0 0 0 * * *")
+	@Transactional
+	public void updateChallengeStatusInProgress(){
+		LocalDate today = LocalDate.now();
+
+		// 시작일 + 최소 인원 이상인 경우 진행 중 상태로 변경
+		List<Challenge> challengesToStart = challengeRepository.findByStartDateAndStatus(today, ChallengeStatus.WAITING);
+
+		for(Challenge challenge : challengesToStart){
+			if(challenge.getCurrentUsers() >= challenge.getMinUsers())
+				challenge.setStatus(ChallengeStatus.IN_PROGRESS);
+			else
+				challenge.setStatus(ChallengeStatus.CANCELLED);
+		}
+		challengeRepository.saveAll(challengesToStart);
+
+		// 종료 상태로 변경
+		List<Challenge> challengesToFinish = challengeRepository.findByEndDateDateAndStatus(today, ChallengeStatus.IN_PROGRESS);
+
+		for(Challenge challenge : challengesToFinish){
+			challenge.setStatus(ChallengeStatus.FINISHED);
+		}
+		challengeRepository.saveAll(challengesToFinish);
+
+	}
 
 
 	@Override
@@ -109,6 +146,7 @@ public class ChallengeCommandServiceImpl implements ChallengeCommandService{
 
 	}
 
+
 	// 검증 메소드
 
 	// 유효한 챌린지인지 검증
@@ -132,6 +170,7 @@ public class ChallengeCommandServiceImpl implements ChallengeCommandService{
 		}
 	}
 
+	// 챌린지 참가자인지 + 진행 중인 챌린지인지 검증하는 메소드
 	public MemberChallenge validMemberChallenge(Member member, Challenge challenge){
 		MemberChallenge memberChallenge = memberChallengeRepository.findByMemberAndChallenge(member, challenge)
 			.orElseThrow(() -> new ChallengeHandler(ErrorStatus.MEMBER_CHALLENGE_NOT_FOUND));

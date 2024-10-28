@@ -7,6 +7,8 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.vitamate.apiPayload.code.status.ErrorStatus;
+import com.example.vitamate.apiPayload.exception.handler.ChallengeHandler;
 import com.example.vitamate.domain.enums.ChallengeCategory;
 import com.example.vitamate.domain.enums.ChallengeDuration;
 import com.example.vitamate.domain.enums.ExerciseIntensity;
@@ -43,7 +45,7 @@ public class ChallengeRequestDTO {
 
 		@Schema(description = "챌린지 시작일")
 		@NotNull(message = "챌린지 시작일은 필수 항목입니다.")
-		@Future(message = "시작일은 미래 날짜여야 합니다.")
+		@Future(message = "시작일은 현재 날짜로부터 최대 일주일(7일) 미래여야 합니다.")
 		LocalDate startDate;
 
 		@Schema(description = "챌린지 기간")

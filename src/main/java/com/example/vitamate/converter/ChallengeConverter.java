@@ -23,19 +23,21 @@ import com.example.vitamate.web.dto.ChallengeResponseDTO;
 @Component
 public class ChallengeConverter {
 	public static Challenge toChallenge(ChallengeRequestDTO.CreateChallengeRequestDTO requestDTO){
-		return Challenge.builder()
+		Challenge challenge = Challenge.builder()
 			.title(requestDTO.getTitle())
 			.description(requestDTO.getDescription())
 			.minUsers(requestDTO.getMinParticipants())
 			.maxUsers(requestDTO.getMaxParticipants())
 			.currentUsers(1)
-			.expiryDate(LocalDate.now().plusWeeks(1))
 			.startDate(requestDTO.getStartDate())
 			.challengeCategory(requestDTO.getCategory())
 			.duration(requestDTO.getDuration())
 			.status(ChallengeStatus.WAITING)
 			.weeklyFrequency(requestDTO.getWeeklyFrequency())
 			.build();
+
+		challenge.setEndDate(challenge.getStartDate().plusDays(challenge.getDuration().getDays()));
+		return challenge;
 	}
 
 	public static MemberChallenge toMemberChallenge(Member member, Challenge challenge, boolean isLeader){

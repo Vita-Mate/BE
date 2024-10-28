@@ -39,10 +39,10 @@ public class Challenge extends BaseEntity {
     private Integer currentUsers;
 
     @Column(nullable = false)
-    private LocalDate expiryDate;
+    private LocalDate startDate;
 
     @Column(nullable = false)
-    private LocalDate startDate;
+    private LocalDate endDate;
 
     @Column(nullable = false, columnDefinition = "VARCHAR(20)")
     @Enumerated(EnumType.STRING)
