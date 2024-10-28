@@ -114,7 +114,7 @@ public class ChallengeCommandServiceImpl implements ChallengeCommandService{
 		challengeRepository.saveAll(challengesToStart);
 
 		// 종료 상태로 변경
-		List<Challenge> challengesToFinish = challengeRepository.findByEndDateDateAndStatus(today, ChallengeStatus.IN_PROGRESS);
+		List<Challenge> challengesToFinish = challengeRepository.findByEndDateAndStatus(today, ChallengeStatus.IN_PROGRESS);
 
 		for(Challenge challenge : challengesToFinish){
 			challenge.setStatus(ChallengeStatus.FINISHED);
