@@ -4,8 +4,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.example.vitamate.domain.enums.ChallengeCategory;
 import com.example.vitamate.domain.enums.ChallengeStatus;
+import com.example.vitamate.domain.enums.ExerciseIntensity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -81,5 +84,14 @@ public class ChallengeResponseDTO {
 		ParticipatingChallengeDTO exerciseChallenge;
 		ParticipatingChallengeDTO quitAlcoholChallenge;
 		ParticipatingChallengeDTO quitSmokeChallenge;
+	}
+
+	@Builder
+	@Getter
+	@NoArgsConstructor
+	@AllArgsConstructor
+	public static class AddExerciseRecordResultDTO{
+		Long recordId;
+		String imageURL;
 	}
 }

@@ -1,11 +1,13 @@
 package com.example.vitamate.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.example.vitamate.domain.Challenge;
 import com.example.vitamate.domain.Member;
 import com.example.vitamate.domain.enums.ChallengeCategory;
 import com.example.vitamate.domain.enums.ChallengeStatus;
@@ -23,4 +25,6 @@ public interface MemberChallengeRepository extends JpaRepository<MemberChallenge
 		@Param("memberId") Long memberId,
 		@Param("statuses") List<ChallengeStatus> statuses
 	);
+
+	Optional<MemberChallenge> findByMemberAndChallenge(Member member, Challenge challenge);
 }
