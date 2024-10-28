@@ -1,6 +1,8 @@
 package com.example.vitamate.converter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,8 +12,10 @@ import org.springframework.stereotype.Component;
 
 import com.example.vitamate.domain.Challenge;
 import com.example.vitamate.domain.Member;
+import com.example.vitamate.domain.RecordImage;
 import com.example.vitamate.domain.enums.ChallengeDuration;
 import com.example.vitamate.domain.enums.ChallengeStatus;
+import com.example.vitamate.domain.mapping.ExerciseChallengeRecord;
 import com.example.vitamate.domain.mapping.MemberChallenge;
 import com.example.vitamate.web.dto.ChallengeRequestDTO;
 import com.example.vitamate.web.dto.ChallengeResponseDTO;
@@ -106,6 +110,31 @@ public class ChallengeConverter {
 			.build();
 	}
 
+	public static ExerciseChallengeRecord toExerciseChallengeRecord(
+		ChallengeRequestDTO.AddExerciseRecordDTO requestDTO,
+		MemberChallenge memberChallenge){
+		return ExerciseChallengeRecord.builder()
+			.exerciseType(requestDTO.getExerciseType())
+			.comment(requestDTO.getComment())
+			.memberChallenge(memberChallenge)
+			.startTime(LocalDateTime.of(LocalDate.now(), LocalTime.of(requestDTO.getStartHour(), requestDTO.getStartMinute())))
+			.endTime(LocalDateTime.of(LocalDate.now(), LocalTime.of(requestDTO.getEndHour(), requestDTO.getEndMinute())))
+			.build();
+	}
+
+	public static RecordImage toRecordImage(String imageUrl, ExerciseChallengeRecord record){
+		return RecordImage.builder()
+			.exerciseChallengeRecord(record)
+			.imageUrl(imageUrl)
+			.build();
+	}
+
+	public static ChallengeResponseDTO.AddExerciseRecordResultDTO toAddExerciseRecordResultDTO(ExerciseChallengeRecord record, String imageURL){
+		return ChallengeResponseDTO.AddExerciseRecordResultDTO.builder()
+			.recordId(record.getId())
+			.imageURL(imageURL)
+			.build();
+	}
 
 	public static LocalDate getEndDate(LocalDate startDate, ChallengeDuration duration){
 		switch(duration){

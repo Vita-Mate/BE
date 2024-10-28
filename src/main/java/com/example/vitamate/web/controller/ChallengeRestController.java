@@ -3,17 +3,22 @@ package com.example.vitamate.web.controller;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.vitamate.apiPayload.ApiResponse;
 import com.example.vitamate.domain.enums.ChallengeCategory;
 import com.example.vitamate.domain.enums.ChallengeDuration;
+import com.example.vitamate.domain.mapping.ExerciseChallengeRecord;
 import com.example.vitamate.jwt.SecurityUtil;
 import com.example.vitamate.service.ChallengeService.ChallengeCommandService;
 import com.example.vitamate.service.ChallengeService.ChallengeQueryService;
@@ -69,4 +74,13 @@ public class ChallengeRestController {
 		return ApiResponse.onSuccess(challengeQueryService.getParticipatingChallengeList(SecurityUtil.getCurrentUsername()));
 	}
 
+	@PostMapping(value = "/{challengeId}/records", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@Operation(summary = "운동 습관 챌린지 - 기록 업로드 API")
+	public ApiResponse<ChallengeResponseDTO.AddExerciseRecordResultDTO> addExerciseRecord(
+		@PathVariable(name = "challengeId") Long challengeId,
+		@RequestPart(name = "record") ChallengeRequestDTO.AddExerciseRecordDTO addExerciseRecordDTO,
+		@RequestPart(name = "photo") MultipartFile photo
+		){
+		return ApiResponse.onSuccess(challengeCommandService.addExerciseRecord(SecurityUtil.getCurrentUsername(), challengeId, addExerciseRecordDTO, photo));
+	}
 }

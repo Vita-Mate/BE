@@ -1,20 +1,28 @@
 package com.example.vitamate.service.ChallengeService;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.vitamate.apiPayload.code.status.ErrorStatus;
 import com.example.vitamate.apiPayload.exception.handler.ChallengeHandler;
+import com.example.vitamate.aws.s3.AmazonS3Manager;
 import com.example.vitamate.converter.ChallengeConverter;
 import com.example.vitamate.domain.Challenge;
 import com.example.vitamate.domain.Member;
+import com.example.vitamate.domain.Uuid;
 import com.example.vitamate.domain.enums.ChallengeCategory;
 import com.example.vitamate.domain.enums.ChallengeStatus;
+import com.example.vitamate.domain.mapping.ExerciseChallengeRecord;
 import com.example.vitamate.domain.mapping.MemberChallenge;
 import com.example.vitamate.repository.ChallengeRepository;
+import com.example.vitamate.repository.ExerciseChallengeRecordRepository;
 import com.example.vitamate.repository.MemberChallengeRepository;
+import com.example.vitamate.repository.RecordImageRepository;
+import com.example.vitamate.repository.UuidRepository;
 import com.example.vitamate.service.MemberService.MemberCommandService;
 import com.example.vitamate.web.dto.ChallengeRequestDTO;
 import com.example.vitamate.web.dto.ChallengeResponseDTO;
@@ -29,6 +37,11 @@ public class ChallengeCommandServiceImpl implements ChallengeCommandService{
 	private final MemberChallengeRepository memberChallengeRepository;
 	private final ChallengeRepository challengeRepository;
 	private final ChallengeConverter challengeConverter;
+	private final ExerciseChallengeRecordRepository exerciseChallengeRecordRepository;
+
+	private final AmazonS3Manager s3Manager;
+	private final UuidRepository uuidRepository;
+	private final RecordImageRepository recordImageRepository;
 
 	@Override
 	@Transactional
@@ -81,10 +94,31 @@ public class ChallengeCommandServiceImpl implements ChallengeCommandService{
 		return challenge;
 	}
 
+	@Override
+	@Transactional
+	public ChallengeResponseDTO.AddExerciseRecordResultDTO addExerciseRecord(String email, Long challengeId, ChallengeRequestDTO.AddExerciseRecordDTO requestDTO, MultipartFile photo){
+		Member member = memberCommandService.validMember(email);
+		Challenge challenge = validChallenge(challengeId);
+
+		MemberChallenge memberChallenge = memberChallengeRepository.findByMemberAndChallenge(member, challenge);
+
+		String uuid = UUID.randomUUID().toString();
+		Uuid saveUuid = uuidRepository.save(Uuid.builder()
+			.uuid(uuid).build());
+
+		String imageUrl = s3Manager.uploadFile(s3Manager.generateChallengeKeyName(saveUuid), photo);
+
+		ExerciseChallengeRecord exerciseChallengeRecord = challengeConverter.toExerciseChallengeRecord(requestDTO, memberChallenge);
+		exerciseChallengeRecordRepository.save(exerciseChallengeRecord);
+
+		recordImageRepository.save(challengeConverter.toRecordImage(imageUrl, exerciseChallengeRecord));
+
+		return challengeConverter.toAddExerciseRecordResultDTO(exerciseChallengeRecord, imageUrl);
+
+	}
 
 	// 검증 메소드
-
-
+	// 동일 카테고리 중복 참여 검증 메소드
 	@Override
 	@Transactional
 	public void checkParticipationInChallengeType(Member member, ChallengeCategory category){
@@ -95,6 +129,7 @@ public class ChallengeCommandServiceImpl implements ChallengeCommandService{
 			throw new ChallengeHandler(ErrorStatus.DUPLICATE_CATEGORY_PARTICIPATION);
 		}
 	}
+
 
 
 }
