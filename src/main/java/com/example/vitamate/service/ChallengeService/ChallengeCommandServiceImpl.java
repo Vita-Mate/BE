@@ -85,22 +85,14 @@ public class ChallengeCommandServiceImpl implements ChallengeCommandService{
 		return challengeConverter.toJoinChallengeResultDTO(memberChallenge);
 	}
 
-	@Override
-	@Transactional
-	public Challenge validChallenge(Long challengeId){
-		Challenge challenge = challengeRepository.findById(challengeId)
-			.orElseThrow(() -> new ChallengeHandler(ErrorStatus.CHALLENGE_NOT_FOUND));
 
-		return challenge;
-	}
 
 	@Override
 	@Transactional
 	public ChallengeResponseDTO.AddExerciseRecordResultDTO addExerciseRecord(String email, Long challengeId, ChallengeRequestDTO.AddExerciseRecordDTO requestDTO, MultipartFile photo){
 		Member member = memberCommandService.validMember(email);
 		Challenge challenge = validChallenge(challengeId);
-
-		MemberChallenge memberChallenge = memberChallengeRepository.findByMemberAndChallenge(member, challenge);
+		MemberChallenge memberChallenge = validMemberChallenge(member, challenge);
 
 		String uuid = UUID.randomUUID().toString();
 		Uuid saveUuid = uuidRepository.save(Uuid.builder()
@@ -118,6 +110,16 @@ public class ChallengeCommandServiceImpl implements ChallengeCommandService{
 	}
 
 	// 검증 메소드
+
+	// 유효한 챌린지인지 검증
+	@Override
+	@Transactional
+	public Challenge validChallenge(Long challengeId){
+		Challenge challenge = challengeRepository.findById(challengeId)
+			.orElseThrow(() -> new ChallengeHandler(ErrorStatus.CHALLENGE_NOT_FOUND));
+		return challenge;
+	}
+
 	// 동일 카테고리 중복 참여 검증 메소드
 	@Override
 	@Transactional
@@ -128,6 +130,16 @@ public class ChallengeCommandServiceImpl implements ChallengeCommandService{
 		if(alreadyJoinChallenge){
 			throw new ChallengeHandler(ErrorStatus.DUPLICATE_CATEGORY_PARTICIPATION);
 		}
+	}
+
+	public MemberChallenge validMemberChallenge(Member member, Challenge challenge){
+		MemberChallenge memberChallenge = memberChallengeRepository.findByMemberAndChallenge(member, challenge)
+			.orElseThrow(() -> new ChallengeHandler(ErrorStatus.MEMBER_CHALLENGE_NOT_FOUND));
+
+		if(memberChallenge.getChallenge().getStatus() != ChallengeStatus.IN_PROGRESS)
+			throw new ChallengeHandler(ErrorStatus.CHALLENGE_NOT_IN_PROGRESS);
+
+		return memberChallenge;
 	}
 
 

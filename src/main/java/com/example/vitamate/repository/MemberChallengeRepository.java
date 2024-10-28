@@ -1,6 +1,7 @@
 package com.example.vitamate.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -25,5 +26,5 @@ public interface MemberChallengeRepository extends JpaRepository<MemberChallenge
 		@Param("statuses") List<ChallengeStatus> statuses
 	);
 
-	MemberChallenge findByMemberAndChallenge(Member member, Challenge challenge);
+	Optional<MemberChallenge> findByMemberAndChallenge(Member member, Challenge challenge);
 }

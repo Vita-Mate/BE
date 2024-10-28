@@ -54,7 +54,8 @@ public enum ErrorStatus implements BaseErrorCode {
     INVALID_NUMBERS_VALUE(HttpStatus.BAD_REQUEST, "CHALLENGE4002", "최소 인원수는 최대 인원수 이하여야 합니다."),
     CHALLENGE_NOT_FOUND(HttpStatus.NOT_FOUND, "CHALLENGE4003", "챌린지 정보를 찾을 수 없습니다."),
     CHALLENGE_FULL(HttpStatus.BAD_REQUEST, "CHALLENGE4004", "챌린지 방이 꽉 찼습니다."),
-
+    MEMBER_CHALLENGE_NOT_FOUND(HttpStatus.NOT_FOUND, "CHALLENGE4005", "참여 중인 챌린지가 아닙니다."),
+    CHALLENGE_NOT_IN_PROGRESS(HttpStatus.BAD_REQUEST, "CHALLENGE4006", "진행 중인 챌린지가 아닙니다."),
     // ~~ 관련 응답
 
     // For test
