@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.vitamate.apiPayload.ApiResponse;
 import com.example.vitamate.domain.enums.ChallengeCategory;
 import com.example.vitamate.domain.enums.ChallengeDuration;
-import com.example.vitamate.domain.mapping.ExerciseChallengeRecord;
 import com.example.vitamate.jwt.SecurityUtil;
 import com.example.vitamate.service.ChallengeService.ChallengeCommandService;
 import com.example.vitamate.service.ChallengeService.ChallengeQueryService;
