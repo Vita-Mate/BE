@@ -50,9 +50,10 @@ dependencies {
 	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 
 	// s3
-	implementation 'org.springframework.cloud:spring-cloud-starter-aws:3.0.0'
-	implementation 'com.amazonaws:aws-java-sdk-s3:1.12.300' // S3 관련 기능
-	implementation 'com.amazonaws:aws-java-sdk-core:1.12.300' // Core 기능
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+//	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.4.1'
+//	implementation 'com.amazonaws:aws-java-sdk-s3:1.12.300' // S3 관련 기능
+//	implementation 'com.amazonaws:aws-java-sdk-core:1.12.300' // Core 기능
 }
 
 tasks.named('test') {
