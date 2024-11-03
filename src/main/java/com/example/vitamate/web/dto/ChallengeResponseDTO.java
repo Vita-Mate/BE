@@ -2,6 +2,7 @@ package com.example.vitamate.web.dto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -94,4 +95,19 @@ public class ChallengeResponseDTO {
 		Long recordId;
 		String imageURL;
 	}
+
+	@Builder
+	@Getter
+	@NoArgsConstructor
+	@AllArgsConstructor
+	public static class GetExerciseRecordResultDTO{
+		Long ExerciseRecordId;
+		String nickname;
+		String imageURL;
+		String exerciseType;
+		LocalDateTime startTime;
+		LocalDateTime endTime;
+		String comment;
+	}
+
 }

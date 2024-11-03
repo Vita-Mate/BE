@@ -1,5 +1,6 @@
 package com.example.vitamate.domain.mapping;
 
+import com.example.vitamate.domain.RecordImage;
 import com.example.vitamate.domain.common.BaseEntity;
 
 import jakarta.persistence.*;
@@ -31,6 +32,4 @@ public class ExerciseChallengeRecord extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "member_challenge_id")
     private MemberChallenge memberChallenge;
-
-
 }

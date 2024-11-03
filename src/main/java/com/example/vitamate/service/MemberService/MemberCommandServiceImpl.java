@@ -83,6 +83,8 @@ public class MemberCommandServiceImpl implements MemberCommandService{
     }
 
 
+    @Override
+    @Transactional
     public Member validMember(String email){
         Member member = memberRepository.findByEmail(email)
             .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));

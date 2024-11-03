@@ -3,6 +3,7 @@ package com.example.vitamate.web.controller;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -80,5 +81,14 @@ public class ChallengeRestController {
 		@RequestPart(name = "photo") MultipartFile photo
 		){
 		return ApiResponse.onSuccess(challengeCommandService.addExerciseRecord(SecurityUtil.getCurrentUsername(), challengeId, addExerciseRecordDTO, photo));
+	}
+
+	@GetMapping(value = "/{challengeId}/myRecord")
+	@Operation(summary = "단체 챌린지 - 나의 기록 조회 API", description = "참여중인 챌린지의 id와 조회할 날짜를 넣어주세요. 날짜는 YYYY-MM-DD 형식으로 넣어주세요.")
+	public ApiResponse<List<ChallengeResponseDTO.GetExerciseRecordResultDTO>> getMyRecord(
+		@PathVariable(name = "challengeId") Long challengeId,
+		@RequestParam(name = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
+	){
+		return ApiResponse.onSuccess(challengeQueryService.getMyExerciseRecord(SecurityUtil.getCurrentUsername(), challengeId, date));
 	}
 }

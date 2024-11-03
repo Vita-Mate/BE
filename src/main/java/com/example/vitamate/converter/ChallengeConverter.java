@@ -154,4 +154,18 @@ public class ChallengeConverter {
 				throw new IllegalArgumentException("Invalid duration");
 		}
 	}
+
+	public static ChallengeResponseDTO.GetExerciseRecordResultDTO toGetExerciseRecordResultDTO(ExerciseChallengeRecord record, String imageURL){
+		return ChallengeResponseDTO.GetExerciseRecordResultDTO.builder()
+			.ExerciseRecordId(record.getId())
+			.exerciseType(record.getExerciseType())
+			.nickname(record.getMemberChallenge().getMember().getNickname())
+			.startTime(record.getStartTime())
+			.endTime(record.getEndTime())
+			.comment(record.getComment())
+			.imageURL(imageURL)
+			.build();
+
+	}
+
 }
