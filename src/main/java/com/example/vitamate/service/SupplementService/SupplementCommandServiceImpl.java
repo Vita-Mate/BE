@@ -71,7 +71,7 @@ public class SupplementCommandServiceImpl implements SupplementCommandService{
         }
 
         memberSupplement.setIsTaking(true);
-        memberSupplement.setStartDate(LocalDate.now());
+        memberSupplement.setStartDate(requestDTO.getStartDate());
         memberSupplement = memberSupplementRepository.save(memberSupplement);
 
         LocalDate startDate = memberSupplement.getStartDate();
