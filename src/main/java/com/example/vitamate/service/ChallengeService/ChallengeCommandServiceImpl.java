@@ -171,6 +171,8 @@ public class ChallengeCommandServiceImpl implements ChallengeCommandService{
 	}
 
 	// 챌린지 참가자인지 + 진행 중인 챌린지인지 검증하는 메소드
+	@Override
+	@Transactional
 	public MemberChallenge validMemberChallenge(Member member, Challenge challenge){
 		MemberChallenge memberChallenge = memberChallengeRepository.findByMemberAndChallenge(member, challenge)
 			.orElseThrow(() -> new ChallengeHandler(ErrorStatus.MEMBER_CHALLENGE_NOT_FOUND));

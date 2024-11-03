@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,16 +15,19 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.vitamate.converter.ChallengeConverter;
 import com.example.vitamate.domain.Challenge;
 import com.example.vitamate.domain.Member;
+import com.example.vitamate.domain.RecordImage;
 import com.example.vitamate.domain.enums.ChallengeCategory;
 import com.example.vitamate.domain.enums.ChallengeDuration;
 import com.example.vitamate.domain.enums.ChallengeStatus;
+import com.example.vitamate.domain.mapping.ExerciseChallengeRecord;
 import com.example.vitamate.domain.mapping.MemberChallenge;
 import com.example.vitamate.repository.ChallengeRepository;
+import com.example.vitamate.repository.ExerciseChallengeRecordRepository;
 import com.example.vitamate.repository.MemberChallengeRepository;
-import com.example.vitamate.service.MemberService.MemberCommandServiceImpl;
+import com.example.vitamate.repository.RecordImageRepository;
+import com.example.vitamate.service.MemberService.MemberCommandService;
 import com.example.vitamate.web.dto.ChallengeResponseDTO;
 
-import io.swagger.v3.oas.annotations.Operation;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 
@@ -33,8 +37,11 @@ public class ChallengeQueryServiceImpl implements ChallengeQueryService{
 
 	private final ChallengeRepository challengeRepository;
 	private final ChallengeConverter challengeConverter;
-	private final MemberCommandServiceImpl memberCommandServiceImpl;
+	private final MemberCommandService memberCommandService;
 	private final MemberChallengeRepository memberChallengeRepository;
+	private final ChallengeCommandService challengeCommandService;
+	private final ExerciseChallengeRecordRepository exerciseChallengeRecordRepository;
+	private final RecordImageRepository recordImageRepository;
 
 	@Override
 	@Transactional
@@ -85,7 +92,7 @@ public class ChallengeQueryServiceImpl implements ChallengeQueryService{
 	@Override
 	@Transactional
 	public ChallengeResponseDTO.ParticipatingChallengeListDTO getParticipatingChallengeList(String email){
-		Member member = memberCommandServiceImpl.validMember(email);
+		Member member = memberCommandService.validMember(email);
 
 		List<MemberChallenge> memberChallenges = memberChallengeRepository.findByMemberIdAndChallenge_StatusIn(member.getId(), Arrays.asList(ChallengeStatus.WAITING, ChallengeStatus.IN_PROGRESS));
 
@@ -109,5 +116,24 @@ public class ChallengeQueryServiceImpl implements ChallengeQueryService{
 		}
 
 		return challengeConverter.toParticipatingChallengeListDTO(exerciseChallenge, quitAlcoholChallenge, quitSmokeChallenge);
+	}
+
+	@Override
+	@Transactional
+	public List<ChallengeResponseDTO.GetExerciseRecordResultDTO> getMyExerciseRecord(String email, Long challengeId, LocalDate date){
+		Member member = memberCommandService.validMember(email);
+		Challenge challenge = challengeCommandService.validChallenge(challengeId);
+		MemberChallenge memberChallenge = challengeCommandService.validMemberChallenge(member, challenge);
+
+		List<ExerciseChallengeRecord> exerciseChallengeRecordList = exerciseChallengeRecordRepository.findByMemberChallengeAndCreatedAtDate(memberChallenge, date);
+
+		List<ChallengeResponseDTO.GetExerciseRecordResultDTO> DTOList = exerciseChallengeRecordList.stream()
+			.map(record -> {
+				RecordImage recordImage = recordImageRepository.findByExerciseChallengeRecord(record);
+				String imageURL = recordImage.getImageUrl();
+				return challengeConverter.toGetExerciseRecordResultDTO(record, imageURL);
+			}).collect(Collectors.toList());
+
+		return DTOList;
 	}
 }

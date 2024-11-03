@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,7 +30,7 @@ public class RecordImage extends BaseEntity {
 	@Column(nullable = false)
 	private String imageUrl;
 
-	@ManyToOne
+	@OneToOne
 	@JoinColumn(name = "exercise_challenge_record_id")
 	private ExerciseChallengeRecord exerciseChallengeRecord;
 }
