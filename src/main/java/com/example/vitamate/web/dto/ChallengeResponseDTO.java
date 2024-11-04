@@ -69,28 +69,6 @@ public class ChallengeResponseDTO {
 	@Getter
 	@NoArgsConstructor
 	@AllArgsConstructor
-	public static class ParticipatingChallengeDTO{
-		Long challengeId;
-		ChallengeCategory category;
-		String title;
-		LocalDate startDate;
-		LocalDate endDate;
-	}
-
-	@Builder
-	@Getter
-	@NoArgsConstructor
-	@AllArgsConstructor
-	public static class ParticipatingChallengeListDTO{
-		ParticipatingChallengeDTO exerciseChallenge;
-		ParticipatingChallengeDTO quitAlcoholChallenge;
-		ParticipatingChallengeDTO quitSmokeChallenge;
-	}
-
-	@Builder
-	@Getter
-	@NoArgsConstructor
-	@AllArgsConstructor
 	public static class AddExerciseRecordResultDTO{
 		Long recordId;
 		String imageURL;

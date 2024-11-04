@@ -57,6 +57,7 @@ public enum ErrorStatus implements BaseErrorCode {
     MEMBER_CHALLENGE_NOT_FOUND(HttpStatus.NOT_FOUND, "CHALLENGE4005", "참여 중인 챌린지가 아닙니다."),
     CHALLENGE_NOT_IN_PROGRESS(HttpStatus.BAD_REQUEST, "CHALLENGE4006", "진행 중인 챌린지가 아닙니다."),
     INVALID_START_DATE(HttpStatus.BAD_REQUEST, "CHALLENGE4008", "시작일은 현재 날짜로부터 최대 일주일(7일) 미래여야 합니다."),
+    NOT_PARTICIPATING_IN_CHALLENGE(HttpStatus.NOT_FOUND, "CHALLENGE4009", "참여중인 챌린지가 없습니다."),
 
     // ~~ 관련 응답
 

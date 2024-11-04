@@ -67,10 +67,12 @@ public class ChallengeRestController {
 		return ApiResponse.onSuccess(challengeCommandService.joinChallenge(SecurityUtil.getCurrentUsername(), challengeId));
 	}
 
-	@GetMapping("/my")
-	@Operation(summary = "참여중인 챌린지 목록 조회 API")
-	public ApiResponse<ChallengeResponseDTO.ParticipatingChallengeListDTO> getParticipatingChallengeList(){
-		return ApiResponse.onSuccess(challengeQueryService.getParticipatingChallengeList(SecurityUtil.getCurrentUsername()));
+	@GetMapping("/{category}/my")
+	@Operation(summary = "나의 챌린지 그룹 API", description = "챌린지 카테고리 EXERCISE, QUIT_SMOKE, QUIT_ALCOHOL")
+	public ApiResponse<ChallengeResponseDTO.ChallengePreviewDTO> getParticipatingChallengeList(
+		@PathVariable(name = "category") ChallengeCategory category
+	){
+		return ApiResponse.onSuccess(challengeQueryService.getParticipatingChallengeList(SecurityUtil.getCurrentUsername(), category));
 	}
 
 	@PostMapping(value = "/{challengeId}/records", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

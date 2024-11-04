@@ -91,27 +91,6 @@ public class ChallengeConverter {
 			.build();
 	}
 
-	public static ChallengeResponseDTO.ParticipatingChallengeDTO toParticipatingChallengeDTO(Challenge challenge){
-		return ChallengeResponseDTO.ParticipatingChallengeDTO.builder()
-			.category(challenge.getChallengeCategory())
-			.title(challenge.getTitle())
-			.challengeId(challenge.getId())
-			.startDate(challenge.getStartDate())
-			.endDate(getEndDate(challenge.getStartDate(), challenge.getDuration()))
-			.build();
-	}
-
-	public static ChallengeResponseDTO.ParticipatingChallengeListDTO toParticipatingChallengeListDTO(
-		ChallengeResponseDTO.ParticipatingChallengeDTO exerciseChallenge,
-		ChallengeResponseDTO.ParticipatingChallengeDTO quitAlcoholChallenge,
-		ChallengeResponseDTO.ParticipatingChallengeDTO quitSmokeChallenge){
-		return ChallengeResponseDTO.ParticipatingChallengeListDTO.builder()
-			.exerciseChallenge(exerciseChallenge)
-			.quitSmokeChallenge(quitSmokeChallenge)
-			.quitAlcoholChallenge(quitAlcoholChallenge)
-			.build();
-	}
-
 	public static ExerciseChallengeRecord toExerciseChallengeRecord(
 		ChallengeRequestDTO.AddExerciseRecordDTO requestDTO,
 		MemberChallenge memberChallenge){
