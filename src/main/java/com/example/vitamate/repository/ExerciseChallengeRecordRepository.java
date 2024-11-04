@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import com.example.vitamate.domain.mapping.ExerciseChallengeRecord;
 import com.example.vitamate.domain.mapping.MemberChallenge;
 
-public interface ExerciseChallengeRecordRepository extends JpaRepository<ExerciseChallengeRecord, Integer> {
+public interface ExerciseChallengeRecordRepository extends JpaRepository<ExerciseChallengeRecord, Long> {
 
 	@Query("SELECT e "
 		+ "FROM ExerciseChallengeRecord e "
@@ -18,6 +18,15 @@ public interface ExerciseChallengeRecordRepository extends JpaRepository<Exercis
 		+ "AND DATE(e.createdAt) = :date")
 	List<ExerciseChallengeRecord> findByMemberChallengeAndCreatedAtDate(
 		@Param("memberChallenge") MemberChallenge memberChallenge,
+		@Param("date") LocalDate date
+	);
+
+	@Query("SELECT e "
+		+ "FROM ExerciseChallengeRecord e "
+		+ "WHERE e.memberChallenge.challenge.id = :challengeId "
+		+ "AND DATE(e.createdAt) = :date")
+	List<ExerciseChallengeRecord> findByChallengeIdAndCreatedAtDate(
+		@Param("challengeId") Long challengeId,
 		@Param("date") LocalDate date
 	);
 }

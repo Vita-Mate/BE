@@ -14,4 +14,6 @@ public interface ChallengeQueryService {
 	ChallengeResponseDTO.ParticipatingChallengeListDTO getParticipatingChallengeList(String email);
 
 	List<ChallengeResponseDTO.GetExerciseRecordResultDTO> getMyExerciseRecord(String email, Long challengeId, LocalDate date);
+	List<ChallengeResponseDTO.GetExerciseRecordResultDTO> getTeamExerciseRecord(String email, Long challengeId, LocalDate date);
+
 }
