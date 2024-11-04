@@ -91,4 +91,14 @@ public class ChallengeRestController {
 	){
 		return ApiResponse.onSuccess(challengeQueryService.getMyExerciseRecord(SecurityUtil.getCurrentUsername(), challengeId, date));
 	}
+
+	@GetMapping(value = "/{challengeId}/teamRecord")
+	@Operation(summary = "단체 챌린지 - 팀원기록 조회 API", description = "참여중인 챌린지의 id와 조회할 날짜를 넣어주세요. 날짜는 YYYY-MM-DD 형식으로 넣어주세요.")
+	public ApiResponse<List<ChallengeResponseDTO.GetExerciseRecordResultDTO>> getTeamRecord(
+		@PathVariable(name = "challengeId") Long challengeId,
+		@RequestParam(name = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
+	){
+		return ApiResponse.onSuccess(challengeQueryService.getTeamExerciseRecord(SecurityUtil.getCurrentUsername(), challengeId, date));
+	}
+
 }

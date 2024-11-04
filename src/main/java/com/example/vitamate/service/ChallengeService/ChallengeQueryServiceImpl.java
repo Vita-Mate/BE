@@ -28,12 +28,13 @@ import com.example.vitamate.repository.RecordImageRepository;
 import com.example.vitamate.service.MemberService.MemberCommandService;
 import com.example.vitamate.web.dto.ChallengeResponseDTO;
 
+import jakarta.persistence.Id;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class ChallengeQueryServiceImpl implements ChallengeQueryService{
+public class ChallengeQueryServiceImpl implements ChallengeQueryService {
 
 	private final ChallengeRepository challengeRepository;
 	private final ChallengeConverter challengeConverter;
@@ -53,7 +54,7 @@ public class ChallengeQueryServiceImpl implements ChallengeQueryService{
 		Integer minParticipants,
 		Integer maxParticipants,
 		Integer page,
-		Integer pageSize){
+		Integer pageSize) {
 
 		PageRequest pageRequest = PageRequest.of(page, pageSize);
 
@@ -66,19 +67,19 @@ public class ChallengeQueryServiceImpl implements ChallengeQueryService{
 			if (category != null) {
 				predicates.add(builder.equal(root.get("challengeCategory"), category));
 			}
-			if(weeklyFrequency != null && !weeklyFrequency.isEmpty()){
+			if (weeklyFrequency != null && !weeklyFrequency.isEmpty()) {
 				predicates.add(root.get("weeklyFrequency").in(weeklyFrequency));
 			}
-			if(startDate != null) {
+			if (startDate != null) {
 				predicates.add(builder.greaterThanOrEqualTo(root.get("startDate"), startDate));
 			}
-			if(duration != null){
+			if (duration != null) {
 				predicates.add(builder.equal(root.get("duration"), duration));
 			}
-			if(minParticipants != null){
+			if (minParticipants != null) {
 				predicates.add(builder.greaterThanOrEqualTo(root.get("minParticipants"), minParticipants));
 			}
-			if(maxParticipants != null){
+			if (maxParticipants != null) {
 				predicates.add(builder.lessThanOrEqualTo(root.get("maxParticipants"), maxParticipants));
 			}
 			return builder.and(predicates.toArray(new Predicate[0]));
@@ -91,19 +92,21 @@ public class ChallengeQueryServiceImpl implements ChallengeQueryService{
 
 	@Override
 	@Transactional
-	public ChallengeResponseDTO.ParticipatingChallengeListDTO getParticipatingChallengeList(String email){
+	public ChallengeResponseDTO.ParticipatingChallengeListDTO getParticipatingChallengeList(String email) {
 		Member member = memberCommandService.validMember(email);
 
-		List<MemberChallenge> memberChallenges = memberChallengeRepository.findByMemberIdAndChallenge_StatusIn(member.getId(), Arrays.asList(ChallengeStatus.WAITING, ChallengeStatus.IN_PROGRESS));
+		List<MemberChallenge> memberChallenges = memberChallengeRepository.findByMemberIdAndChallenge_StatusIn(
+			member.getId(), Arrays.asList(ChallengeStatus.WAITING, ChallengeStatus.IN_PROGRESS));
 
 		ChallengeResponseDTO.ParticipatingChallengeDTO exerciseChallenge = null;
 		ChallengeResponseDTO.ParticipatingChallengeDTO quitAlcoholChallenge = null;
 		ChallengeResponseDTO.ParticipatingChallengeDTO quitSmokeChallenge = null;
 
-		for(MemberChallenge memberChallenge : memberChallenges){
-			ChallengeResponseDTO.ParticipatingChallengeDTO challengeDTO = challengeConverter.toParticipatingChallengeDTO(memberChallenge.getChallenge());
-			switch (memberChallenge.getChallenge().getChallengeCategory()){
-				case EXERCISE :
+		for (MemberChallenge memberChallenge : memberChallenges) {
+			ChallengeResponseDTO.ParticipatingChallengeDTO challengeDTO = challengeConverter.toParticipatingChallengeDTO(
+				memberChallenge.getChallenge());
+			switch (memberChallenge.getChallenge().getChallengeCategory()) {
+				case EXERCISE:
 					exerciseChallenge = challengeDTO;
 					break;
 				case QUIT_ALCOHOL:
@@ -115,19 +118,44 @@ public class ChallengeQueryServiceImpl implements ChallengeQueryService{
 			}
 		}
 
-		return challengeConverter.toParticipatingChallengeListDTO(exerciseChallenge, quitAlcoholChallenge, quitSmokeChallenge);
+		return challengeConverter.toParticipatingChallengeListDTO(exerciseChallenge, quitAlcoholChallenge,
+			quitSmokeChallenge);
 	}
 
 	@Override
 	@Transactional
-	public List<ChallengeResponseDTO.GetExerciseRecordResultDTO> getMyExerciseRecord(String email, Long challengeId, LocalDate date){
+	public List<ChallengeResponseDTO.GetExerciseRecordResultDTO> getMyExerciseRecord(String email, Long challengeId,
+		LocalDate date) {
 		Member member = memberCommandService.validMember(email);
 		Challenge challenge = challengeCommandService.validChallenge(challengeId);
 		MemberChallenge memberChallenge = challengeCommandService.validMemberChallenge(member, challenge);
 
-		List<ExerciseChallengeRecord> exerciseChallengeRecordList = exerciseChallengeRecordRepository.findByMemberChallengeAndCreatedAtDate(memberChallenge, date);
+		List<ExerciseChallengeRecord> exerciseChallengeRecordList = exerciseChallengeRecordRepository.findByMemberChallengeAndCreatedAtDate(
+			memberChallenge, date);
 
 		List<ChallengeResponseDTO.GetExerciseRecordResultDTO> DTOList = exerciseChallengeRecordList.stream()
+			.map(record -> {
+				RecordImage recordImage = recordImageRepository.findByExerciseChallengeRecord(record);
+				String imageURL = recordImage.getImageUrl();
+				return challengeConverter.toGetExerciseRecordResultDTO(record, imageURL);
+			}).collect(Collectors.toList());
+
+		return DTOList;
+	}
+
+	@Override
+	@Transactional
+	public List<ChallengeResponseDTO.GetExerciseRecordResultDTO> getTeamExerciseRecord(String email, Long challengeId,
+		LocalDate date) {
+		Member member = memberCommandService.validMember(email);
+		challengeCommandService.validChallenge(challengeId);
+
+		// 특정 날짜와 challengeId에 해당하는 모든 기록 가져오기
+		List<ExerciseChallengeRecord> exerciseChallengeRecordList = exerciseChallengeRecordRepository.findByChallengeIdAndCreatedAtDate(challengeId, date);
+
+		// 자신의 기록을 제외하고 다른 팀원들의 기록만 남기기
+		List<ChallengeResponseDTO.GetExerciseRecordResultDTO> DTOList = exerciseChallengeRecordList.stream()
+			.filter(record -> !record.getMemberChallenge().getMember().getId().equals(member.getId()))
 			.map(record -> {
 				RecordImage recordImage = recordImageRepository.findByExerciseChallengeRecord(record);
 				String imageURL = recordImage.getImageUrl();
