@@ -11,7 +11,7 @@ import com.example.vitamate.web.dto.ChallengeResponseDTO;
 public interface ChallengeQueryService {
 
 	ChallengeResponseDTO.ChallengeListDTO getChallengeList(ChallengeCategory category, List<Integer> weeklyFrequency, LocalDate startDate, ChallengeDuration duration, Integer minParticipants, Integer maxParticipants, Integer page, Integer pageSize);
-	ChallengeResponseDTO.ParticipatingChallengeListDTO getParticipatingChallengeList(String email);
+	ChallengeResponseDTO.ChallengePreviewDTO getParticipatingChallengeList(String email, ChallengeCategory category);
 
 	List<ChallengeResponseDTO.GetExerciseRecordResultDTO> getMyExerciseRecord(String email, Long challengeId, LocalDate date);
 	List<ChallengeResponseDTO.GetExerciseRecordResultDTO> getTeamExerciseRecord(String email, Long challengeId, LocalDate date);

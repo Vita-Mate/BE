@@ -17,13 +17,16 @@ public interface MemberChallengeRepository extends JpaRepository<MemberChallenge
 
 	Boolean existsByMemberAndChallenge_ChallengeCategoryAndChallenge_StatusIn(Member member, ChallengeCategory challengeCategory, List<ChallengeStatus> challengeStatuses);
 
-	@Query("SELECT mc FROM MemberChallenge mc "
+	@Query("SELECT mc "
+		+ "FROM MemberChallenge mc "
 		+ "JOIN mc.challenge c "
 		+ "where mc.member.id = :memberId "
-		+ "AND c.status IN (:statuses)")
-	List<MemberChallenge> findByMemberIdAndChallenge_StatusIn(
+		+ "AND c.status IN (:statuses) "
+		+ "AND c.challengeCategory = :category")
+	Optional<MemberChallenge> findByMemberIdAndChallenge_StatusInChallengeCategory(
 		@Param("memberId") Long memberId,
-		@Param("statuses") List<ChallengeStatus> statuses
+		@Param("statuses") List<ChallengeStatus> statuses,
+		@Param("category") ChallengeCategory category
 	);
 
 	Optional<MemberChallenge> findByMemberAndChallenge(Member member, Challenge challenge);

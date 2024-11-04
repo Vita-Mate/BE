@@ -4,14 +4,19 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.coyote.ErrorState;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.vitamate.apiPayload.code.status.ErrorStatus;
+import com.example.vitamate.apiPayload.exception.handler.ChallengeHandler;
+import com.example.vitamate.apiPayload.exception.handler.MemberHandler;
 import com.example.vitamate.converter.ChallengeConverter;
 import com.example.vitamate.domain.Challenge;
 import com.example.vitamate.domain.Member;
@@ -92,34 +97,14 @@ public class ChallengeQueryServiceImpl implements ChallengeQueryService {
 
 	@Override
 	@Transactional
-	public ChallengeResponseDTO.ParticipatingChallengeListDTO getParticipatingChallengeList(String email) {
+	public ChallengeResponseDTO.ChallengePreviewDTO getParticipatingChallengeList(String email, ChallengeCategory category) {
 		Member member = memberCommandService.validMember(email);
 
-		List<MemberChallenge> memberChallenges = memberChallengeRepository.findByMemberIdAndChallenge_StatusIn(
-			member.getId(), Arrays.asList(ChallengeStatus.WAITING, ChallengeStatus.IN_PROGRESS));
+		MemberChallenge memberChallenge = memberChallengeRepository.findByMemberIdAndChallenge_StatusInChallengeCategory(
+			member.getId(), Arrays.asList(ChallengeStatus.WAITING, ChallengeStatus.IN_PROGRESS), category)
+			.orElseThrow(() -> new ChallengeHandler(ErrorStatus.NOT_PARTICIPATING_IN_CHALLENGE));
 
-		ChallengeResponseDTO.ParticipatingChallengeDTO exerciseChallenge = null;
-		ChallengeResponseDTO.ParticipatingChallengeDTO quitAlcoholChallenge = null;
-		ChallengeResponseDTO.ParticipatingChallengeDTO quitSmokeChallenge = null;
-
-		for (MemberChallenge memberChallenge : memberChallenges) {
-			ChallengeResponseDTO.ParticipatingChallengeDTO challengeDTO = challengeConverter.toParticipatingChallengeDTO(
-				memberChallenge.getChallenge());
-			switch (memberChallenge.getChallenge().getChallengeCategory()) {
-				case EXERCISE:
-					exerciseChallenge = challengeDTO;
-					break;
-				case QUIT_ALCOHOL:
-					quitAlcoholChallenge = challengeDTO;
-					break;
-				case QUIT_SMOKE:
-					quitSmokeChallenge = challengeDTO;
-					break;
-			}
-		}
-
-		return challengeConverter.toParticipatingChallengeListDTO(exerciseChallenge, quitAlcoholChallenge,
-			quitSmokeChallenge);
+		return challengeConverter.toChallengePreviewDTO(memberChallenge.getChallenge());
 	}
 
 	@Override
