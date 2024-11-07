@@ -126,6 +126,8 @@ public class SupplementCommandServiceImpl implements SupplementCommandService{
                 .orElse(MemberSupplement.builder()
                         .member(member)
                         .supplement(supplement)
+                        .isTaking(false)
+                        .isScrapped(false)
                         .build());
 
         // 이미 스크랩 된 경우 에러 핸들링
