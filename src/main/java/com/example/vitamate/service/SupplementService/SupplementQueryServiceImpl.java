@@ -14,8 +14,10 @@ import com.example.vitamate.domain.mapping.MemberSupplement;
 import com.example.vitamate.domain.mapping.NutrientInfo;
 import com.example.vitamate.domain.mapping.Review;
 import com.example.vitamate.repository.*;
+import com.example.vitamate.service.MemberService.MemberCommandService;
 import com.example.vitamate.web.dto.ReviewResponseDTO;
 import com.example.vitamate.web.dto.SupplementResponseDTO;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -48,6 +50,7 @@ public class SupplementQueryServiceImpl implements SupplementQueryService {
     private final NutrientRecommendationsRepository nutrientRecommendationsRepository;
     private final SupplementConverter supplementConverter;
     private final AgeGroupsRepository ageGroupsRepository;
+    private final MemberCommandService memberCommandService;
 
     @Override
     @Transactional
@@ -137,6 +140,19 @@ public class SupplementQueryServiceImpl implements SupplementQueryService {
         }
 
         return SupplementConverter.toSupplementDetailDTO(supplement, isScrapped);
+    }
+
+    @Override
+    @Transactional
+    public List<SupplementResponseDTO.AddScrapResultDTO> getScrappedSupplement(String email){
+        Member member = memberCommandService.validMember(email);
+
+        List<MemberSupplement> memberSupplementList = memberSupplementRepository.findAllByMemberAndIsScrappedTrue(member);
+
+        List<SupplementResponseDTO.AddScrapResultDTO> scrappedSupplementList =  memberSupplementList.stream()
+            .map(supplement -> supplementConverter.toAddScrapResultDTO(supplement)).collect(Collectors.toList());
+
+        return scrappedSupplementList;
     }
 
     @Override

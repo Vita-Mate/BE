@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface MemberSupplementRepository extends JpaRepository<MemberSupplement, Long> {
@@ -15,5 +16,5 @@ public interface MemberSupplementRepository extends JpaRepository<MemberSuppleme
 
     Optional<MemberSupplement> findByMemberAndSupplement(Member member, Supplement supplement);
 
-    Optional<MemberSupplement> findByMemberIdAndIsScrappedTrue(Long memberId);
+    List<MemberSupplement> findAllByMemberAndIsScrappedTrue(Member member);
 }

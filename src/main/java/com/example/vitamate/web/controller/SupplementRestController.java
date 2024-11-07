@@ -7,6 +7,7 @@ import com.example.vitamate.domain.Supplement;
 import com.example.vitamate.domain.mapping.MemberSupplement;
 import com.example.vitamate.jwt.SecurityUtil;
 import com.example.vitamate.service.SupplementService.SupplementCommandService;
+import com.example.vitamate.service.SupplementService.SupplementQueryService;
 import com.example.vitamate.service.SupplementService.SupplementQueryServiceImpl;
 import com.example.vitamate.web.dto.ReviewRequestDTO;
 import com.example.vitamate.web.dto.ReviewResponseDTO;
@@ -29,7 +30,7 @@ import java.util.List;
 @RequestMapping("/supplements")
 public class SupplementRestController {
 
-    private final SupplementQueryServiceImpl supplementQueryService;
+    private final SupplementQueryService supplementQueryService;
     private final SupplementCommandService supplementCommandService;
 
     @GetMapping("/taking")
@@ -119,6 +120,12 @@ public class SupplementRestController {
     @Operation(summary = "스크랩 취소 API", description = "영양제 스크랩 해제 API 입니다.")
     public ApiResponse<SupplementResponseDTO.DeleteScrapResultDTO> deleteScrap(@PathVariable(name = "supplementId") Long supplementId){
         return ApiResponse.onSuccess(supplementCommandService.deleteScrap(SecurityUtil.getCurrentUsername(), supplementId));
+    }
+
+    @GetMapping({"/scrap"})
+    @Operation(summary = "스크랩 목록 조회 API", description = "스크랩 목록 조회 API 입니다.")
+    public ApiResponse<List<SupplementResponseDTO.AddScrapResultDTO>> getScrappedSupplements(){
+        return ApiResponse.onSuccess(supplementQueryService.getScrappedSupplement(SecurityUtil.getCurrentUsername()));
     }
 
     @PostMapping("/{supplementId}/review")
