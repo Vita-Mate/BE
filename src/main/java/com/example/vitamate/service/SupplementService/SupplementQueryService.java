@@ -20,5 +20,8 @@ public interface SupplementQueryService {
     ReviewResponseDTO.ReviewListDTO getReviewList(Long supplementId, Integer page, Integer pageSize);
     SupplementResponseDTO.IntakeNutrientListDTO getIntakeNutrientList(String email, Integer page, Integer pageSize);
 
+    List<SupplementResponseDTO.IntakeNutrientResultDTO> getSimulationNutrients(String email);
+
     List<SupplementResponseDTO.AddScrapResultDTO> getScrappedSupplement(String email);
+
 }
