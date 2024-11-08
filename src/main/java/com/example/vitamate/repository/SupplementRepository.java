@@ -12,7 +12,5 @@ import java.util.Set;
 
 public interface SupplementRepository extends JpaRepository<Supplement, Long> {
     Page<Supplement> findByNameContaining(String name, PageRequest pageRequest);
-
-    Page<Supplement> findAllByIdIn(Set<Long> idSet, Pageable pageable);
 }
 
