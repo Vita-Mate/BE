@@ -17,4 +17,6 @@ public interface MemberSupplementRepository extends JpaRepository<MemberSuppleme
     Optional<MemberSupplement> findByMemberAndSupplement(Member member, Supplement supplement);
 
     List<MemberSupplement> findAllByMemberAndIsScrappedTrue(Member member);
+
+    List<MemberSupplement> findAllByMember(Member member);
 }

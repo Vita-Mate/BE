@@ -76,6 +76,12 @@ public class SupplementRestController {
         return ApiResponse.onSuccess(supplementQueryService.getIntakeNutrientList(SecurityUtil.getCurrentUsername(), page, pageSize));
    }
 
+   @GetMapping("/simulation")
+   @Operation(summary = "영양제 복용 시뮬레이션 API", description = "현재 복용중인 영양제와 스크랩 한 영양제로 섭취량 시뮬레이션 하는 API")
+   public ApiResponse<List<SupplementResponseDTO.IntakeNutrientResultDTO>> getSimulationNutrients(){
+        return ApiResponse.onSuccess(supplementQueryService.getSimulationNutrients(SecurityUtil.getCurrentUsername()));
+   }
+
     @GetMapping("/search")
     @Operation(summary = "영양제 검색 API", description = "영양제 이름을 검색하는 API 이며, 페이징을 포함합니다. query string으로 page 번호, 검색 방식, 검색어를 주세요")
     @Parameters({

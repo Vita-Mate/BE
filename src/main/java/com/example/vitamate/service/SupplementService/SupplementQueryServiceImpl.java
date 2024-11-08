@@ -231,6 +231,52 @@ public class SupplementQueryServiceImpl implements SupplementQueryService {
         return supplementConverter.toIntakeNutrientListDTO(pagedNutrientList, totalPage, totalElements, page);
     }
 
+    @Override
+    @Transactional
+    public List<SupplementResponseDTO.IntakeNutrientResultDTO> getSimulationNutrients(String email){
+        Member member = memberCommandService.validMember(email);
+
+        // 스크랩 or 복용중 모두 조회
+        List<MemberSupplement> memberSupplementList = memberSupplementRepository.findAllByMember(member);
+
+        Map<Integer, Double> nutrientAmountMap = new HashMap<>();
+        Map<Integer, NutrientInfo> nutrientInfoMap = new HashMap<>();
+        for(MemberSupplement memberSupplement : memberSupplementList){
+            Supplement supplement = memberSupplement.getSupplement();
+            List<NutrientInfo> nutrientInfoList = nutrientInfoRepository.findAllBySupplement(supplement);
+
+            for(NutrientInfo nutrientInfo : nutrientInfoList){
+                Integer nutrientId = nutrientInfo.getNutrientId();
+                nutrientInfoMap.put(nutrientId, nutrientInfo);
+
+                Double nutrientAmount = Double.parseDouble(nutrientInfo.getAmount());
+
+                nutrientAmountMap.merge(nutrientId, nutrientAmount, Double::sum);
+            }
+        }
+
+        List<SupplementResponseDTO.IntakeNutrientResultDTO> intakeNutrientDTOList = new ArrayList<>();
+
+        for(Map.Entry<Integer, Double> entry: nutrientAmountMap.entrySet()) {
+            Integer nutrientId = entry.getKey();
+            Double totalAmount = entry.getValue();
+            NutrientInfo nutrientInfo = nutrientInfoMap.get(nutrientId);
+
+            AgeGroups ageGroups = ageGroupsRepository.findById(calculateAgeGroup(member.getBirthDay()))
+                .orElseThrow(() -> new IllegalArgumentException("해당 연령 그룹이 존재하지 않습니다."));
+
+            NutrientRecommendations recommendations = nutrientRecommendationsRepository.findByNutrientIdAndAgeGroupIdAndGender(
+                nutrientId, ageGroups.getId(), member.getGender().toString()
+            );
+
+            SupplementResponseDTO.IntakeNutrientResultDTO dto = supplementConverter.toIntakeNutrientResultDTO(
+                recommendations, totalAmount
+            );
+            intakeNutrientDTOList.add(dto);
+        }
+        return intakeNutrientDTOList;
+    }
+
     private int calculateAgeGroup(LocalDate birthDate){
         LocalDate today = LocalDate.now();
 
