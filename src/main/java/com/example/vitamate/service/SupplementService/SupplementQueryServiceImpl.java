@@ -163,7 +163,7 @@ public class SupplementQueryServiceImpl implements SupplementQueryService {
         Supplement supplement = supplementRepository.findById(supplementId)
                 .orElseThrow(() -> new SupplementHandler(ErrorStatus.SUPPLEMENT_NOT_FOUND));
 
-        Page<Review> reviewPage = reviewRepository.findAllBySupplement(supplement, PageRequest.of(page, pageSize));
+        Page<Review> reviewPage = reviewRepository.findAllBySupplement(supplement, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id")));
 
         return reviewConverter.toReviewListDTO(reviewPage);
     }
