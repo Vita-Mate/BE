@@ -97,24 +97,34 @@ public class SupplementQueryServiceImpl implements SupplementQueryService {
         List<NutrientAlias> nutrientAliasList = nutrientAliasRepository.findByAliasNameContaining(keyword);
 
         // 각각의 영양소 id 추출
-        Set<Integer> nutrientIdSet = nutrientAliasList.stream().map(nutrientAlias-> nutrientAlias.getNutrient().getId()).collect(Collectors.toSet());
+        Set<Integer> nutrientIdSet = nutrientAliasList.stream()
+            .map(nutrientAlias-> nutrientAlias.getNutrient().getId())
+            .collect(Collectors.toSet());
 
         Page<NutrientInfo> nutrientInfoPage = nutrientInfoRepository.findByNutrientIdIn(nutrientIdSet, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id")));
 
-        // 추출한 supplement_id 목록
-        List<Supplement> supplementList = nutrientInfoPage.stream()
+        // 추출한 supplement_id 목록에서 중복 제거해서 id가 큰 것만 남기기
+        Map<Long, Supplement> supplementMap = new HashMap<>();
+        nutrientInfoPage.stream()
             .map(NutrientInfo::getSupplement)
-            .collect(Collectors.toList());
+            .forEach(supplement -> {
+                supplementMap.merge(supplement.getId(), supplement, (existing, newSupplement) ->
+                    newSupplement.getId() > existing.getId() ? newSupplement : existing);
+            });
 
-        Page<Supplement> supplementPage = new PageImpl<>(supplementList, nutrientInfoPage.getPageable(), nutrientInfoPage.getTotalElements());
+        // 중복이 제거된 Supplement 목록을 정렬
+        List<Supplement> supplementList = new ArrayList<>(supplementMap.values());
+        supplementList.sort((s1, s2) -> Long.compare(s2.getId(), s1.getId()));
 
-        List<Supplement> supplements = supplementPage.getContent();
-        List<SupplementResponseDTO.PreviewSupplementDTO> previewSupplementDTOs = supplements.stream()
+        // 페이지 처리
+        int start = (int) PageRequest.of(page, pageSize).getOffset();
+        int end = Math.min((start + pageSize), supplementList.size());
+        Page<Supplement> supplementPage = new PageImpl<>(supplementList.subList(start, end), PageRequest.of(page, pageSize), supplementList.size());
+
+        List<SupplementResponseDTO.PreviewSupplementDTO> previewSupplementDTOs = supplementPage.getContent().stream()
             .map(supplement -> {
                 Optional<MemberSupplement> memberSupplementOpt = memberSupplementRepository.findByMemberAndSupplement(member, supplement);
-
                 boolean isScrapped = memberSupplementOpt.map(MemberSupplement::getIsScrapped).orElse(false);
-
                 return supplementConverter.toSearchSupplementDTO(supplement, isScrapped);
             })
             .toList();
