@@ -22,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -69,7 +70,8 @@ public class SupplementQueryServiceImpl implements SupplementQueryService {
         Member member = memberRepository.findByEmail(email)
             .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
 
-        Page<Supplement> supplementPage = supplementRepository.findByNameContaining(keyword, PageRequest.of(page, pageSize));
+        Page<Supplement> supplementPage = supplementRepository.findByNameContaining(keyword, PageRequest.of(page, pageSize, Sort.by(
+            Sort.Direction.DESC, "id")));
         List<Supplement> supplements = supplementPage.getContent();
         List<SupplementResponseDTO.PreviewSupplementDTO> previewSupplementDTOs = supplements.stream()
             .map(supplement -> {
@@ -97,7 +99,7 @@ public class SupplementQueryServiceImpl implements SupplementQueryService {
         // 각각의 영양소 id 추출
         Set<Integer> nutrientIdSet = nutrientAliasList.stream().map(nutrientAlias-> nutrientAlias.getNutrient().getId()).collect(Collectors.toSet());
 
-        Page<NutrientInfo> nutrientInfoPage = nutrientInfoRepository.findByNutrientIdIn(nutrientIdSet, PageRequest.of(page, pageSize));
+        Page<NutrientInfo> nutrientInfoPage = nutrientInfoRepository.findByNutrientIdIn(nutrientIdSet, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "id")));
 
         // 추출한 supplement_id 목록
         List<Supplement> supplementList = nutrientInfoPage.stream()
