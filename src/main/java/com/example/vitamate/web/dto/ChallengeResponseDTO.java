@@ -51,6 +51,8 @@ public class ChallengeResponseDTO {
 		Long ChallengeId;
 		String title;
 		Integer dDay;
+		LocalDate startDate;
+		LocalDate endDate;
 		Integer maxParticipants;
 		Integer currentParticipants;
 		Integer weeklyFrequency;

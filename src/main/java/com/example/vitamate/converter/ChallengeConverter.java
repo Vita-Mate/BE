@@ -63,6 +63,8 @@ public class ChallengeConverter {
 			.ChallengeId(challenge.getId())
 			.title(challenge.getTitle())
 			.dDay((int)ChronoUnit.DAYS.between(LocalDate.now(), challenge.getStartDate()))
+			.startDate(challenge.getStartDate())
+			.endDate(challenge.getEndDate())
 			.weeklyFrequency(challenge.getWeeklyFrequency())
 			.currentParticipants(challenge.getCurrentUsers())
 			.maxParticipants(challenge.getMaxUsers())
