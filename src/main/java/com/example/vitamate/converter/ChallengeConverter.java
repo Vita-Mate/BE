@@ -149,4 +149,13 @@ public class ChallengeConverter {
 
 	}
 
+	public static ChallengeResponseDTO.GetExerciseRankingDTO toGetExerciseRankingDTO(Integer rank, String nickname, int hours, int minutes){
+		String totalExerciseTime = String.format("%d시간 %d분", hours, minutes);
+		return ChallengeResponseDTO.GetExerciseRankingDTO.builder()
+			.rank(rank)
+			.nickname(nickname)
+			.totalExerciseTime(totalExerciseTime)
+			.build();
+	}
+
 }

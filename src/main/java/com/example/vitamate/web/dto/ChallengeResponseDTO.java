@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 public class ChallengeResponseDTO {
 
@@ -88,6 +89,17 @@ public class ChallengeResponseDTO {
 		LocalDateTime startTime;
 		LocalDateTime endTime;
 		String comment;
+	}
+
+	@Builder
+	@Setter
+	@Getter
+	@NoArgsConstructor
+	@AllArgsConstructor
+	public static class GetExerciseRankingDTO{
+		Integer rank;
+		String nickname;
+		String totalExerciseTime;
 	}
 
 }

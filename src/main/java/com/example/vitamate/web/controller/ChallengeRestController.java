@@ -87,7 +87,7 @@ public class ChallengeRestController {
 	}
 
 	@GetMapping(value = "/{challengeId}/myRecord")
-	@Operation(summary = "단체 챌린지 - 나의 기록 조회 API", description = "참여중인 챌린지의 id와 조회할 날짜를 넣어주세요. 날짜는 YYYY-MM-DD 형식으로 넣어주세요.")
+	@Operation(summary = "운동 습관 챌린지 - 나의 기록 조회 API", description = "참여중인 챌린지의 id와 조회할 날짜를 넣어주세요. 날짜는 YYYY-MM-DD 형식으로 넣어주세요.")
 	public ApiResponse<List<ChallengeResponseDTO.GetExerciseRecordResultDTO>> getMyRecord(
 		@PathVariable(name = "challengeId") Long challengeId,
 		@RequestParam(name = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
@@ -96,12 +96,20 @@ public class ChallengeRestController {
 	}
 
 	@GetMapping(value = "/{challengeId}/teamRecord")
-	@Operation(summary = "단체 챌린지 - 팀원기록 조회 API", description = "참여중인 챌린지의 id와 조회할 날짜를 넣어주세요. 날짜는 YYYY-MM-DD 형식으로 넣어주세요.")
+	@Operation(summary = "운동 습관 챌린지 - 팀원 기록 조회 API", description = "참여중인 챌린지의 id와 조회할 날짜를 넣어주세요. 날짜는 YYYY-MM-DD 형식으로 넣어주세요.")
 	public ApiResponse<List<ChallengeResponseDTO.GetExerciseRecordResultDTO>> getTeamRecord(
 		@PathVariable(name = "challengeId") Long challengeId,
 		@RequestParam(name = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
 	){
 		return ApiResponse.onSuccess(challengeQueryService.getTeamExerciseRecord(SecurityUtil.getCurrentUsername(), challengeId, date));
+	}
+
+	@GetMapping(value = "/{challengeId}/ranking")
+	@Operation(summary = "운동 습관 챌린지 - 팀 순위 조회 API", description = "참여중인 챌린지의 id를 넣어주세요")
+	public ApiResponse<List<ChallengeResponseDTO.GetExerciseRankingDTO>> getChallengeRanking(
+		@PathVariable(name = "challengeId") Long challengeId
+	){
+		return ApiResponse.onSuccess(challengeQueryService.getChallengeRanking(SecurityUtil.getCurrentUsername(), challengeId));
 	}
 
 	@DeleteMapping(value = "/{challengeId}")
@@ -111,4 +119,5 @@ public class ChallengeRestController {
 	){
 		return ApiResponse.onSuccess(challengeCommandService.cancelChallengeParticipation(SecurityUtil.getCurrentUsername(), challengeId));
 	}
+
 }
