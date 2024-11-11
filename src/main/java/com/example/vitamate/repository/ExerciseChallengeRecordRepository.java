@@ -29,4 +29,6 @@ public interface ExerciseChallengeRecordRepository extends JpaRepository<Exercis
 		@Param("challengeId") Long challengeId,
 		@Param("date") LocalDate date
 	);
+
+	List<ExerciseChallengeRecord> findAllByMemberChallenge(MemberChallenge memberChallenge);
 }

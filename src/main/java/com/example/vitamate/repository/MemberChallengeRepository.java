@@ -30,4 +30,6 @@ public interface MemberChallengeRepository extends JpaRepository<MemberChallenge
 	);
 
 	Optional<MemberChallenge> findByMemberAndChallenge(Member member, Challenge challenge);
+
+	List<MemberChallenge> findAllByChallenge(Challenge challenge);
 }

@@ -1,9 +1,12 @@
 package com.example.vitamate.service.ChallengeService;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -146,4 +149,59 @@ public class ChallengeQueryServiceImpl implements ChallengeQueryService {
 
 		return DTOList;
 	}
+
+	@Override
+	@Transactional
+	public List<ChallengeResponseDTO.GetExerciseRankingDTO> getChallengeRanking(String email, Long challengeId) {
+		Challenge challenge = challengeCommandService.validChallenge(challengeId);
+		challengeCommandService.validMemberChallenge(memberCommandService.validMember(email), challenge);
+
+		// challenge로 MemberChallenge 가져오기
+		List<MemberChallenge> memberChallengeList = memberChallengeRepository.findAllByChallenge(challenge);
+
+		// 각 멤버의 운동 기록 합산해서 Map에 저장
+		Map<MemberChallenge, Duration> memberTotalExerciseTimeMap = memberChallengeList.stream()
+			.collect(Collectors.toMap(
+				memberChallenge -> memberChallenge,
+				memberChallenge -> calculateTotalExerciseTime(
+					exerciseChallengeRecordRepository.findAllByMemberChallenge(memberChallenge)
+				)
+			));
+
+		// 누적 운동 시간으로 순위 계산
+		List<ChallengeResponseDTO.GetExerciseRankingDTO> rankingDTOList = calculateRank(memberTotalExerciseTimeMap);
+
+		// 순위 할당
+		return assignRanks(rankingDTOList);
+	}
+
+	// 누적 운동 시간 계산
+	public Duration calculateTotalExerciseTime(List<ExerciseChallengeRecord> records) {
+		return records.stream()
+			.map(record -> Duration.between(record.getStartTime(), record.getEndTime()))
+			.reduce(Duration.ZERO, Duration::plus); // 모든 운동시간 합산 계산
+	}
+
+	// 랭킹 계산
+	public List<ChallengeResponseDTO.GetExerciseRankingDTO> calculateRank(Map<MemberChallenge, Duration> memberChallengeDurationMap){
+		return memberChallengeDurationMap.entrySet().stream()
+			.sorted((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue())) // 운동시간 기준 내림차순
+			.map(entry -> {
+				Duration duration = entry.getValue();
+				int hours = (int) duration.toHours();
+				int minutes = duration.toMinutesPart();
+
+				// DTO 변환 (순위는 나중에 할당)
+				return challengeConverter.toGetExerciseRankingDTO(null, entry.getKey().getMember().getNickname(), hours, minutes);
+			}).collect(Collectors.toList());
+	}
+
+	// 순위 할당
+	public List<ChallengeResponseDTO.GetExerciseRankingDTO> assignRanks(List<ChallengeResponseDTO.GetExerciseRankingDTO> rankingList){
+		for (int i = 0; i < rankingList.size(); i++)
+			rankingList.get(i).setRank(i + 1);
+		return rankingList;
+	}
+
+
 }
