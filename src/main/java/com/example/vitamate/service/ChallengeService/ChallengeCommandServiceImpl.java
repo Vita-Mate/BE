@@ -146,6 +146,29 @@ public class ChallengeCommandServiceImpl implements ChallengeCommandService{
 
 	}
 
+	@Override
+	@Transactional
+	public String cancelChallengeParticipation(String email, Long challengeId){
+		Member member = memberCommandService.validMember(email);
+		Challenge challenge = validChallenge(challengeId);
+		MemberChallenge memberChallenge = memberChallengeRepository.findByMemberAndChallenge(member, challenge)
+			.orElseThrow(() -> new ChallengeHandler(ErrorStatus.MEMBER_CHALLENGE_NOT_FOUND));
+
+		if (challenge.getStatus() != ChallengeStatus.WAITING)
+			throw new ChallengeHandler(ErrorStatus.INVALID_CHALLENGE_STATUS_FOR_CANCELLATION);
+
+		if(memberChallenge.isLeader()) {
+			challenge.setStatus(ChallengeStatus.CANCELLED);
+			challengeRepository.save(challenge);
+			return "방장의 참여 취소로 인해 챌린지가 취소되었습니다.";
+		} else {
+			memberChallengeRepository.delete(memberChallenge);
+			challenge.setCurrentUsers(challenge.getCurrentUsers() - 1);
+			challengeRepository.save(challenge);
+			return "참가가 취소되었습니다.";
+		}
+
+	}
 
 	// 검증 메소드
 

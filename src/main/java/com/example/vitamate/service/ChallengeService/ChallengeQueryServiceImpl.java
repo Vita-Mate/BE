@@ -4,10 +4,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.apache.coyote.ErrorState;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
@@ -16,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.vitamate.apiPayload.code.status.ErrorStatus;
 import com.example.vitamate.apiPayload.exception.handler.ChallengeHandler;
-import com.example.vitamate.apiPayload.exception.handler.MemberHandler;
 import com.example.vitamate.converter.ChallengeConverter;
 import com.example.vitamate.domain.Challenge;
 import com.example.vitamate.domain.Member;
@@ -33,7 +30,6 @@ import com.example.vitamate.repository.RecordImageRepository;
 import com.example.vitamate.service.MemberService.MemberCommandService;
 import com.example.vitamate.web.dto.ChallengeResponseDTO;
 
-import jakarta.persistence.Id;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 
@@ -69,6 +65,7 @@ public class ChallengeQueryServiceImpl implements ChallengeQueryService {
 			// ChallengeStatus가 WAITING인 조건 추가
 			predicates.add(builder.equal(root.get("status"), ChallengeStatus.WAITING));
 
+			// 필터링
 			if (category != null) {
 				predicates.add(builder.equal(root.get("challengeCategory"), category));
 			}

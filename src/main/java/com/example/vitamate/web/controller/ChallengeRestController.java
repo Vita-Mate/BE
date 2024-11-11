@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -103,4 +104,11 @@ public class ChallengeRestController {
 		return ApiResponse.onSuccess(challengeQueryService.getTeamExerciseRecord(SecurityUtil.getCurrentUsername(), challengeId, date));
 	}
 
+	@DeleteMapping(value = "/{challengeId}")
+	@Operation(summary = "챌린지 참가 취소 API", description = "참여중인 챌린지의 id를 넣어주세요.")
+	public ApiResponse<String> calcelChallengeParticipation(
+		@PathVariable(name = "challengeId") Long challengeId
+	){
+		return ApiResponse.onSuccess(challengeCommandService.cancelChallengeParticipation(SecurityUtil.getCurrentUsername(), challengeId));
+	}
 }
