@@ -5,7 +5,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.vitamate.domain.Challenge;
 import com.example.vitamate.domain.Member;
 import com.example.vitamate.domain.enums.ChallengeCategory;
-import com.example.vitamate.domain.mapping.ExerciseChallengeRecord;
 import com.example.vitamate.domain.mapping.MemberChallenge;
 import com.example.vitamate.web.dto.ChallengeRequestDTO;
 import com.example.vitamate.web.dto.ChallengeResponseDTO;
@@ -25,4 +24,5 @@ public interface ChallengeCommandService {
 		ChallengeRequestDTO.AddExerciseRecordDTO addExerciseRecordDTO, MultipartFile photo);
 
 	MemberChallenge validMemberChallenge(Member member, Challenge challenge);
+	String cancelChallengeParticipation(String email, Long challengeId);
 }
