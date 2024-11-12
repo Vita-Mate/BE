@@ -20,10 +20,12 @@ import com.example.vitamate.domain.enums.ChallengeCategory;
 import com.example.vitamate.domain.enums.ChallengeStatus;
 import com.example.vitamate.domain.mapping.ExerciseChallengeRecord;
 import com.example.vitamate.domain.mapping.MemberChallenge;
+import com.example.vitamate.domain.mapping.SimpleVerificationChallengeRecord;
 import com.example.vitamate.repository.ChallengeRepository;
 import com.example.vitamate.repository.ExerciseChallengeRecordRepository;
 import com.example.vitamate.repository.MemberChallengeRepository;
 import com.example.vitamate.repository.RecordImageRepository;
+import com.example.vitamate.repository.SimpleVerificationChallengeRecordRepository;
 import com.example.vitamate.repository.UuidRepository;
 import com.example.vitamate.service.MemberService.MemberCommandService;
 import com.example.vitamate.web.dto.ChallengeRequestDTO;
@@ -44,6 +46,7 @@ public class ChallengeCommandServiceImpl implements ChallengeCommandService{
 	private final AmazonS3Manager s3Manager;
 	private final UuidRepository uuidRepository;
 	private final RecordImageRepository recordImageRepository;
+	private final SimpleVerificationChallengeRecordRepository simpleVerificationChallengeRecordRepository;
 
 	@Override
 	@Transactional
@@ -145,6 +148,25 @@ public class ChallengeCommandServiceImpl implements ChallengeCommandService{
 		return challengeConverter.toAddExerciseRecordResultDTO(exerciseChallengeRecord, imageUrl);
 
 	}
+
+	@Override
+	@Transactional
+	public String addOXRecord(String email, Long challengeId, Boolean record){
+		Member member = memberCommandService.validMember(email);
+		Challenge challenge = validChallenge(challengeId);
+		MemberChallenge memberChallenge = validMemberChallenge(member, challenge);
+
+		SimpleVerificationChallengeRecord simpleVerificationChallengeRecord = simpleVerificationChallengeRecordRepository.findByMemberChallengeAndCreatedAtBetween(memberChallenge, LocalDate.now().atStartOfDay(), LocalDate.now().plusDays(1).atStartOfDay())
+				.orElseGet(() -> simpleVerificationChallengeRecordRepository.save(
+					challengeConverter.toSimpleVerificationChallengeRecord(memberChallenge, record)
+				));
+
+		simpleVerificationChallengeRecord.setRecord(record);
+		simpleVerificationChallengeRecordRepository.save(simpleVerificationChallengeRecord);
+
+		return "성공적으로 반영되었습니다.";
+	}
+
 
 	@Override
 	@Transactional

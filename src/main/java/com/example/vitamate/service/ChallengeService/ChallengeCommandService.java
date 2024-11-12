@@ -20,8 +20,13 @@ public interface ChallengeCommandService {
 
 	ChallengeResponseDTO.JoinChallengeResultDTO joinChallenge(String email, Long challengeId);
 
-	ChallengeResponseDTO.AddExerciseRecordResultDTO addExerciseRecord(String email, Long challengeId,
-		ChallengeRequestDTO.AddExerciseRecordDTO addExerciseRecordDTO, MultipartFile photo);
+	ChallengeResponseDTO.AddExerciseRecordResultDTO addExerciseRecord(
+		String email,
+		Long challengeId,
+		ChallengeRequestDTO.AddExerciseRecordDTO addExerciseRecordDTO,
+		MultipartFile photo);
+
+	String addOXRecord(String email, Long challengeId, Boolean record);
 
 	MemberChallenge validMemberChallenge(Member member, Challenge challenge);
 	String cancelChallengeParticipation(String email, Long challengeId);

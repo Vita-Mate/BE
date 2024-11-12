@@ -17,6 +17,7 @@ import com.example.vitamate.domain.enums.ChallengeDuration;
 import com.example.vitamate.domain.enums.ChallengeStatus;
 import com.example.vitamate.domain.mapping.ExerciseChallengeRecord;
 import com.example.vitamate.domain.mapping.MemberChallenge;
+import com.example.vitamate.domain.mapping.SimpleVerificationChallengeRecord;
 import com.example.vitamate.web.dto.ChallengeRequestDTO;
 import com.example.vitamate.web.dto.ChallengeResponseDTO;
 
@@ -105,6 +106,12 @@ public class ChallengeConverter {
 			.build();
 	}
 
+	public static SimpleVerificationChallengeRecord toSimpleVerificationChallengeRecord(MemberChallenge memberChallenge, Boolean record){
+		return SimpleVerificationChallengeRecord.builder()
+			.record(record)
+			.memberChallenge(memberChallenge)
+			.build();
+	}
 	public static RecordImage toRecordImage(String imageUrl, ExerciseChallengeRecord record){
 		return RecordImage.builder()
 			.exerciseChallengeRecord(record)

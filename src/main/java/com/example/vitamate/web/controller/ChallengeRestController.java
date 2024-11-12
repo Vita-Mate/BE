@@ -76,7 +76,7 @@ public class ChallengeRestController {
 		return ApiResponse.onSuccess(challengeQueryService.getParticipatingChallengeList(SecurityUtil.getCurrentUsername(), category));
 	}
 
-	@PostMapping(value = "/{challengeId}/records", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@PostMapping(value = "/{challengeId}/photoRecord", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	@Operation(summary = "운동 습관 챌린지 - 기록 업로드 API")
 	public ApiResponse<ChallengeResponseDTO.AddExerciseRecordResultDTO> addExerciseRecord(
 		@PathVariable(name = "challengeId") Long challengeId,
@@ -84,6 +84,15 @@ public class ChallengeRestController {
 		@RequestPart(name = "photo") MultipartFile photo
 		){
 		return ApiResponse.onSuccess(challengeCommandService.addExerciseRecord(SecurityUtil.getCurrentUsername(), challengeId, addExerciseRecordDTO, photo));
+	}
+
+	@PostMapping(value = "/{challengeId}/OXRecord")
+	@Operation(summary = "금주/금연 챌린지 - 기록 업로드 API", description = "성공은 true, 실패는 false 입니다.")
+	public ApiResponse<String> addOXRecord(
+		@PathVariable(name = "challengeId") Long challengeId,
+		@RequestParam(value = "record") Boolean record
+	){
+		return ApiResponse.onSuccess(challengeCommandService.addOXRecord(SecurityUtil.getCurrentUsername(), challengeId, record));
 	}
 
 	@GetMapping(value = "/{challengeId}/myRecord")
