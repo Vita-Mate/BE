@@ -95,13 +95,22 @@ public class ChallengeRestController {
 		return ApiResponse.onSuccess(challengeCommandService.addOXRecord(SecurityUtil.getCurrentUsername(), challengeId, record));
 	}
 
-	@GetMapping(value = "/{challengeId}/myRecord")
+	@GetMapping(value = "/{challengeId}/myExerciseRecord")
 	@Operation(summary = "운동 습관 챌린지 - 나의 기록 조회 API", description = "참여중인 챌린지의 id와 조회할 날짜를 넣어주세요. 날짜는 YYYY-MM-DD 형식으로 넣어주세요.")
-	public ApiResponse<List<ChallengeResponseDTO.GetExerciseRecordResultDTO>> getMyRecord(
+	public ApiResponse<List<ChallengeResponseDTO.GetExerciseRecordResultDTO>> getMyExerciseRecord(
 		@PathVariable(name = "challengeId") Long challengeId,
 		@RequestParam(name = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
 	){
 		return ApiResponse.onSuccess(challengeQueryService.getMyExerciseRecord(SecurityUtil.getCurrentUsername(), challengeId, date));
+	}
+
+	@GetMapping(value = "/{challengeId}/myOXRecord")
+	@Operation(summary = "금주/금연 챌린지 - 나의 기록 조회 API", description = "참여중인 챌린지의 id와 조회할 날짜를 넣어주세요. 날짜는 YYYY-MM-DD 형식으로 넣어주세요.")
+	public ApiResponse<String> getMyOXRecord(
+		@PathVariable(name = "challengeId") Long challengeId,
+		@RequestParam(name = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
+	){
+		return ApiResponse.onSuccess(challengeQueryService.getMyOXRecord(SecurityUtil.getCurrentUsername(), challengeId, date));
 	}
 
 	@GetMapping(value = "/{challengeId}/teamRecord")

@@ -26,10 +26,12 @@ import com.example.vitamate.domain.enums.ChallengeDuration;
 import com.example.vitamate.domain.enums.ChallengeStatus;
 import com.example.vitamate.domain.mapping.ExerciseChallengeRecord;
 import com.example.vitamate.domain.mapping.MemberChallenge;
+import com.example.vitamate.domain.mapping.SimpleVerificationChallengeRecord;
 import com.example.vitamate.repository.ChallengeRepository;
 import com.example.vitamate.repository.ExerciseChallengeRecordRepository;
 import com.example.vitamate.repository.MemberChallengeRepository;
 import com.example.vitamate.repository.RecordImageRepository;
+import com.example.vitamate.repository.SimpleVerificationChallengeRecordRepository;
 import com.example.vitamate.service.MemberService.MemberCommandService;
 import com.example.vitamate.web.dto.ChallengeResponseDTO;
 
@@ -47,6 +49,7 @@ public class ChallengeQueryServiceImpl implements ChallengeQueryService {
 	private final ChallengeCommandService challengeCommandService;
 	private final ExerciseChallengeRecordRepository exerciseChallengeRecordRepository;
 	private final RecordImageRepository recordImageRepository;
+	private final SimpleVerificationChallengeRecordRepository simpleVerificationChallengeRecordRepository;
 
 	@Override
 	@Transactional
@@ -149,6 +152,25 @@ public class ChallengeQueryServiceImpl implements ChallengeQueryService {
 
 		return DTOList;
 	}
+
+	@Override
+	@Transactional
+	public String getMyOXRecord(String email, Long challengeId, LocalDate date){
+		Member member = memberCommandService.validMember(email);
+		Challenge challenge = challengeCommandService.validChallenge(challengeId);
+		MemberChallenge memberChallenge = challengeCommandService.validMemberChallenge(member, challenge);
+
+		Boolean record = simpleVerificationChallengeRecordRepository.findByMemberChallengeAndCreatedAtDate(memberChallenge, date)
+			.map(SimpleVerificationChallengeRecord::getRecord)
+			.orElse(false);
+
+		if (record) {
+			return "O";
+		} else {
+			return "X";
+		}
+	}
+
 
 	@Override
 	@Transactional
