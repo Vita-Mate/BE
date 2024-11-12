@@ -160,6 +160,9 @@ public class ChallengeQueryServiceImpl implements ChallengeQueryService {
 		Challenge challenge = challengeCommandService.validChallenge(challengeId);
 		MemberChallenge memberChallenge = challengeCommandService.validMemberChallenge(member, challenge);
 
+		if(date.isBefore(challenge.getStartDate()))
+			throw new ChallengeHandler(ErrorStatus.NOT_PARTICIPATING_IN_CHALLENGE);
+
 		Boolean record = simpleVerificationChallengeRecordRepository.findByMemberChallengeAndCreatedAtDate(memberChallenge, date)
 			.map(SimpleVerificationChallengeRecord::getRecord)
 			.orElse(false);
