@@ -156,7 +156,7 @@ public class ChallengeCommandServiceImpl implements ChallengeCommandService{
 		Challenge challenge = validChallenge(challengeId);
 		MemberChallenge memberChallenge = validMemberChallenge(member, challenge);
 
-		SimpleVerificationChallengeRecord simpleVerificationChallengeRecord = simpleVerificationChallengeRecordRepository.findByMemberChallengeAndCreatedAtBetween(memberChallenge, LocalDate.now().atStartOfDay(), LocalDate.now().plusDays(1).atStartOfDay())
+		SimpleVerificationChallengeRecord simpleVerificationChallengeRecord = simpleVerificationChallengeRecordRepository.findByMemberChallengeAndCreatedAtDate(memberChallenge, LocalDate.now())
 				.orElseGet(() -> simpleVerificationChallengeRecordRepository.save(
 					challengeConverter.toSimpleVerificationChallengeRecord(memberChallenge, record)
 				));

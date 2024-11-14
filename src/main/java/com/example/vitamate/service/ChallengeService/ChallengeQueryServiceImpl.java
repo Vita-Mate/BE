@@ -1,12 +1,13 @@
 package com.example.vitamate.service.ChallengeService;
 
+
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -161,19 +162,62 @@ public class ChallengeQueryServiceImpl implements ChallengeQueryService {
 		MemberChallenge memberChallenge = challengeCommandService.validMemberChallenge(member, challenge);
 
 		if(date.isBefore(challenge.getStartDate()))
-			throw new ChallengeHandler(ErrorStatus.NOT_PARTICIPATING_IN_CHALLENGE);
+			throw new ChallengeHandler(ErrorStatus.DATE_BEFORE_CHALLENGE_START);
 
-		Boolean record = simpleVerificationChallengeRecordRepository.findByMemberChallengeAndCreatedAtDate(memberChallenge, date)
-			.map(SimpleVerificationChallengeRecord::getRecord)
-			.orElse(false);
+		String isSuccess;
+		Optional<Boolean> record = simpleVerificationChallengeRecordRepository.findByMemberChallengeAndCreatedAtDate(memberChallenge, date)
+			.map(SimpleVerificationChallengeRecord::getRecord);
 
-		if (record) {
-			return "O";
+		if (record.isEmpty()) {
+			isSuccess = "기록이 없습니다.";
+		} else if (record.get()) {
+			isSuccess = "O";
 		} else {
-			return "X";
+			isSuccess = "X";
 		}
+
+		return isSuccess;
 	}
 
+	@Override
+	@Transactional
+	public List<ChallengeResponseDTO.GetOXRecordResultDTO> getTeamOXRecord(String email, Long challengeId, LocalDate date){
+		Member member = memberCommandService.validMember(email);
+		Challenge challenge = challengeCommandService.validChallenge(challengeId);
+
+		if(date.isBefore(challenge.getStartDate()))
+			throw new ChallengeHandler(ErrorStatus.DATE_BEFORE_CHALLENGE_START);
+
+		// 이 챌린지에 참여중인 모든 팀원의 MemberChallenge 가져오기
+		List<MemberChallenge> teamMembers = memberChallengeRepository.findAllByChallenge(challenge);
+		
+		// 특정 날짜와 이 challenge 에 해당하는 모든 기록 가져오기
+		List<SimpleVerificationChallengeRecord> records = simpleVerificationChallengeRecordRepository.findByChallengeAndCreatedAtDate(challenge, date);
+
+		// 자신의 기록을 제외하고 다른 팀원들의 기록만 남기기
+		List<ChallengeResponseDTO.GetOXRecordResultDTO> DTOList = teamMembers.stream()
+			.filter(memberChallenge -> !memberChallenge.getMember().getId().equals(member.getId()))
+			.map(memberChallenge -> {
+					// 해당 팀원의 기록 찾기
+					Optional<SimpleVerificationChallengeRecord> recordOpt = records.stream()
+						.filter(record -> record.getMemberChallenge().equals(memberChallenge))
+						.findFirst();
+
+					// 기록이 없으면 "기록이 없습니다."로, 있으면 O 또는 X로 설정
+					String isSuccess = recordOpt
+						.map(record -> record.getRecord() ? "O" : "X")
+						.orElse("기록이 없습니다.");
+
+					return ChallengeResponseDTO.GetOXRecordResultDTO.builder()
+						.OXRecordId(recordOpt.map(SimpleVerificationChallengeRecord::getId).orElse(null)) // 기록 ID가 없을 경우 null
+						.record(isSuccess)
+						.nickname(memberChallenge.getMember().getNickname())
+						.build();
+				}).collect(Collectors.toList());
+
+		return DTOList;
+
+	}
 
 	@Override
 	@Transactional

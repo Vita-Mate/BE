@@ -92,6 +92,16 @@ public class ChallengeResponseDTO {
 	}
 
 	@Builder
+	@Getter
+	@NoArgsConstructor
+	@AllArgsConstructor
+	public static class GetOXRecordResultDTO{
+		Long OXRecordId;
+		String nickname;
+		String record;
+	}
+
+	@Builder
 	@Setter
 	@Getter
 	@NoArgsConstructor
