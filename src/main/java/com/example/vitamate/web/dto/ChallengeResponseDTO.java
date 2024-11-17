@@ -112,4 +112,15 @@ public class ChallengeResponseDTO {
 		String totalExerciseTime;
 	}
 
+	@Builder
+	@Getter
+	@Setter
+	@NoArgsConstructor
+	@AllArgsConstructor
+	public static class GetOXRankingDTO{
+		Integer rank;
+		String nickname;
+		Integer successCount;
+	}
+
 }

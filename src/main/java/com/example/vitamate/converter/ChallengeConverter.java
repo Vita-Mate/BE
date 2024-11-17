@@ -182,4 +182,12 @@ public class ChallengeConverter {
 			.build();
 	}
 
+	public static ChallengeResponseDTO.GetOXRankingDTO toGetOXRankingDTO(Integer rank, String nickname, Integer successCount){
+		return ChallengeResponseDTO.GetOXRankingDTO.builder()
+			.rank(rank)
+			.nickname(nickname)
+			.successCount(successCount)
+			.build();
+	}
+
 }

@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.example.vitamate.domain.enums.ChallengeCategory;
 import com.example.vitamate.domain.enums.ChallengeDuration;
-import com.example.vitamate.jwt.SecurityUtil;
 import com.example.vitamate.web.dto.ChallengeResponseDTO;
 
 public interface ChallengeQueryService {
@@ -19,5 +18,7 @@ public interface ChallengeQueryService {
 	String getMyOXRecord(String email, Long challengeId, LocalDate date);
 	List<ChallengeResponseDTO.GetOXRecordResultDTO> getTeamOXRecord(String email, Long challengeId, LocalDate date);
 
-	List<ChallengeResponseDTO.GetExerciseRankingDTO> getChallengeRanking(String email, Long challengeId);
+	List<ChallengeResponseDTO.GetExerciseRankingDTO> getExerciseChallengeRanking(String email, Long challengeId);
+	List<ChallengeResponseDTO.GetOXRankingDTO> getOXChallengeRanking(String email, Long challengeId);
+
 }

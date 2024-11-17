@@ -36,4 +36,6 @@ public interface SimpleVerificationChallengeRecordRepository extends JpaReposito
 		@Param("challenge") Challenge challenge,
 		@Param("date") LocalDate date
 	);
+
+	List<SimpleVerificationChallengeRecord> findAllByMemberChallenge(MemberChallenge memberChallenge);
 }

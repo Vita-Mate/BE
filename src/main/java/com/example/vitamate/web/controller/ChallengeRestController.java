@@ -131,12 +131,20 @@ public class ChallengeRestController {
 		return ApiResponse.onSuccess(challengeQueryService.getTeamOXRecord(SecurityUtil.getCurrentUsername(), challengeId, date));
 	}
 
-	@GetMapping(value = "/{challengeId}/ranking")
+	@GetMapping(value = "exercise/{challengeId}/ranking")
 	@Operation(summary = "운동 습관 챌린지 - 팀 순위 조회 API", description = "참여중인 챌린지의 id를 넣어주세요")
 	public ApiResponse<List<ChallengeResponseDTO.GetExerciseRankingDTO>> getChallengeRanking(
 		@PathVariable(name = "challengeId") Long challengeId
 	){
-		return ApiResponse.onSuccess(challengeQueryService.getChallengeRanking(SecurityUtil.getCurrentUsername(), challengeId));
+		return ApiResponse.onSuccess(challengeQueryService.getExerciseChallengeRanking(SecurityUtil.getCurrentUsername(), challengeId));
+	}
+
+	@GetMapping(value = "OX/{challengeId}/Ranking")
+	@Operation(summary = "금주/금연 챌린지 - 팀 순위 조회 API", description = "참여중인 챌린지의 id를 넣어주세요")
+	public ApiResponse<List<ChallengeResponseDTO.GetOXRankingDTO>> getOXRanking(
+		@PathVariable(name = "challengeId") Long challengeId
+	){
+		return ApiResponse.onSuccess(challengeQueryService.getOXChallengeRanking(SecurityUtil.getCurrentUsername(), challengeId));
 	}
 
 	@DeleteMapping(value = "/{challengeId}")

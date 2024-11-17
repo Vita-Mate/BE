@@ -221,7 +221,7 @@ public class ChallengeQueryServiceImpl implements ChallengeQueryService {
 
 	@Override
 	@Transactional
-	public List<ChallengeResponseDTO.GetExerciseRankingDTO> getChallengeRanking(String email, Long challengeId) {
+	public List<ChallengeResponseDTO.GetExerciseRankingDTO> getExerciseChallengeRanking(String email, Long challengeId) {
 		Challenge challenge = challengeCommandService.validChallenge(challengeId);
 		challengeCommandService.validMemberChallenge(memberCommandService.validMember(email), challenge);
 
@@ -241,7 +241,31 @@ public class ChallengeQueryServiceImpl implements ChallengeQueryService {
 		List<ChallengeResponseDTO.GetExerciseRankingDTO> rankingDTOList = calculateRank(memberTotalExerciseTimeMap);
 
 		// 순위 할당
-		return assignRanks(rankingDTOList);
+		return assignExerciseRanks(rankingDTOList);
+	}
+
+	@Override
+	@Transactional
+	public List<ChallengeResponseDTO.GetOXRankingDTO> getOXChallengeRanking(String email, Long challengeId) {
+		Challenge challenge = challengeCommandService.validChallenge(challengeId);
+		challengeCommandService.validMemberChallenge(memberCommandService.validMember(email), challenge);
+
+		// challenge로 MemberChallenge 가져오기
+		List<MemberChallenge> memberChallengeList = memberChallengeRepository.findAllByChallenge(challenge);
+
+		// 각 멤버의 성공 횟수 합산해서 Map에 저장
+		Map<MemberChallenge, Integer> memberSuccessCountMap = memberChallengeList.stream()
+			.collect(Collectors.toMap(
+				memberChallenge -> memberChallenge,
+				memberChallenge -> calculateTotalSuccessCount(
+					simpleVerificationChallengeRecordRepository.findAllByMemberChallenge(memberChallenge)
+				)
+			));
+
+		// 누적 성공 횟수로 순위 계산
+		List<ChallengeResponseDTO.GetOXRankingDTO> rankingDTOList = calculateOXRank(memberSuccessCountMap);
+
+		return assignOXRanks(rankingDTOList);
 	}
 
 	// 누적 운동 시간 계산
@@ -265,12 +289,38 @@ public class ChallengeQueryServiceImpl implements ChallengeQueryService {
 			}).collect(Collectors.toList());
 	}
 
+	public List<ChallengeResponseDTO.GetOXRankingDTO> calculateOXRank(Map<MemberChallenge, Integer> memberSuccessCountMap){
+		return memberSuccessCountMap.entrySet().stream()
+			.sorted((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()))
+			.map(entry -> {
+				Integer successCount = entry.getValue();
+
+				// DTO 변환
+				return challengeConverter.toGetOXRankingDTO(null, entry.getKey().getMember().getNickname(), successCount);
+			}).collect(Collectors.toList());
+	}
+
+	public Integer calculateTotalSuccessCount(List<SimpleVerificationChallengeRecord> records){
+		if (records.isEmpty()){
+			return 0;
+		}
+		return (int) records.stream()
+			.filter(record -> Boolean.TRUE.equals(record.getRecord()))
+			.count();
+	}
+
 	// 순위 할당
-	public List<ChallengeResponseDTO.GetExerciseRankingDTO> assignRanks(List<ChallengeResponseDTO.GetExerciseRankingDTO> rankingList){
+	public List<ChallengeResponseDTO.GetExerciseRankingDTO> assignExerciseRanks(List<ChallengeResponseDTO.GetExerciseRankingDTO> rankingList){
 		for (int i = 0; i < rankingList.size(); i++)
 			rankingList.get(i).setRank(i + 1);
 		return rankingList;
 	}
 
+	public List<ChallengeResponseDTO.GetOXRankingDTO> assignOXRanks(List<ChallengeResponseDTO.GetOXRankingDTO> rankingList){
+		for (int i = 0; i < rankingList.size(); i++)
+			rankingList.get(i).setRank(i+1);
+		return rankingList;
+
+	}
 
 }
