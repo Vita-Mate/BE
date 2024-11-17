@@ -4,25 +4,19 @@ import com.example.vitamate.domain.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
-
 @Entity
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class SimpleVerificationChallengeLogs extends BaseEntity {
+public class SimpleVerificationChallengeRecord extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private LocalDate date;
-
-    private Boolean isSuccess;
-
-    private Integer reward;
+    private Boolean record;
 
     @ManyToOne
     @JoinColumn(name = "member_challenge_id")

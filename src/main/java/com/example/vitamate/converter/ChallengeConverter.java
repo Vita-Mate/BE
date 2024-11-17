@@ -17,6 +17,7 @@ import com.example.vitamate.domain.enums.ChallengeDuration;
 import com.example.vitamate.domain.enums.ChallengeStatus;
 import com.example.vitamate.domain.mapping.ExerciseChallengeRecord;
 import com.example.vitamate.domain.mapping.MemberChallenge;
+import com.example.vitamate.domain.mapping.SimpleVerificationChallengeRecord;
 import com.example.vitamate.web.dto.ChallengeRequestDTO;
 import com.example.vitamate.web.dto.ChallengeResponseDTO;
 
@@ -105,6 +106,13 @@ public class ChallengeConverter {
 			.build();
 	}
 
+	public static SimpleVerificationChallengeRecord toSimpleVerificationChallengeRecord(MemberChallenge memberChallenge, Boolean record){
+		return SimpleVerificationChallengeRecord.builder()
+			.record(record)
+			.memberChallenge(memberChallenge)
+			.build();
+	}
+
 	public static RecordImage toRecordImage(String imageUrl, ExerciseChallengeRecord record){
 		return RecordImage.builder()
 			.exerciseChallengeRecord(record)
@@ -146,7 +154,23 @@ public class ChallengeConverter {
 			.comment(record.getComment())
 			.imageURL(imageURL)
 			.build();
+	}
 
+	public static ChallengeResponseDTO.GetOXRecordResultDTO toGetOXRecordResultDTO(SimpleVerificationChallengeRecord record){
+		String isSuccess;
+		if(record.getRecord().describeConstable().isEmpty()){
+			isSuccess = "기록이 없습니다.";
+		} else if (record.getRecord()){
+			isSuccess = "O";
+		} else {
+			isSuccess = "X";
+		}
+
+		return ChallengeResponseDTO.GetOXRecordResultDTO.builder()
+			.OXRecordId(record.getId())
+			.record(isSuccess)
+			.nickname(record.getMemberChallenge().getMember().getNickname())
+			.build();
 	}
 
 	public static ChallengeResponseDTO.GetExerciseRankingDTO toGetExerciseRankingDTO(Integer rank, String nickname, int hours, int minutes){
@@ -155,6 +179,14 @@ public class ChallengeConverter {
 			.rank(rank)
 			.nickname(nickname)
 			.totalExerciseTime(totalExerciseTime)
+			.build();
+	}
+
+	public static ChallengeResponseDTO.GetOXRankingDTO toGetOXRankingDTO(Integer rank, String nickname, Integer successCount){
+		return ChallengeResponseDTO.GetOXRankingDTO.builder()
+			.rank(rank)
+			.nickname(nickname)
+			.successCount(successCount)
 			.build();
 	}
 
