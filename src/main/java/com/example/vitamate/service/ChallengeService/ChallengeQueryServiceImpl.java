@@ -72,6 +72,9 @@ public class ChallengeQueryServiceImpl implements ChallengeQueryService {
 			// ChallengeStatus가 WAITING인 조건 추가
 			predicates.add(builder.equal(root.get("status"), ChallengeStatus.WAITING));
 
+			// 개인 챌린지 제외: title이 null인 챌린지 제외
+			predicates.add(builder.isNotNull(root.get("title")));
+
 			// 필터링
 			if (category != null) {
 				predicates.add(builder.equal(root.get("challengeCategory"), category));
