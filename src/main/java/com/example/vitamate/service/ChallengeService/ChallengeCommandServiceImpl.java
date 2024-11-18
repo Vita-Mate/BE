@@ -205,8 +205,16 @@ public class ChallengeCommandServiceImpl implements ChallengeCommandService{
 	public String cancelChallengeParticipation(String email, Long challengeId){
 		Member member = memberCommandService.validMember(email);
 		Challenge challenge = validChallenge(challengeId);
+
 		MemberChallenge memberChallenge = memberChallengeRepository.findByMemberAndChallenge(member, challenge)
 			.orElseThrow(() -> new ChallengeHandler(ErrorStatus.MEMBER_CHALLENGE_NOT_FOUND));
+
+		// 개인 챌린지일 경우
+		if(challenge.getTitle() == null){
+			challenge.setStatus(ChallengeStatus.CANCELLED);
+			challengeRepository.save(challenge);
+			return "개인 챌린지가 취소되었습니다.";
+		}
 
 		if (challenge.getStatus() != ChallengeStatus.WAITING)
 			throw new ChallengeHandler(ErrorStatus.INVALID_CHALLENGE_STATUS_FOR_CANCELLATION);
