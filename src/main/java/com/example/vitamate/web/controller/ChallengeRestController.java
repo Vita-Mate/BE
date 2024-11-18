@@ -40,10 +40,16 @@ public class ChallengeRestController {
 	private final ChallengeQueryService challengeQueryService;
 
 	@PostMapping("/")
-	@Operation(summary = "챌린지 방 생성 API", description = "방장이 챌린지 방을 생성하는 API 입니다. CreateChallengeRequestDTO 설명 참고해주세요.")
+	@Operation(summary = "단체 챌린지 방 생성 API", description = "방장이 챌린지 방을 생성하는 API 입니다. CreateChallengeRequestDTO 설명 참고해주세요.")
 	public ApiResponse<ChallengeResponseDTO.CreateChallengeResultDTO> createChallenge(@Valid @RequestBody ChallengeRequestDTO.CreateChallengeRequestDTO challengeRequestDTO) {
 
 		return ApiResponse.onSuccess(challengeCommandService.createChallenge(SecurityUtil.getCurrentUsername(), challengeRequestDTO));
+	}
+
+	@PostMapping("/personal")
+	@Operation(summary = "개인 챌린지 생성 API", description = "개인 챌린지를 생성하는 API입니다. CreatePersonalChallengeReqeustDTO 설명 참고해주세요.")
+	public ApiResponse<ChallengeResponseDTO.CreatePersonalChallengeResultDTO> createPersonalChallenge(@Valid @RequestBody ChallengeRequestDTO.CreatePersonalChallengeRequestDTO challengeRequestDTO){
+		return ApiResponse.onSuccess(challengeCommandService.createPersonalChallenge(SecurityUtil.getCurrentUsername(), challengeRequestDTO));
 	}
 
 	@GetMapping("/{category}")

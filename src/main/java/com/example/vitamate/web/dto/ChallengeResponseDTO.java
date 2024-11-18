@@ -34,6 +34,16 @@ public class ChallengeResponseDTO {
 	@Getter
 	@NoArgsConstructor
 	@AllArgsConstructor
+	public static class CreatePersonalChallengeResultDTO{
+		Long challengeId;
+		ChallengeStatus status;
+		LocalDateTime createdAt;
+	}
+
+	@Builder
+	@Getter
+	@NoArgsConstructor
+	@AllArgsConstructor
 	public static class ChallengeListDTO{
 		List<ChallengePreviewDTO> challengeList;
 		Integer listSize;

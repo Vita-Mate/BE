@@ -11,8 +11,15 @@ import com.example.vitamate.web.dto.ChallengeResponseDTO;
 
 public interface ChallengeCommandService {
 
-	ChallengeResponseDTO.CreateChallengeResultDTO createChallenge(String email,
-		ChallengeRequestDTO.CreateChallengeRequestDTO requestDTO);
+	ChallengeResponseDTO.CreateChallengeResultDTO createChallenge(
+		String email,
+		ChallengeRequestDTO.CreateChallengeRequestDTO requestDTO
+	);
+
+	ChallengeResponseDTO.CreatePersonalChallengeResultDTO createPersonalChallenge(
+		String email,
+		ChallengeRequestDTO.CreatePersonalChallengeRequestDTO requestDTO
+	);
 
 	void checkParticipationInChallengeType(Member member, ChallengeCategory category);
 

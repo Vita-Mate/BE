@@ -14,7 +14,9 @@ import com.example.vitamate.domain.enums.ChallengeDuration;
 import com.example.vitamate.domain.enums.ExerciseIntensity;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -29,7 +31,7 @@ import lombok.Setter;
 public class ChallengeRequestDTO {
 
 	@Getter
-	@Schema(description = "챌린지 생성시 입력할 정보")
+	@Schema(description = "단체 챌린지 생성시 입력할 정보")
 	public static class CreateChallengeRequestDTO {
 		@Schema(description = "챌린지 종류")
 		@NotNull(message = "챌린지 종류는 필수 항목입니다. EXERCISE, QUIT_SMOKE, QUIT_ALCOHOL 중에서 입력해주세요.")
@@ -66,6 +68,29 @@ public class ChallengeRequestDTO {
 		@Min(value = 1, message = "주간 빈도는 최소 1회 이상이어야 합니다.")
 		@Max(value = 7, message = "주간 빈도는 최대 7회 이하여야 합니다.")
 		Integer weeklyFrequency;
+	}
+
+	@Getter
+	@Schema(description = "개인 챌린지 생성시 입력할 정보")
+	public static class CreatePersonalChallengeRequestDTO{
+		@Schema(description = "챌린지 종류")
+		@NotNull(message = "챌린지 종류는 필수 항목입니다. EXERCISE, QUIT_SMOKE, QUIT_ALCOHOL 중에서 입력해주세요.")
+		ChallengeCategory category;
+
+		@Schema(description = "챌린지 시작일")
+		@NotNull(message = "챌린지 시작일은 필수 항목입니다.")
+		@FutureOrPresent(message = "개인 챌린지는 오늘 바로 시작 가능합니다! 시작일은 현재 날짜로부터 최대 일주일(7일) 미래여야 합니다.")
+		LocalDate startDate;
+
+		@Schema(description = "목표 설정 (주간 빈도). 금주/금연 챌린지는 7로")
+		@Min(value = 1, message = "주간 빈도는 최소 1회 이상이어야 합니다.")
+		@Max(value = 7, message = "주간 빈도는 최대 7회 이하여야 합니다.")
+		Integer weeklyFrequency;
+
+		@Schema(description = "챌린지 기간")
+		@NotNull(message = "챌린지 기간은 필수 항목입니다. ONE_WEEK, ONE_MONTH, THREE_MONTHS, SIX_MONTHS, ONE_YEAR 중에서 입력해주세요.")
+		ChallengeDuration duration;
+
 	}
 
 	@Getter
