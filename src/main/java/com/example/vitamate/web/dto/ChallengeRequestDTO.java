@@ -19,6 +19,7 @@ import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -38,7 +39,7 @@ public class ChallengeRequestDTO {
 		ChallengeCategory category;
 
 		@Schema(description = "챌린지 제목")
-		@NotNull(message = "챌린지 제목은 필수 항목입니다.")
+		@NotBlank(message = "챌린지 제목은 필수 항목입니다.")
 		String title;
 
 		@Schema(description = "챌린지 설명")
