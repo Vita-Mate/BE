@@ -1,6 +1,8 @@
 package com.example.vitamate.service.ChallengeService;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,7 +34,9 @@ import com.example.vitamate.web.dto.ChallengeRequestDTO;
 import com.example.vitamate.web.dto.ChallengeResponseDTO;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ChallengeCommandServiceImpl implements ChallengeCommandService{
@@ -75,6 +79,34 @@ public class ChallengeCommandServiceImpl implements ChallengeCommandService{
 		memberChallengeRepository.save(memberChallenge);
 
 		return ChallengeConverter.toCreateChallengeResponseDTO(challenge);
+	}
+
+	@Override
+	@Transactional
+	public ChallengeResponseDTO.CreatePersonalChallengeResultDTO createPersonalChallenge(String email, ChallengeRequestDTO.CreatePersonalChallengeRequestDTO requestDTO){
+		Member member = memberCommandService.validMember(email);
+
+		checkParticipationInChallengeType(member, requestDTO.getCategory());
+
+		// 시작일 유효성 검사
+		LocalDate now = LocalDate.now();
+		LocalDate maxStartDate = now.plusWeeks(1);
+
+		// log.info("Server Time zone: {}", ZoneId.systemDefault());
+		// log.info("Current Time: {}", LocalDateTime.now());
+		//
+		// if(requestDTO.getStartDate().isBefore(now) || requestDTO.getStartDate().isAfter(maxStartDate)){
+		// 	throw new ChallengeHandler(ErrorStatus.INVALID_START_DATE);
+		// }
+
+		Challenge challenge = ChallengeConverter.toChallenge(requestDTO);
+		challengeRepository.save(challenge);
+
+		boolean isLeader = true;
+		MemberChallenge memberChallenge = ChallengeConverter.toMemberChallenge(member, challenge, isLeader);
+		memberChallengeRepository.save(memberChallenge);
+
+		return ChallengeConverter.toCreatePersonalChallengeResultDTO(challenge);
 	}
 
 	@Override

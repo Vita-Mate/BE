@@ -41,6 +41,31 @@ public class ChallengeConverter {
 		return challenge;
 	}
 
+	//개인챌린지
+	public static Challenge toChallenge(ChallengeRequestDTO.CreatePersonalChallengeRequestDTO requestDTO){
+		ChallengeStatus status;
+		if(requestDTO.getStartDate().isEqual(LocalDate.now())){
+			status = ChallengeStatus.IN_PROGRESS;
+		} else {
+			status = ChallengeStatus.WAITING;
+		}
+
+		Challenge challenge = Challenge.builder()
+			.minUsers(1)
+			.maxUsers(1)
+			.currentUsers(1)
+			.startDate(requestDTO.getStartDate())
+			.challengeCategory(requestDTO.getCategory())
+			.duration(requestDTO.getDuration())
+			.status(status)
+			.weeklyFrequency(requestDTO.getWeeklyFrequency())
+			.build();
+
+		challenge.setEndDate(challenge.getStartDate().plusDays(challenge.getDuration().getDays()));
+
+		return challenge;
+	}
+
 	public static MemberChallenge toMemberChallenge(Member member, Challenge challenge, boolean isLeader){
 		return MemberChallenge.builder()
 			.member(member)
@@ -55,6 +80,14 @@ public class ChallengeConverter {
 			.title(challenge.getTitle())
 			.status(challenge.getStatus())
 			.createdAt(challenge.getCreatedAt())
+			.build();
+	}
+
+	public static ChallengeResponseDTO.CreatePersonalChallengeResultDTO toCreatePersonalChallengeResultDTO(Challenge challenge){
+		return ChallengeResponseDTO.CreatePersonalChallengeResultDTO.builder()
+			.challengeId(challenge.getId())
+			.createdAt(challenge.getCreatedAt())
+			.status(challenge.getStatus())
 			.build();
 	}
 
