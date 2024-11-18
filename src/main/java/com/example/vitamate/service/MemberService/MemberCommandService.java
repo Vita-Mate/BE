@@ -16,4 +16,6 @@ public interface MemberCommandService {
     Member validMember(String email);
 
     String validNickname(String nickname);
+
+    String deleteMember(String email);
 }

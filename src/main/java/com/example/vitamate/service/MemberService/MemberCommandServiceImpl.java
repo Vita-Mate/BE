@@ -5,9 +5,13 @@ import com.example.vitamate.apiPayload.exception.handler.MemberHandler;
 import com.example.vitamate.converter.MemberConverter;
 import com.example.vitamate.domain.Member;
 import com.example.vitamate.domain.enums.Gender;
+import com.example.vitamate.domain.mapping.MemberSupplement;
+import com.example.vitamate.domain.mapping.Review;
 import com.example.vitamate.jwt.JwtTokenDTO;
 import com.example.vitamate.jwt.JwtTokenProvider;
 import com.example.vitamate.repository.MemberRepository;
+import com.example.vitamate.repository.MemberSupplementRepository;
+import com.example.vitamate.repository.ReviewRepository;
 import com.example.vitamate.web.dto.MemberRequestDTO;
 import com.example.vitamate.web.dto.MemberResponseDTO;
 import jakarta.transaction.Transactional;
@@ -30,6 +34,8 @@ public class MemberCommandServiceImpl implements MemberCommandService{
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberConverter memberConverter;
+    private final ReviewRepository reviewRepository;
+    private final MemberSupplementRepository memberSupplementRepository;
 
     @Override
     @Transactional
@@ -90,6 +96,26 @@ public class MemberCommandServiceImpl implements MemberCommandService{
             .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
         return member;
+    }
+
+    @Override
+    @Transactional
+    public String deleteMember(String email){
+        Member member = memberRepository.findByEmail(email)
+            .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+
+        List<Review> reviewList = reviewRepository.findAllByMember(member);
+        if(!reviewList.isEmpty()){
+            reviewList.forEach(reviewRepository::delete);
+        }
+
+        List<MemberSupplement> memberSupplementList = memberSupplementRepository.findAllByMember(member);
+        if(!memberSupplementList.isEmpty()){
+            memberSupplementList.forEach(memberSupplementRepository::delete);
+        }
+
+        memberRepository.delete(member);
+        return "멤버가 삭제되었습니다.";
     }
 
 }
