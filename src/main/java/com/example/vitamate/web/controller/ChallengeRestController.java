@@ -82,18 +82,21 @@ public class ChallengeRestController {
 		return ApiResponse.onSuccess(challengeQueryService.getParticipatingChallengeList(SecurityUtil.getCurrentUsername(), category));
 	}
 
-	@PostMapping(value = "exercise/{challengeId}/record", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@PostMapping(value = "exercise/{challengeId}/record")
 	@Operation(summary = "운동 습관 챌린지 - 기록 업로드 API")
 	public ApiResponse<ChallengeResponseDTO.AddExerciseRecordResultDTO> addExerciseRecord(
 		@PathVariable(name = "challengeId") Long challengeId,
-		@RequestPart(name = "record") ChallengeRequestDTO.AddExerciseRecordDTO addExerciseRecordDTO,
-		@RequestParam(name = "photo", required = false) MultipartFile photo
+		@RequestBody ChallengeRequestDTO.AddExerciseRecordDTO addExerciseRecordDTO
+		// , @RequestParam(name = "photo", required = false) MultipartFile photo
 		){
-			if (photo != null && photo.isEmpty()) {
-				photo = null; // 빈 파일을 null로 처리
-			}
-			return ApiResponse.onSuccess(challengeCommandService.addExerciseRecord(
-				SecurityUtil.getCurrentUsername(), challengeId, addExerciseRecordDTO, photo));
+			// if (photo != null && photo.isEmpty()) {
+			// 	photo = null; // 빈 파일을 null로 처리
+			// }
+			// return ApiResponse.onSuccess(challengeCommandService.addExerciseRecord(
+			// 	SecurityUtil.getCurrentUsername(), challengeId, addExerciseRecordDTO, photo));
+
+		return ApiResponse.onSuccess(challengeCommandService.addExerciseRecord(
+			SecurityUtil.getCurrentUsername(), challengeId, addExerciseRecordDTO, null));
 	}
 
 	@PostMapping(value = "OX/{challengeId}/record")
