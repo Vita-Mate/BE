@@ -87,7 +87,7 @@ public class ChallengeRestController {
 	public ApiResponse<ChallengeResponseDTO.AddExerciseRecordResultDTO> addExerciseRecord(
 		@PathVariable(name = "challengeId") Long challengeId,
 		@RequestPart(name = "record") ChallengeRequestDTO.AddExerciseRecordDTO addExerciseRecordDTO,
-		@RequestPart(name = "photo") MultipartFile photo
+		@RequestPart(name = "photo", required = false) MultipartFile photo
 		){
 		return ApiResponse.onSuccess(challengeCommandService.addExerciseRecord(SecurityUtil.getCurrentUsername(), challengeId, addExerciseRecordDTO, photo));
 	}

@@ -166,19 +166,27 @@ public class ChallengeCommandServiceImpl implements ChallengeCommandService{
 		Challenge challenge = validChallenge(challengeId);
 		MemberChallenge memberChallenge = validMemberChallenge(member, challenge);
 
-		String uuid = UUID.randomUUID().toString();
-		Uuid saveUuid = uuidRepository.save(Uuid.builder()
-			.uuid(uuid).build());
+		if(photo != null) {
+			String uuid = UUID.randomUUID().toString();
+			Uuid saveUuid = uuidRepository.save(Uuid.builder()
+				.uuid(uuid).build());
 
-		String imageUrl = s3Manager.uploadFile(s3Manager.generateChallengeKeyName(saveUuid), photo);
+			String imageUrl = s3Manager.uploadFile(s3Manager.generateChallengeKeyName(saveUuid), photo);
 
-		ExerciseChallengeRecord exerciseChallengeRecord = challengeConverter.toExerciseChallengeRecord(requestDTO, memberChallenge);
-		exerciseChallengeRecordRepository.save(exerciseChallengeRecord);
+			ExerciseChallengeRecord exerciseChallengeRecord = challengeConverter.toExerciseChallengeRecord(requestDTO,
+				memberChallenge);
+			exerciseChallengeRecordRepository.save(exerciseChallengeRecord);
 
-		recordImageRepository.save(challengeConverter.toRecordImage(imageUrl, exerciseChallengeRecord));
+			recordImageRepository.save(challengeConverter.toRecordImage(imageUrl, exerciseChallengeRecord));
 
-		return challengeConverter.toAddExerciseRecordResultDTO(exerciseChallengeRecord, imageUrl);
-
+			return challengeConverter.toAddExerciseRecordResultDTO(exerciseChallengeRecord, imageUrl);
+		}
+		else {
+			ExerciseChallengeRecord exerciseChallengeRecord = challengeConverter.toExerciseChallengeRecord(requestDTO,
+				memberChallenge);
+			exerciseChallengeRecordRepository.save(exerciseChallengeRecord);
+			return challengeConverter.toAddExerciseRecordResultDTO(exerciseChallengeRecord, null);
+		}
 	}
 
 	@Override

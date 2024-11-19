@@ -127,9 +127,9 @@ public class ChallengeQueryServiceImpl implements ChallengeQueryService {
 
 		List<ChallengeResponseDTO.GetExerciseRecordResultDTO> DTOList = exerciseChallengeRecordList.stream()
 			.map(record -> {
-				RecordImage recordImage = recordImageRepository.findByExerciseChallengeRecord(record);
-				String imageURL = recordImage.getImageUrl();
-				return challengeConverter.toGetExerciseRecordResultDTO(record, imageURL);
+				Optional<RecordImage> recordImage = recordImageRepository.findByExerciseChallengeRecord(record);
+				String imageURL = recordImage.map(RecordImage::getImageUrl).orElse(null);
+					return challengeConverter.toGetExerciseRecordResultDTO(record, imageURL);
 			}).collect(Collectors.toList());
 
 		return DTOList;
@@ -149,8 +149,8 @@ public class ChallengeQueryServiceImpl implements ChallengeQueryService {
 		List<ChallengeResponseDTO.GetExerciseRecordResultDTO> DTOList = exerciseChallengeRecordList.stream()
 			.filter(record -> !record.getMemberChallenge().getMember().getId().equals(member.getId()))
 			.map(record -> {
-				RecordImage recordImage = recordImageRepository.findByExerciseChallengeRecord(record);
-				String imageURL = recordImage.getImageUrl();
+				Optional<RecordImage> recordImage = recordImageRepository.findByExerciseChallengeRecord(record);
+				String imageURL = recordImage.map(RecordImage::getImageUrl).orElse(null);
 				return challengeConverter.toGetExerciseRecordResultDTO(record, imageURL);
 			}).collect(Collectors.toList());
 
