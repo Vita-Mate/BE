@@ -87,9 +87,13 @@ public class ChallengeRestController {
 	public ApiResponse<ChallengeResponseDTO.AddExerciseRecordResultDTO> addExerciseRecord(
 		@PathVariable(name = "challengeId") Long challengeId,
 		@RequestPart(name = "record") ChallengeRequestDTO.AddExerciseRecordDTO addExerciseRecordDTO,
-		@RequestPart(name = "photo", required = false) MultipartFile photo
+		@RequestParam(name = "photo", required = false) MultipartFile photo
 		){
-		return ApiResponse.onSuccess(challengeCommandService.addExerciseRecord(SecurityUtil.getCurrentUsername(), challengeId, addExerciseRecordDTO, photo));
+			if (photo != null && photo.isEmpty()) {
+				photo = null; // 빈 파일을 null로 처리
+			}
+			return ApiResponse.onSuccess(challengeCommandService.addExerciseRecord(
+				SecurityUtil.getCurrentUsername(), challengeId, addExerciseRecordDTO, photo));
 	}
 
 	@PostMapping(value = "OX/{challengeId}/record")
